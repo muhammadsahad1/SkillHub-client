@@ -1,9 +1,10 @@
-import useGetUser from "../hook/getUser";
-import { Outlet , Navigate } from "react-router-dom";
+// // import React from "react";
+// import useGetUser from "../hook/getUser";
+// import { Outlet , Navigate } from "react-router-dom";
 
-const privateRoute :React.FC = ()  => {
-  const currentUser = useGetUser()
-  currentUser.profile ? <Outlet/> : <Navigate to='/' replace/>
-}
+// const PrivateRoute: React.FC = ()  => {
+//   const currentUser = useGetUser()
+//   return currentUser.profile ? <Outlet/> : <Navigate to='/' replace/>
+// }
 
-export default privateRoute
+// export default PrivateRoute

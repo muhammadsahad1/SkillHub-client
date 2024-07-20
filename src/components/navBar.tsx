@@ -28,8 +28,8 @@ const NavBar: React.FC = () => {
       if(response.success){
         dispatch(deleteUser())
         navigate('/')
+        toast.success(response.message)
       }
-      toast.success(response.message)
     } catch (error) {
       toast.error('logout failed')
     }

@@ -92,8 +92,53 @@ export const googleLogin = async(name: string, email: string, picture: string, )
     console.log("google routil vannu")
     const response = await Api.post(userRoutes.googleLogin,{ name : name , email : email , picture : picture })
     return response.data
-  } catch (error) {
-    
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+}
+
+// Forgot password
+export const forgotPassword = async(email : string) => {
+  try {
+    console.log("api call ayieee")
+    const response = await Api.post(userRoutes.fogotPassword,{email : email})
+    console.log("rsponse =====",response.data)
+    return response.data
+  } catch (error: any) {
+    console.log(error)
+    if (error.response) {
+      return error.response.data;
+
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }finally {
+    console.log("finaly ...sajaleeee")
+  }
+} 
+// Verify resetToken
+export const verifyResetToken = async (resetToken : string) => {
+  try {
+    const response = await Api.post(userRoutes.verifyResetToken,{resetToken : resetToken})
+    console.log("verify resetToken response",response)
+  } catch (error : any) {
+    if (error.response) {
+      return error.response.data;
+
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
   }
 }
 

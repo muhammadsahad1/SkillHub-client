@@ -13,6 +13,7 @@ import { JwtPayload } from "jwt-decode";
 import { jwtDecode } from "jwt-decode";
 import { googleLogin } from "../../API/user";
 import { DotLoader } from "react-spinners";
+import ForgotPasswordModal from "../../components/ForgotPasswordModal";
 
 type UserData = {
   email: string;
@@ -36,10 +37,11 @@ const UserLogin: React.FC = () => {
 
   const [isToast, setToast] = useState<boolean>(false);
   const [isloading,setIsLoading] = useState<boolean>(false)
+  const [isModalOpen,SetIsModalOpen] = useState<boolean>(false)
+
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const currentUser = useSelector((state: User) => state);
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
@@ -52,7 +54,7 @@ const UserLogin: React.FC = () => {
   const onSubmit = async (data: UserData) => {
     setIsLoading(true)
     const response = await userLogin(data.email, data.password);
-    console.log("response===", response);
+    console.log("response ===>", response);
     if (response.success) {
       console.log(response);
       navigate(`/`);
@@ -79,8 +81,6 @@ const UserLogin: React.FC = () => {
         credentials.picture
       );
 
-      console.log("google respo",gooleLoginResponse)
-
       if (gooleLoginResponse.success) {
         dispatch(setUser(gooleLoginResponse.user))
         navigate('/')
@@ -93,6 +93,18 @@ const UserLogin: React.FC = () => {
         toast.error(error.message)
     }
   };
+
+  // Fogot Password Model Open and close handle functions
+  const openModal = () => {
+    SetIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    SetIsModalOpen(false)
+    
+  }
+
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -153,15 +165,18 @@ const UserLogin: React.FC = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-            >
+              className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
               Login In
             </button>
-
-            <div id="signupButton" className="mt-4 flex justify-center ">
+          </form>
+            <div className="flex justify-center items-center mt-3">
+              <button className="font-semibold text-sm underline" onClick={openModal}>Forgot Password?</button>
+              <ForgotPasswordModal isOpen={isModalOpen} inRequestClose={closeModal}/>
+            </div>
+            <hr className="text-xl bg-slate-950 mt-2"/>
+            <div id="signupButton" className="google-login-button mt-4 flex justify-center w-full">
               <GoogleLogin onSuccess={handleGoogleLogin} />
             </div>
-          </form>
         </div>
       </div>
       <Toaster />
