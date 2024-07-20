@@ -13,7 +13,7 @@ function App({children} : AppProps) {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persitor}>
-        <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
+        <GoogleOAuthProvider clientId="977342398446-gj3k3vi19d53gdh3a3n8c51m10al8ksq.apps.googleusercontent.com">
           {children}
         </GoogleOAuthProvider>
       </PersistGate>
