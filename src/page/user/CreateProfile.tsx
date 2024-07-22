@@ -11,6 +11,8 @@ import { setUser } from "../../redux/userSlices";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { DotLoader } from "react-spinners";
+import Header from "../../components/layouts/header";
+
 
 const CreateProfile: React.FC = () => {
   const [imagePreview, setimagePreview] = useState<string | null>(null);
@@ -93,13 +95,10 @@ const CreateProfile: React.FC = () => {
       toast.error("Profile image is required");
       return;
     }
-    console.log("FILE IMAGE PRE ======>", imagePreview);
     const fileInput = document.getElementById(
       "profileImageInput"
     ) as HTMLInputElement;
     const file = fileInput.files?.[0];
-
-    console.log(file);
 
     const formData = new FormData();
     formData.append("name", data.name);
@@ -116,10 +115,9 @@ const CreateProfile: React.FC = () => {
     }
 
     try {
-      console.log(currentUser);
+
       const response = await createProfile(formData);
-      console.log("response ===>", response.user);
-      dispatch(setUser(response.user)); // Simplified dispatch
+      dispatch(setUser(response.user)); 
       setIsLoading(false);
       navigate("/");
     } catch (error: any) {
@@ -129,14 +127,19 @@ const CreateProfile: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-black">
+    <div className="min-h-screen flex flex-col">
+      <Header/>     
+    <div className="flex justify-center items-center py-14">
       <div className="w-full max-w-4xl bg-gray-900 p-8 rounded-lg shadow-md">
-        {isLoading && <DotLoader/>}
+        {isLoading &&<div className="flex justify-center ">
+        <DotLoader/>
+          </div> }
+        
         <h2 className="text-2xl font-bold mb-6 text-white">Create Profile</h2>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col md:flex-row"
-        >
+          >
           <div className="mb-6 md:mr-6">
             <label className="block text-gray-300 font-bold mb-2">
               Profile Image
@@ -165,7 +168,7 @@ const CreateProfile: React.FC = () => {
               type="file"
               accept="image/*"
               className="hidden"
-              {...register("profileImage", { required: "Image is required" })}
+              {...register("profileImage")}
               onChange={handlePreviewImage}
             />
 
@@ -258,7 +261,7 @@ const CreateProfile: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-md"
+              className="w-full tracking-wide bg-emerald-500 font-bold  text-white py-2 rounded-md"
             >
               Save Profile
             </button>
@@ -266,6 +269,7 @@ const CreateProfile: React.FC = () => {
         </form>
       </div>
       <Toaster />
+    </div>
     </div>
   );
 };

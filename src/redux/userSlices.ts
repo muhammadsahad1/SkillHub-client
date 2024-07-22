@@ -11,7 +11,8 @@ const initialState = {
   skill: '',
   profile: false,
   picture: '',
-  profileImage: '',
+  profileImage:'',
+  imageKey : '',
   blocked: false,
   approved: false,
   // Additional fields if any can be added here
@@ -23,7 +24,7 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       const { 
-        id, 
+        _id, 
         name, 
         email, 
         role, 
@@ -35,9 +36,10 @@ const userSlice = createSlice({
         profile, 
         picture, 
         profileImage, 
+        imageKey,
         approved 
       } = action.payload;
-      state.id = id;
+      state.id = _id;
       state.name = name;
       state.email = email;
       state.role = role;
@@ -48,11 +50,15 @@ const userSlice = createSlice({
       state.profile = profile;
       state.picture = picture;
       state.profileImage = profileImage;
+      state.imageKey = imageKey;
       state.blocked = blocked;
       state.approved = approved;
     },
     setEmail: (state, action) => {
       state.email = action.payload;
+    },
+    setProfileImage:(state,action) => {
+      state.picture = action.payload
     },
     setRole: (state, action) => {
       state.role = action.payload;
@@ -69,11 +75,12 @@ const userSlice = createSlice({
       state.profile = false;
       state.picture = '';
       state.profileImage = '';
+      state.imageKey = ''
       state.blocked = false;
       state.approved = false;
     },
   },
 });
 
-export const { setUser, setEmail, setRole, deleteUser } = userSlice.actions;
+export const { setUser, setEmail, setRole, setProfileImage ,deleteUser } = userSlice.actions;
 export default userSlice.reducer;

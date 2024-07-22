@@ -42,7 +42,7 @@ const NavBar: React.FC = () => {
     <nav className="bg-white shadow-md">
       <div className="container mx-auto flex justify-between items-center px-4 py-4">
         <div className="text-xl font-bold text-gray-800">
-          <img className="w-12 h-12" src={skill} alt="Skill Logo" />
+          <img className="w-12 h-12 " src={skill} alt="Skill Logo" />
         </div>
         <div className="flex items-center space-x-4">
           <Link to="/" className="text-gray-800 hover:text-gray-600">
@@ -68,17 +68,17 @@ const NavBar: React.FC = () => {
                   {currentUser.profile === true ? (
                     <>
                       <li>
-                        <Link to="/viewProfile" className="font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                        <a onClick={()=> navigate('/auth/viewProfile')} className="cursor-pointer font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100">
                           View Profile
-                        </Link>
+                        </a>
                       </li>
                       <li>
-                        <Link to="/settings" className="font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                        <a onClick={()=> navigate('/auth/settings')} className="font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100">
                           Settings
-                        </Link>
+                        </a>
                       </li>
                       <li>
-                        <a onClick={handleLogout} className="font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100 cursor-pointer">
+                        <a onClick={handleLogout} className="font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100 cursor-progress">
                           Logout
                         </a>
                       </li>
@@ -86,14 +86,14 @@ const NavBar: React.FC = () => {
                   ) : (
                     <>
                       <li>
-                        <Link to="/auth/userSignup" className="font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                        <a onClick={() => navigate('/auth/userSignup')} className="font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100">
                           Signup
-                        </Link>
+                        </a>
                       </li>
                       <li>
-                        <Link to="/auth/userLogin" className="font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                        <a onClick={() => navigate('/auth/userLogin')} className="font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100">
                           Login
-                        </Link>
+                        </a>
                       </li>
                     </>
                   )}

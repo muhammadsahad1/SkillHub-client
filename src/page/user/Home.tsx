@@ -8,7 +8,7 @@ const Home : React.FC = () => {
   console.log("user Home",user)
 
   return (
-    <div className="dark: bg-slate-950 flex flex-col h-screen">
+    <div className=" bg-zinc-950 flex flex-col h-screen">
       <NavBar/>
     </div>
   );

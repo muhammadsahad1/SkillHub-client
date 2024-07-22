@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { resentOtp, verifyCreateUser } from "../../API/user";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setEmail } from "../../redux/userSlices";
 
@@ -27,6 +27,12 @@ const OtpForm: React.FC = () => {
 
   // handling each digit
   const handleChange = (index: number, value: string) => {
+
+    if(!/^\d$/.test(value) && value !== ''){
+      toast.error("Only digits are allowed");
+      return;
+    }
+
     const newOtp = [...userOtp];
     newOtp[index] = value;
 
@@ -75,7 +81,7 @@ const OtpForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+    <div className="min-h-screen flex items-center justify-cente text-white">
       <div className="max-w-md mx-auto text-center bg-gray-800 px-4 sm:px-8 py-10 rounded-xl shadow-lg">
         <header className="mb-8">
           <h1 className="text-2xl font-bold mb-1 text-white">Email Verification</h1>
@@ -87,7 +93,6 @@ const OtpForm: React.FC = () => {
               <input
                 id={`otp-Input${index}`}
                 key={index}
-                type="text"
                 className="w-14 h-14 text-center text-2xl font-extrabold text-gray-900 bg-gray-200 border border-gray-400 rounded-lg p-4 outline-none focus:bg-white focus:border-indigo-400"
                 value={digit}
                 pattern="\d*"
@@ -120,7 +125,6 @@ const OtpForm: React.FC = () => {
           </p>
         )}
       </div>
-      <Toaster />
     </div>
   );
 };

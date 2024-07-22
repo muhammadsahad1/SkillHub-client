@@ -1,7 +1,11 @@
 import { useState } from "react";
 import Modal from "react-modal";
 import { forgotPassword } from "../API/user";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import { validateEmail } from "../utils/validation";
+import { useForm } from "react-hook-form";
+import { DotLoader } from "react-spinners";
+import fogotimage from '../assets/forgot.webp'
 
 interface forgotPassowordPops {
   isOpen: boolean;
@@ -12,16 +16,17 @@ const customModalStyle = {
   content: {
     top: "50%",
     left: "50%",
-    background: "white",
+    background: "#09090b",
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
-    width : "30rem",
-    height : "18rem",
+    width: "30rem",
+    height: "22rem",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    transform: "translate(-50%, -50%)",
+      transform: "translate(-50%, -50%)",
+  
   },
 };
 
@@ -29,21 +34,27 @@ const ForgotPasswordModal: React.FC<forgotPassowordPops> = ({
   isOpen,
   inRequestClose,
 }) => {
-  const [email, setEmail] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+  });
 
-  const handleSumbit = async () => {
+  const onsubmit = async (email: string) => {
     try {
-      console.log("email ===>" ,email)
+
       const response = await forgotPassword(email);
-      console.log("ress===>",response)
-      setMessage("If the email is exists, a reset link has been sent.");
-      if(response.success){
-        toast.success("Reset link has been sent to your email")
+      
+      if (response.success) {
+        toast.success("Reset link has been sent to your email");
         inRequestClose();
+      } else {
+        toast.error(response.message);
       }
     } catch (error) {
-      setMessage('An error occurred. Please try again later.'); 
+      toast.success("An error occurred. Please try again later.");
     }
   };
 
@@ -52,25 +63,42 @@ const ForgotPasswordModal: React.FC<forgotPassowordPops> = ({
       isOpen={isOpen}
       onRequestClose={inRequestClose}
       ariaHideApp={false}
-      style={customModalStyle}>
-
+      style={customModalStyle}
+    >
       <div className="w-auto ">
-        <h1 className="font-bold font-sans text-gray-900 text-lg">Forgot Password</h1>
-        <form onSubmit={handleSumbit}>
-          <label>
-            <h3>Email :</h3>
+        <div className="flex justify-center">
+        <img src={fogotimage} className="w-24"/>
+        </div>
+        <h1 className="font-bold font-sans text-center text-lg text-white">
+          Forgot Password
+        </h1>
+        <form onSubmit={handleSubmit(onsubmit)}>
+          <label className="mt-2 font-bold">
+            <h3 className=" text-gray-400">Email :</h3>
             <input
-              className="rounded my-2 w-full p-2 border border-black"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              className="w-full text-white rounded-lg mt-2 py-2 px-2 bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              id="email"
+              {...register("email", { validate: validateEmail })}
             />
+            <span className="text-xs text-red-600">
+              {typeof errors.email?.message === "string" &&
+                errors.email?.message}
+            </span>
           </label>
-          <button type="submit" className="bg-slate-950 text-white rounded-md p-2 w-full"> Submit </button>
+          <button
+            type="submit"
+            className="mt-3 bg-emerald-500 text-white rounded-md p-2 w-full"
+          >
+            Submit
+          </button>
         </form>
-        <button className="bg-red-800 text-white rounded-md p-2 w-full mt-2" onClick={inRequestClose}> Close </button>
-        {message && <p>{message}</p>}
+        <button
+          className="  text-gray-50 underline border-none p-2 w-full mt-2"
+          onClick={inRequestClose}
+        >
+          you know the password?
+        </button>
       </div>
-      <Toaster/>
     </Modal>
   );
 };

@@ -7,17 +7,10 @@ import CreateProfile from "../page/user/CreateProfile";
 import { User } from "../@types/allTypes";
 import { ReactElement } from "react";
 import OtpForm from "../page/user/Otp";
-
-// Component that renders Home or CreateProfile based on user profile
-const GetCurrentUserElement = (): ReactElement => {
-  const currentUser: User = useGetUser();
-  if (currentUser.profile === false) {
-    return <CreateProfile />;
-  } else if (currentUser.profile === true) {
-    return <Home />;
-  }
-};
-
+import ResetPassword from "../components/resetPassword";
+import Viewprofile from "../components/viewProfile";
+import ProtectLayout from "./protectLayout";
+import PublicLayout from "./PublicLayout";
 // Define application routes
 const routers = createBrowserRouter([
   {
@@ -25,20 +18,41 @@ const routers = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: "auth/userLogin",
-    element: <UserLogin />,
+    path : 'auth/',
+    element : <PublicLayout/>,
+    children : [ 
+      {
+        path: "userLogin",
+        element: <UserLogin />,
+      },
+      {
+        path: "resetPassword",
+        element: <ResetPassword />,
+      },
+      {
+        path: "userSignup",
+        element: <SignUp />,
+      },
+      {
+        path: "otp",
+        element: <OtpForm />,
+      },
+      {
+        path: "createProfile",
+        element: <CreateProfile/> // Conditional rendering based on user profile
+      },
+    ]
   },
+  
   {
-    path: "auth/userSignup",
-    element: <SignUp />,
-  },
-  {
-    path: 'auth/otp/',
-    element: <OtpForm/>
-  },
-  {
-    path: "/auth/createProfile",
-    element: <GetCurrentUserElement />, // Conditional rendering based on user profile
+    path :"/auth",
+    element : <ProtectLayout/>,
+    children : [
+      {
+        path : 'viewProfile',
+        element : <Viewprofile/>
+      }
+    ]
   },
 ]);
 

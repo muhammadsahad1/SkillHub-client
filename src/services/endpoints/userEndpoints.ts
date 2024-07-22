@@ -5,8 +5,10 @@ const userRoutes = {
   login : "/user/login",
   googleLogin : '/user/googleLogin',
   fogotPassword : '/user/forgotPassword',
-  verifyResetToken :'/user/verifyResetToken',
+  resetPassword : '/user/resetPassword',
   createProfile :'/user/createProfile',
+  viewProfile : '/user/viewProfile',
+  profileImage : '/user/profileImage',
   logout : '/user/logout'
 };
 
