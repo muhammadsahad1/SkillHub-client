@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useLocation } from "react-router-dom";
-import Header from "./layouts/header";
 import { validatePassword } from "../utils/validation";
-import { resetPassword, verifyResetToken } from "../API/user";
+import { resetPassword } from "../API/user";
 import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast  from "react-hot-toast";
 import { DotLoader } from "react-spinners";
+import NavBar from "./common/navBar";
 
 const ResetPassword = () => {
   const [token,setToken] = useState<string>('')
@@ -45,18 +45,17 @@ const ResetPassword = () => {
 
       const response = await resetPassword(passwordToken)
       if(response.success){
+        toast.success(response?.message)
         navigate('/auth/userLogin')
       }else {
         toast.error('not valid user')
       }
       setLoading(false)
-    console.log("received client =>",response);
   };
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-      <Toaster/>
+      <NavBar />
       <div className="flex-grow flex flex-col justify-center items-center py-10 px-4 bg-zinc-950">
       { loading && <DotLoader color="white"/>}
         <h1 className="mt-4 font-bold text-3xl text-white">Reset Password Form</h1>

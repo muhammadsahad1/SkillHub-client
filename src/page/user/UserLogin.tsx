@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { validateEmail, validatePassword } from "../../utils/validation";
-import sideImg from "../../assets/s.png";
+import sideImg from "../../assets/loo.jpg"
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -13,6 +13,7 @@ import { jwtDecode } from "jwt-decode";
 import { googleLogin } from "../../API/user";
 import { DotLoader } from "react-spinners";
 import ForgotPasswordModal from "../../components/ForgotPasswordModal";
+import PasswordInput from "../../components/common/passwordInput";
 
 type UserData = {
   email: string;
@@ -26,7 +27,6 @@ interface CredentialPayload extends JwtPayload {
 }
 
 const UserLogin: React.FC = () => {
-  
   const {
     register,
     handleSubmit,
@@ -38,7 +38,6 @@ const UserLogin: React.FC = () => {
   const [isToast, setToast] = useState<boolean>(false);
   const [isloading, setIsLoading] = useState<boolean>(false);
   const [isModalOpen, SetIsModalOpen] = useState<boolean>(false);
-  const [loading,setLoading] = useState<boolean>(false)
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -75,8 +74,6 @@ const UserLogin: React.FC = () => {
         response.credential as string
       );
 
-      console.log("credentialss==>", credentials);
-
       const gooleLoginResponse = await googleLogin(
         credentials.name,
         credentials.email,
@@ -89,7 +86,7 @@ const UserLogin: React.FC = () => {
         setIsLoading(false);
       } else {
         setIsLoading(false);
-        toast.error("Google authentication failed");
+        toast.error("User is not found");
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -106,95 +103,83 @@ const UserLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="flex flex-col lg:flex-row w-full max-w-screen-xl shadow-lg">
-        <div
-          className="hidden lg:flex lg:w-1/2 h-auto bg-cover bg-center"
-          style={{ backgroundImage: `url(${sideImg})` }}
-        ></div>
-        <div className="w-full lg:w-1/2 bg-white p-10 flex flex-col items-center justify-center">
-          {loading && <DotLoader />}
-          <h2 className="text-3xl font-bold mb-8 text-center text-black">
-            Welcome Back!
-          </h2>
-          <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-6 w-full">
-              <label
-                className="block text-black text-sm font-bold mb-2"
-                htmlFor="email">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                {...register("email", { validate: validateEmail })}
-                placeholder="Enter your email"
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-              <span className="text-xs text-red-600">
-                {typeof errors.email?.message === "string" &&
-                  errors.email?.message}
-              </span>
-            </div>
-            <div className="mb-6 w-full">
-              <label
-                className="block text-black text-sm font-bold mb-2"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <input
-                type="password"
+    <div className="min-h-screen bg-zinc-950 flex flex-col md:flex-row items-center justify-center">
+      <div className="flex flex-col md:flex-row justify-end w-full max-w-screen-lg max-h-screen shadow-lg shadow-zinc-800 ">
+        <div className="w-1/2" style={{backgroundImage:`url(${sideImg})`,backgroundSize : 'cover',backgroundPosition : 'center'}}></div>
+          <div className="w-full lg:w-1/2  p-6 md:p-10 flex flex-col items-center justify-center">
+            {isloading && <DotLoader color="white"/>}
+            <h2 className="md:text-3xl font-bold text-3xl text-white text-center mb-5 mt-2">
+              Welcome Back!
+            </h2>
+            <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+              <div className="mb-2 md:mb-1 w-full">
+                <label
+                  className="block text-gray-400 text-sm font-bold mb-2"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  {...register("email", { validate: validateEmail })}
+                  placeholder="Enter your email"
+                  className="w-full rounded-lg mt-2 py-2 px-2 bg-zinc-900 focus:outline-none focus:ring-2 text-white focus:ring-emerald-500"
+                  required
+                />
+                <span className="text-xs text-red-600">
+                  {typeof errors.email?.message === "string" &&
+                    errors.email?.message}
+                </span>
+              </div>
+              <PasswordInput
                 id="password"
-                {...register("password", { validate: validatePassword })}
-                placeholder="Enter your password"
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                label="New password"
+                register={register}
+                validation={{ validate: validatePassword }}
+                errors={errors?.newPassword}
+                placeholder="Enter a password"
               />
-              <span className="text-xs text-red-600">
-                {typeof errors.password?.message === "string" &&
-                  errors.password?.message}
-              </span>
-            </div>
-            <button
-              type="submit"
-              className="w-full font-bold bg-black text-white py-3 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-            >
-              Login In
-            </button>
-          </form>
-          <div className="flex justify-center items-center mt-3">
-            <button
-              className="font-semibold text-sm underline "
-              onClick={openModal}
-            >
-              Forgot Password?
-            </button>
-            <ForgotPasswordModal
-              isOpen={isModalOpen}
-              inRequestClose={closeModal}
-            />
-          </div>
-          <hr className="text-gray-950" />
-          <div className="flex-col justify-center items-center flex">
-            <div
-              id="signupButton"
-              className="google-login-button mt-4 flex justify-center w-full"
-            >
-              <GoogleLogin
-                onSuccess={handleGoogleLogin}
-                onError={() => toast.error("Login failed")}
+              <button
+                type="submit"
+                className="bg-emerald-500 font-bold mt-4 p-2 rounded-md w-full hover:bg-emerald-400"
+              >
+                Login In
+              </button>
+            </form>
+            <div className="flex justify-center items-center mt-3">
+              <button
+                className="font-semibold text-sm underline text-gray-200"
+                onClick={openModal}
+              >
+                Forgot Password?
+              </button>
+              <ForgotPasswordModal
+                isOpen={isModalOpen}
+                inRequestClose={closeModal}
               />
             </div>
-            <button
-              className="mt-2 underline font-bold text-sm text-zinc-900"
-              onClick={() => navigate("/auth/userSignup")}>
-              New here? Register Now                                                                            
-            </button>
+            <hr className="text-gray-950" />
+            <div className="flex-col justify-center items-center flex">
+              <div
+                id="signupButton"
+                className="google-login-button mt-4 flex justify-center w-full"
+              >
+                <GoogleLogin
+                  onSuccess={handleGoogleLogin}
+                  onError={() => toast.error("Login failed")}
+                />
+                <hr className="underline"></hr>
+              </div>
+              <button
+                className="mt-2 underline font-bol text-sm text-gray-200"
+                onClick={() => navigate("/auth/userSignup")}
+              >
+                New here? Register Now
+              </button>
+            </div>
           </div>
         </div>
-      </div>
     </div>
   );
 };

@@ -1,43 +1,45 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  id: '',
-  name: '',
-  email: '',
-  role: '',
-  bio: '',
-  city: '',
-  country: '',
-  skill: '',
+  id: "",
+  name: "",
+  email: "",
+  role: "",
+  bio: "",
+  city: "",
+  country: "",
+  states: "",
+  skill: "",
   profile: false,
-  picture: '',
-  profileImage:'',
-  imageKey : '',
+  picture: "",
+  profileImage: "",
+  imageKey: "",
   blocked: false,
   approved: false,
   // Additional fields if any can be added here
 };
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { 
-        _id, 
-        name, 
-        email, 
-        role, 
-        bio, 
-        blocked, 
-        city, 
-        country, 
-        skill, 
-        profile, 
-        picture, 
-        profileImage, 
+      const {
+        _id,
+        name,
+        email,
+        role,
+        bio,
+        blocked,
+        city,
+        country,
+        states,
+        skill,
+        profile,
+        picture,
+        profileImage,
         imageKey,
-        approved 
+        approved,
       } = action.payload;
       state.id = _id;
       state.name = name;
@@ -46,6 +48,7 @@ const userSlice = createSlice({
       state.bio = bio;
       state.city = city;
       state.country = country;
+      state.states = states;
       state.skill = skill;
       state.profile = profile;
       state.picture = picture;
@@ -57,30 +60,32 @@ const userSlice = createSlice({
     setEmail: (state, action) => {
       state.email = action.payload;
     },
-    setProfileImage:(state,action) => {
-      state.picture = action.payload
+    setProfileImage: (state, action) => {
+      state.picture = action.payload;
     },
     setRole: (state, action) => {
       state.role = action.payload;
     },
     deleteUser: (state) => {
-      state.id = '';
-      state.name = '';
-      state.email = '';
-      state.role = '';
-      state.bio = '';
-      state.city = '';
-      state.country = '';
-      state.skill = '';
+      state.id = "";
+      state.name = "";
+      state.email = "";
+      state.role = "";
+      state.bio = "";
+      state.city = "";
+      state.country = "";
+      state.states = "";
+      state.skill = "";
       state.profile = false;
-      state.picture = '';
-      state.profileImage = '';
-      state.imageKey = ''
+      state.picture = "";
+      state.profileImage = "";
+      state.imageKey = "";
       state.blocked = false;
       state.approved = false;
     },
   },
 });
 
-export const { setUser, setEmail, setRole, setProfileImage ,deleteUser } = userSlice.actions;
+export const { setUser, setEmail, setRole, setProfileImage, deleteUser } =
+  userSlice.actions;
 export default userSlice.reducer;

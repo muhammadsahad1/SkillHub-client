@@ -1,4 +1,5 @@
 export interface User {
+  states: ReactNode;
   id?: string;
   name: string;
   email: string;

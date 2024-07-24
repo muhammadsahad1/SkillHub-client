@@ -6,6 +6,7 @@ const userRoutes = {
   googleLogin : '/user/googleLogin',
   fogotPassword : '/user/forgotPassword',
   resetPassword : '/user/resetPassword',
+  changePassword : '/user/changePassword',
   createProfile :'/user/createProfile',
   viewProfile : '/user/viewProfile',
   profileImage : '/user/profileImage',

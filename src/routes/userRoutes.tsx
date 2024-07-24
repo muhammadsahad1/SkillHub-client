@@ -11,6 +11,7 @@ import ResetPassword from "../components/resetPassword";
 import Viewprofile from "../components/viewProfile";
 import ProtectLayout from "./protectLayout";
 import PublicLayout from "./PublicLayout";
+import Settings from "../components/common/settings";
 // Define application routes
 const routers = createBrowserRouter([
   {
@@ -43,17 +44,14 @@ const routers = createBrowserRouter([
       },
     ]
   },
-  
-  {
-    path :"/auth",
-    element : <ProtectLayout/>,
-    children : [
-      {
-        path : 'viewProfile',
-        element : <Viewprofile/>
-      }
-    ]
-  },
+    {
+      path : 'auth/viewProfile',
+      element : <Viewprofile/>
+    },
+    {
+      path : 'auth/settings',
+      element : <Settings/>
+    },
 ]);
 
 export default routers;

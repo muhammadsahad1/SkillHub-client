@@ -137,16 +137,28 @@ export const resetPassword = async (passwordToken: {
   }
 };
 
+// changePassword
+export const changePassword = async(currentPassword : string , newPassword :string) => {
+  try {
+      const response = await Api.post(userRoutes.changePassword,{currentPassword,newPassword})
+      console.log("recieve response =>",response)
+      return response.data
+  } catch (error) {
+    
+  }
+} 
+
 // Create Profile
 export const createProfile = async (userProfile: User) => {
   try {
+    console.log("poyiiiiii")
     const response = await Api.post(userRoutes.createProfile, userProfile, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
 
-    console.log(response.data);
+    console.log("res first => ",response.data);
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -160,9 +172,9 @@ export const createProfile = async (userProfile: User) => {
 };
 
 // profile image fetching
-export const profileImage = async (userId : string) => {
+export const profileImage = async () => {
   try {
-    const response = await Api.get(userRoutes.profileImage,{ params : { userId}})
+    const response = await Api.get(userRoutes.profileImage)
     return response.data
   } catch (error: any) {
     if (error.response) {

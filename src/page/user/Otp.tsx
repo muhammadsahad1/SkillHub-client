@@ -4,13 +4,15 @@ import { resentOtp, verifyCreateUser } from "../../API/user";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setEmail } from "../../redux/userSlices";
+import { DotLoader } from "react-spinners";
 
 const OtpForm: React.FC = () => {
   const [userOtp, setUserOtp] = useState<string[]>(["", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState<number>(60);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const dispatch = useDispatch()
-  // TIMER For TTL 
+  const dispatch = useDispatch();
+  // TIMER For TTL
   useEffect(() => {
     if (timeLeft > 0) {
       const timer = setTimeout(() => {
@@ -27,8 +29,7 @@ const OtpForm: React.FC = () => {
 
   // handling each digit
   const handleChange = (index: number, value: string) => {
-
-    if(!/^\d$/.test(value) && value !== ''){
+    if (!/^\d$/.test(value) && value !== "") {
       toast.error("Only digits are allowed");
       return;
     }
@@ -56,19 +57,24 @@ const OtpForm: React.FC = () => {
         toast.error("Enter Valid OTP");
         return;
       }
+      setLoading(true);
       const response = await verifyCreateUser({ email, verifyCode: otpCode });
+      console.log("res ==:>>>>", response);
       if (response.success) {
-        dispatch(setEmail(email))
-        navigator("/auth/createProfile");
+        dispatch(setEmail(email));
+        navigator("/");
+      }else{
+        toast.error("Not valid otp")
       }
-
     } catch (error) {
       toast.error("Verification failed.");
     }
+    setLoading(false)
   };
 
   // resent OTP
   const handleResentOtp = async () => {
+    setLoading(true);
     if (email) {
       const response = await resentOtp(email);
       if (response.success) {
@@ -78,14 +84,23 @@ const OtpForm: React.FC = () => {
         toast.error("Something went wrong in resending OTP");
       }
     }
+    setLoading(false)
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-cente text-white">
-      <div className="max-w-md mx-auto text-center bg-gray-800 px-4 sm:px-8 py-10 rounded-xl shadow-lg">
+    <div className="min-h-screen flex items-center justify-cente  text-white">
+      <div className="max-w-md mx-auto text-center px-4 sm:px-8 py-10 rounded-xl shadow-lg bg-zinc-900 ">
+        <div className="flex justify-center">
+          {loading && <DotLoader color="white" />}
+        </div>
         <header className="mb-8">
-          <h1 className="text-2xl font-bold mb-1 text-white">Email Verification</h1>
-          <p className="text-lg text-gray-300">Enter the 4-digit verification code that was sent to your email: <span className="font-bold">{email}</span></p>
+          <h1 className="text-2xl font-bold mb-1 text-white">
+            Email Verification
+          </h1>
+          <p className="text-lg text-gray-300">
+            Enter the 4-digit verification code that was sent to your email:{" "}
+            <span className="font-bold">{email}</span>
+          </p>
         </header>
         <form onSubmit={handleSubmit}>
           <div className="flex items-center justify-center gap-3 mb-6">
@@ -104,7 +119,7 @@ const OtpForm: React.FC = () => {
           <div className="max-w-[250px] mx-auto mb-5">
             <button
               type="submit"
-              className="w-full rounded-lg bg-indigo-500 text-white py-2 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              className="bg-emerald-500 font-bold mt-4 p-2 rounded-md w-full hover:bg-emerald-400"
             >
               Verify
             </button>
@@ -116,7 +131,8 @@ const OtpForm: React.FC = () => {
           </p>
         ) : (
           <p className="text-lg font-bold text-red-500">
-            OTP Expired. <span
+            OTP Expired.{" "}
+            <span
               className="text-blue-500 underline cursor-pointer"
               onClick={handleResentOtp}
             >

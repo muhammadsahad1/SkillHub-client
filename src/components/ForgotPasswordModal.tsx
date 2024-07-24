@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { validateEmail } from "../utils/validation";
 import { useForm } from "react-hook-form";
 import { DotLoader } from "react-spinners";
-import fogotimage from '../assets/forgot.webp'
+import fogotimage from "../assets/forgot.webp";
 
 interface forgotPassowordPops {
   isOpen: boolean;
@@ -25,8 +25,7 @@ const customModalStyle = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-      transform: "translate(-50%, -50%)",
-  
+    transform: "translate(-50%, -50%)",
   },
 };
 
@@ -44,9 +43,9 @@ const ForgotPasswordModal: React.FC<forgotPassowordPops> = ({
 
   const onsubmit = async (email: string) => {
     try {
-
-      const response = await forgotPassword(email);
       
+      const response = await forgotPassword(email);
+
       if (response.success) {
         toast.success("Reset link has been sent to your email");
         inRequestClose();
@@ -67,7 +66,7 @@ const ForgotPasswordModal: React.FC<forgotPassowordPops> = ({
     >
       <div className="w-auto ">
         <div className="flex justify-center">
-        <img src={fogotimage} className="w-24"/>
+          <img src={fogotimage} className="w-24" />
         </div>
         <h1 className="font-bold font-sans text-center text-lg text-white">
           Forgot Password

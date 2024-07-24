@@ -1,20 +1,47 @@
+import Modal from "react-modal";
 import { useForm } from "react-hook-form";
-import { User } from "../../@types/allTypes";
-import useGetUser from "../../hook/getUser";
+import { User } from "../@types/allTypes";
+import useGetUser from "../hook/getUser";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { fallbackCountries } from "../../needObject/fallbackCountries";
-import { skillLists } from "../../needObject/skills";
-import { createProfile } from "../../API/user";
-import { setUser } from "../../redux/userSlices";
+import { fallbackCountries } from "../needObject/fallbackCountries";
+import { skillLists } from "../needObject/skills";
+import { createProfile } from "../API/user";
+import { setUser } from "../redux/userSlices"
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { DotLoader } from "react-spinners";
-import Header from "../../components/layouts/header";
 
 
-const CreateProfile: React.FC = () => {
+interface EditProfileModalProps {
+  isOpen: boolean;
+  isRequestClose: () => void;
+}
+
+const customModalStyle = {
+  content: {
+    top: "50%",
+    left: "50%",
+    background: "#09090b",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    width: "55rem",
+    height: "40rem",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    
+    transform: "translate(-50%, -50%)",
+  },
+};
+
+const EditProfileModal: React.FC<EditProfileModalProps> = ({
+  isOpen,
+  isRequestClose,
+}) => {
+
   const [imagePreview, setimagePreview] = useState<string | null>(null);
   const [selectedCountry, setSelectCountries] = useState<string>("");
   const [countries, setCountries] = useState<any>([]);
@@ -31,7 +58,7 @@ const CreateProfile: React.FC = () => {
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const handlePreviewImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     console.log("fileee", file);
@@ -40,7 +67,7 @@ const CreateProfile: React.FC = () => {
     }
   };
 
-  // Fetching countries through API
+  // Fetching countries through API 
   const fetchCountriesApi = async () => {
     const url = import.meta.env.VITE_COUNTRIES_API_URL;
     if (!url) {
@@ -88,7 +115,6 @@ const CreateProfile: React.FC = () => {
 
   // submiting....>
   const onSubmit = async (data: User) => {
-    console.log("create data =>",data)
     setIsLoading(true);
     if (!imagePreview) {
       toast.error("Profile image is required");
@@ -105,7 +131,6 @@ const CreateProfile: React.FC = () => {
     formData.append("bio", data.bio);
     formData.append("profileImage", file);
     formData.append("country", data.country);
-    formData.append("states",data.city)
     formData.append("city", data.city);
     formData.append("skill", data.skill);
 
@@ -117,37 +142,36 @@ const CreateProfile: React.FC = () => {
     try {
 
       const response = await createProfile(formData);
-      console.log("respione created",response)
+      console.log("ressss ===> ",response)
       dispatch(setUser(response.user)); 
       setIsLoading(false);
-      navigate("/");
+      isRequestClose()
     } catch (error: any) {
       setIsLoading(false);
       toast.error(error);
     }
   };
 
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header/>     
-    <div className="flex justify-center items-center py-14">
-      <div className="w-full max-w-4xl bg-gray-900 p-8 rounded-lg shadow-md">
-        {isLoading &&<div className="flex justify-center ">
-        <DotLoader color="white"/>
-          </div> }
-        
-        <h2 className="text-2xl font-bold mb-6 text-white">Create Profile</h2>
-        <form
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={isRequestClose}
+      ariaHideApp={false}
+      style={customModalStyle}
+      >
+      <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col md:flex-row"
+          className="flex flex-col md:flex-row mt-2"
           >
           <div className="mb-6 md:mr-6">
+            { isLoading && <DotLoader color="white"/>}
             <label className="block text-gray-300 font-bold mb-2">
               Profile Image
             </label>
             {imagePreview ? (
               <img
-                className="rounded-full w-24 h-24 mb-2 cursor-pointer"
+                className="rounded-full w-24 h-24 mb-2 cursor-pointer object-cover"
                 src={imagePreview}
                 alt="profile image preview"
                 onClick={() =>
@@ -159,8 +183,7 @@ const CreateProfile: React.FC = () => {
                 className="rounded-full w-24 h-24 mb-2 bg-gray-700 flex items-center justify-center cursor-pointer"
                 onClick={() =>
                   document.getElementById("profileImageInput")?.click()
-                }
-              >
+                }>
                 <span className="text-gray-400">Add Image</span>
               </div>
             )}
@@ -171,7 +194,6 @@ const CreateProfile: React.FC = () => {
               className="hidden"
               {...register("profileImage")}
               onChange={handlePreviewImage}/>
-
             {errors.profileImage && (
               <span className="text-red-500">
                 {errors.profileImage.message}
@@ -188,8 +210,7 @@ const CreateProfile: React.FC = () => {
                 {...register("name", { required: "Name is required" })}
               />
               {errors.name && (
-                <span className="text-red-500">{errors.name.message}</span>
-              )}
+                <span className="text-red-500">{errors.name.message}</span> )}
             </div>
 
             <div className="mb-4">
@@ -267,11 +288,8 @@ const CreateProfile: React.FC = () => {
             </button>
           </div>
         </form>
-      </div>
-      <Toaster />
-    </div>
-    </div>
+    </Modal>
   );
 };
 
-export default CreateProfile;
+export default EditProfileModal;
