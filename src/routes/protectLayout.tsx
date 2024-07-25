@@ -5,7 +5,7 @@ import { User } from "../@types/allTypes";
 
 const ProtectLayout : React.FC = () => {
 const currentUser : User = useGetUser()
-return currentUser && currentUser.profile  ? <Outlet/> : <Navigate to='/auth/userLogin'/>
+return currentUser && currentUser.email  ? <Outlet/> : <Navigate to='/auth/userLogin'/>
 }
 
 export default ProtectLayout

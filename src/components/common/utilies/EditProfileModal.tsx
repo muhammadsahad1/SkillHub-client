@@ -4,7 +4,7 @@ import { User } from "../@types/allTypes";
 import useGetUser from "../hook/getUser";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { fallbackCountries } from "../needObject/fallbackCountries";
 import { skillLists } from "../needObject/skills";
 import { createProfile } from "../API/user";

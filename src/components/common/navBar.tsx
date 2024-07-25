@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import skill from "../../assets/skill.png";
+import skill from "../../assets/main logo.png";
+import skill1 from "../../assets/skill.png";
 import useGetUser from "../../hook/getUser";
 import { profileImage } from "../../API/user";
 import { Link } from "react-router-dom";
@@ -55,10 +56,10 @@ const NavBar: React.FC = () => {
   console.log("currentUser", currentUser);
 
   return (
-    <nav className="bg-white shadow-md shadow-zinc-700 shadow-bottom-only">
+    <nav className="bg-zinc-100 shadow-sm shadow-zinc-300 shadow-bottom-only">
       <div className="container mx-auto flex justify-between items-center px-4 py-4">
-        <div className="text-xl font-bold text-gray-800">
-          <img className="w-12 h-12 " src={skill} alt="Skill Logo" />
+        <div className=" font-bold text-gray-800">
+          <img className="w-20 h-12" src={skill} alt="Skill Logo" />
         </div>
         <div className="flex items-center space-x-4 ">
           <Link to="/" className="text-zinc-900 hover:text-gray-600">
@@ -88,7 +89,7 @@ const NavBar: React.FC = () => {
             {isDropDown && (
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-50">
                 <ul className="py-1">
-                  {currentUser.profile === true && (
+                  {currentUser.profile === true || currentUser.email ? (
                     <>
                       <li>
                         <Link
@@ -114,28 +115,7 @@ const NavBar: React.FC = () => {
                         </a>
                       </li>
                     </>
-                  )}
-                  {currentUser.profile === false && currentUser.email && (
-                    <>
-                      <li>
-                        <Link
-                          to={"/auth/createProfile"}
-                          className="font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                        >
-                          Create profile
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to={"/auth/settings"}
-                          className="font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                        >
-                          settings
-                        </Link>
-                      </li>
-                    </>
-                  )}
-                  {!currentUser.email && (
+                  ) :      (
                     <>
                       <li>
                         <Link
@@ -154,7 +134,10 @@ const NavBar: React.FC = () => {
                         </Link>
                       </li>
                     </>
-                  )}
+                  )
+                  }
+            
+              
                 </ul>
               </div>
             )}

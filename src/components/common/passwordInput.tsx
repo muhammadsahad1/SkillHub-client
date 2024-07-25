@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-type passwordInputProps = {
+type PasswordInputProps = {
   id: string;
   label: string;
   register: any;
@@ -10,7 +10,7 @@ type passwordInputProps = {
   placeholder?: string;
 };
 
-const PasswordInput: React.FC<passwordInputProps> = ({
+const PasswordInput: React.FC<PasswordInputProps> = ({
   id,
   label,
   register,
@@ -21,36 +21,36 @@ const PasswordInput: React.FC<passwordInputProps> = ({
   const [isShowPassword, setShowPassword] = useState<boolean>(false);
 
   return (
-    <div className="mb-2 md:mb-1 w-full relative">
+    <div className="mb-4 w-full relative">
       <label
-        className="flex justify-start text-gray-400 text-sm font-bold mb-2"
+        className="block text-zinc-800 text-sm font-bold mb-1"
         htmlFor={id}
       >
         {label}
       </label>
-      <div className="flex items-center">
+      <div className="relative flex items-center">
         <input
           type={isShowPassword ? "text" : "password"}
           id={id}
           {...register(id, validation)}
           placeholder={placeholder}
-          className="w-full rounded-lg mt-2 py-2 px-2 text-white bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          required
+            className="w-full rounded-full py-2 px-3 font-poppins text-zinc-900 border border-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
         <div
-          className="absolute right-2 mt-3 cursor-pointer"
+          className="absolute right-3 cursor-pointer"
           onMouseDown={() => setShowPassword(true)}
           onMouseUp={() => setShowPassword(false)}
           onMouseLeave={() => setShowPassword(false)}
         >
-          {isShowPassword ? (
-            <FaEye color="white" />
-          ) : (
-            <FaEyeSlash color="white" />
-          )}
+          {id !== "confirm_password" &&
+            (isShowPassword ? (
+              <FaEye color="black" />
+            ) : (
+              <FaEyeSlash color="black" />
+            ))}
         </div>
       </div>
-      <span className="text-xs text-red-600 block h-6">
+      <span className="text-xs text-red-600 block h-6 mt-1">
         {typeof errors?.message === "string" && errors?.message}
       </span>
     </div>

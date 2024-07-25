@@ -1,11 +1,11 @@
 import { useState } from "react";
 import Modal from "react-modal";
-import { forgotPassword } from "../API/user";
+import { forgotPassword } from "../../../API/user";
 import toast from "react-hot-toast";
-import { validateEmail } from "../utils/validation";
+import { validateEmail } from "../../../utils/validation";
 import { useForm } from "react-hook-form";
 import { DotLoader } from "react-spinners";
-import fogotimage from "../assets/forgot.webp";
+import fogotimage from "../../../assets/forgot.webp";
 
 interface forgotPassowordPops {
   isOpen: boolean;
@@ -21,11 +21,15 @@ const customModalStyle = {
     bottom: "auto",
     marginRight: "-50%",
     width: "30rem",
+    border: "0",
     height: "22rem",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     transform: "translate(-50%, -50%)",
+  },
+  overlay: {
+    background: "rgba(0,0,0,0.44)",
   },
 };
 
@@ -43,7 +47,6 @@ const ForgotPasswordModal: React.FC<forgotPassowordPops> = ({
 
   const onsubmit = async (email: string) => {
     try {
-      
       const response = await forgotPassword(email);
 
       if (response.success) {

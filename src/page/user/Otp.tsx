@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setEmail } from "../../redux/userSlices";
 import { DotLoader } from "react-spinners";
+import otp from "../../assets/otp.webp";
 
 const OtpForm: React.FC = () => {
   const [userOtp, setUserOtp] = useState<string[]>(["", "", "", ""]);
@@ -63,13 +64,13 @@ const OtpForm: React.FC = () => {
       if (response.success) {
         dispatch(setEmail(email));
         navigator("/");
-      }else{
-        toast.error("Not valid otp")
+      } else {
+        toast.error("Not valid otp");
       }
     } catch (error) {
       toast.error("Verification failed.");
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   // resent OTP
@@ -84,16 +85,21 @@ const OtpForm: React.FC = () => {
         toast.error("Something went wrong in resending OTP");
       }
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-cente  text-white">
-      <div className="max-w-md mx-auto text-center px-4 sm:px-8 py-10 rounded-xl shadow-lg bg-zinc-900 ">
-        <div className="flex justify-center">
-          {loading && <DotLoader color="white" />}
-        </div>
+      <div className="max-w-md mx-auto text-center px-4 sm:px-8 py-10 rounded-xl shadow-lg bg-zinc-950 ">
+        {loading && <DotLoader color="white" />}
+
+        <div className="flex justify-center"></div>
         <header className="mb-8">
+          <div>
+            <div className="flex justify-center ">
+              <img src={otp} className="w-1/2" />
+            </div>
+          </div>
           <h1 className="text-2xl font-bold mb-1 text-white">
             Email Verification
           </h1>
