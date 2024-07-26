@@ -1,12 +1,13 @@
 export interface User {
-  states: ReactNode;
+  states?: string;
   id?: string;
   name: string;
   email: string;
   role?: string;
   blocked?: boolean;
   phoneNumber?: string;
-  profileImage: string | ArrayBuffer | null | Blob;
+  profileImage?: string | ArrayBuffer | null | Blob;
+  coverImage? : string | ArrayBuffer | null | Blob;
   created_at?: Date;
   updated_at?: Date;
   bio: string;

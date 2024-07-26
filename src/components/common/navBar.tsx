@@ -77,9 +77,9 @@ const NavBar: React.FC = () => {
           </div>
           <div className="relative" ref={dropDownRef}>
             <button className="profileIcon" onClick={handleDropDown}>
-              {currentUser.picture ? (
+              {currentUser.picture?.imageUrl ? (
                 <img
-                  src={currentUser.picture}
+                  src={currentUser.picture?.imageUrl}
                   className="w-11 h-11 object-cover rounded-full"
                 />
               ) : (

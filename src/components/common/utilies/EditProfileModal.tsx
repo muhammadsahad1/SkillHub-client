@@ -1,14 +1,14 @@
 import Modal from "react-modal";
 import { useForm } from "react-hook-form";
-import { User } from "../@types/allTypes";
-import useGetUser from "../hook/getUser";
+import { User } from "../../../@types/allTypes";
+import useGetUser from "../../../hook/getUser";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { fallbackCountries } from "../needObject/fallbackCountries";
-import { skillLists } from "../needObject/skills";
-import { createProfile } from "../API/user";
-import { setUser } from "../redux/userSlices"
+import { fallbackCountries } from "../../../needObject/fallbackCountries";
+import { skillLists } from "../../../needObject/skills";
+import { createProfile } from "../../../API/user";
+import { setUser } from "../../../redux/userSlices";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { DotLoader } from "react-spinners";
@@ -32,7 +32,6 @@ const customModalStyle = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    
     transform: "translate(-50%, -50%)",
   },
 };
@@ -61,7 +60,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
   const handlePreviewImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log("fileee", file);
     if (file) {
       setimagePreview(URL.createObjectURL(file));
     }
@@ -160,6 +158,15 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       ariaHideApp={false}
       style={customModalStyle}
       >
+                {/* <div className="flex justify-end">
+          <button 
+            onClick={isRequestClose}
+            className="mb-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Close
+          </button>
+        </div> */}
+
       <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col md:flex-row mt-2"

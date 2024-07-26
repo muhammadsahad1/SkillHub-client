@@ -138,28 +138,52 @@ export const resetPassword = async (passwordToken: {
 };
 
 // changePassword
-export const changePassword = async(currentPassword : string , newPassword :string) => {
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string
+) => {
   try {
-      const response = await Api.post(userRoutes.changePassword,{currentPassword,newPassword})
-      console.log("recieve response =>",response)
-      return response.data
-  } catch (error) {
-    
-  }
-} 
+    const response = await Api.post(userRoutes.changePassword, {
+      currentPassword,
+      newPassword,
+    });
+    console.log("recieve response =>", response);
+    return response.data;
+  } catch (error) {}
+};
 
 // Create Profile
 export const createProfile = async (userProfile: User) => {
   try {
-    console.log("poyiiiiii")
     const response = await Api.post(userRoutes.createProfile, userProfile, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
 
-    console.log("res first => ",response.data);
+    console.log("res first => ", response.data);
     return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+// upload cover image
+export const coverImageUpload = async (formdata : FormData) => {
+  try {
+    console.log("api call")
+    const response = await Api.post(userRoutes.uploadCoverImg , formdata , {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log("first res for cover img", response.data);
+    return response.data
   } catch (error: any) {
     if (error.response) {
       return error.response.data;
@@ -174,8 +198,8 @@ export const createProfile = async (userProfile: User) => {
 // profile image fetching
 export const profileImage = async () => {
   try {
-    const response = await Api.get(userRoutes.profileImage)
-    return response.data
+    const response = await Api.get(userRoutes.profileImage);
+    return response.data;
   } catch (error: any) {
     if (error.response) {
       return error.response.data;
@@ -185,18 +209,16 @@ export const profileImage = async () => {
       return { success: false, message: error.message };
     }
   }
-}
+};
 
 // view Profile
 export const viewProfile = async () => {
   try {
-    const response = await Api.get(userRoutes.viewProfile)
-    console.log("response ===>",response.data)
-    response.data
-  } catch (error) {
-    
-  }
-}
+    const response = await Api.get(userRoutes.viewProfile);
+    console.log("response ===>", response.data);
+    response.data;
+  } catch (error) {}
+};
 
 // Logout user
 export const logoutUser = async () => {

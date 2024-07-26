@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   id: "",
   name: "",
+  profileImage: "",
   email: "",
   role: "",
   bio: "",
@@ -11,12 +12,15 @@ const initialState = {
   states: "",
   skill: "",
   profile: false,
-  picture: "",
-  profileImage: "",
-  imageKey: "",
+  picture: {
+    imageUrl: "",
+    coverImageUrl: "",
+  },
+  imageKey : "",
+  coverImage: "",
+  coverImageKey: "",
   blocked: false,
   approved: false,
-  // Additional fields if any can be added here
 };
 
 const userSlice = createSlice({
@@ -37,8 +41,8 @@ const userSlice = createSlice({
         skill,
         profile,
         picture,
-        profileImage,
-        imageKey,
+        coverImage,
+        coverImageKey,
         approved,
       } = action.payload;
       state.id = _id;
@@ -52,8 +56,8 @@ const userSlice = createSlice({
       state.skill = skill;
       state.profile = profile;
       state.picture = picture;
-      state.profileImage = profileImage;
-      state.imageKey = imageKey;
+      state.coverImage = coverImage;
+      state.coverImageKey = coverImageKey;
       state.blocked = blocked;
       state.approved = approved;
     },
@@ -61,31 +65,33 @@ const userSlice = createSlice({
       state.email = action.payload;
     },
     setProfileImage: (state, action) => {
-      state.picture = action.payload;
+      const { coverImageUrl, imageUrl } = action.payload;
+      state.picture = {
+        ...state.picture,
+        coverImageUrl,
+        imageUrl,
+      };
+    },
+    setCoverImage: (state, action) => {
+      const { coverImage, coverImageKey } = action.payload;
+      state.coverImage = coverImage;
+      state.coverImageKey = coverImageKey;
     },
     setRole: (state, action) => {
       state.role = action.payload;
     },
     deleteUser: (state) => {
-      state.id = "";
-      state.name = "";
-      state.email = "";
-      state.role = "";
-      state.bio = "";
-      state.city = "";
-      state.country = "";
-      state.states = "";
-      state.skill = "";
-      state.profile = false;
-      state.picture = "";
-      state.profileImage = "";
-      state.imageKey = "";
-      state.blocked = false;
-      state.approved = false;
+      Object.assign(state, initialState);
     },
   },
 });
 
-export const { setUser, setEmail, setRole, setProfileImage, deleteUser } =
-  userSlice.actions;
+export const {
+  setUser,
+  setEmail,
+  setRole,
+  setProfileImage,
+  setCoverImage,
+  deleteUser,
+} = userSlice.actions;
 export default userSlice.reducer;
