@@ -7,9 +7,9 @@ import { Link } from "react-router-dom";
 import { logoutUser } from "../../API/user";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import { useDispatch, UseDispatch } from "react-redux";
+import { useDispatch  } from "react-redux";
 import { deleteUser } from "../../redux/userSlices";
-import { setProfileImage } from "../../redux/userSlices";
+import { setUserImages } from "../../redux/userSlices";
 import { CgProfile } from "react-icons/cg";
 
 const NavBar: React.FC = () => {
@@ -29,9 +29,11 @@ const NavBar: React.FC = () => {
     if (currentUser?.id) {
       try {
         const response = await profileImage();
-        dispatch(setProfileImage(response.imageUrl));
-        console.log("res ===>", response);
-      } catch (error) {}
+        dispatch(setUserImages(response.imageUrl));
+        console.log("res image URLS ===>", response.imageUrl);
+      } catch (error : any) {
+        toast.success(error.message)
+      }
     }
   };
 

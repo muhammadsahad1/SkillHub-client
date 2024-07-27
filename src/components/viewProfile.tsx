@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useGetUser from "../hook/getUser";
 import { coverImageUpload, profileImage } from "../API/user";
-import { setCoverImage, setProfileImage } from "../redux/userSlices";
+import { setCoverImage, setUserImages } from "../redux/userSlices";
 import { useDispatch } from "react-redux";
 import NavBar from "./common/navBar";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,10 @@ const ViewProfile: React.FC = () => {
     if (currentUser?.id) {
       try {
         const response = await profileImage();
-        dispatch(setProfileImage(response.imageUrls));
+        console.log("URLS==>",response.imageUrls)
+        if(response.imageUrls){
+          dispatch(setUserImages(response.imageUrls));
+        }
       } catch (error) {
         console.error("Error fetching profile image:", error);
       }
@@ -35,8 +38,10 @@ const ViewProfile: React.FC = () => {
 
   // Initially call the fetch
   useEffect(() => {
-    fetchProfileImage();
-  }, []);
+
+      fetchProfileImage();
+    
+  }, [currentUser?.id]);
 
   // Edit profile Modal open
   const openEditModal = () => {
@@ -46,7 +51,7 @@ const ViewProfile: React.FC = () => {
   // to close the modal
   const closeModal = () => {
     setIsOpen(false);
-    navigate('/')
+
   };
 
   // to open add cover image
@@ -57,20 +62,21 @@ const ViewProfile: React.FC = () => {
   // here api calling to backend
   const handleChangeCoverImg = async (imageFile: File) => {
     try {
+
       const formData = new FormData();
       formData.append("coverImage", imageFile);
     
       for (const pair of formData.entries()) {  
         console.log(`${pair[0]}: ${pair[1]}`);
       }
-
+      
       const response = await coverImageUpload(formData);
       dispatch(setCoverImage(response.user));
     
       if (response.success) {
         toast.success(response.message);
       } else {
-        toast.success("cover image upload failed");
+        toast.error("cover image upload failed");
       }
 
     } catch (error: any) {

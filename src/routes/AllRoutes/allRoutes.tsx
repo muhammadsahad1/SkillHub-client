@@ -1,16 +1,27 @@
 import { createBrowserRouter } from "react-router-dom";
-import UserLogin from "../page/user/UserLogin";
-import SignUp from "../page/user/UserSignup";
-import Home from "../page/user/Home";
-import CreateProfile from "../page/user/CreateProfile";
-import OtpForm from "../page/user/Otp";
-import ResetPassword from "../components/resetPassword";
-import ProtectLayout from "./protectLayout";
-import PublicLayout from "./PublicLayout";
-import Settings from "../components/common/settings";
-import ViewProfile from "../components/viewProfile";
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>> User's Routes >>>>>>>>>>>>>>>>>>>>>>>>>>>> 
+import AdminLayout from "../layouts/AdminLayout";
+import Adminlogin from "../../page/admin/Adminlogn";
+
+
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>> User's Routes >>>>>>>>>>>>>>>>>>>>>>>>>>>> 
+import UserLogin from "../../page/user/UserLogin";
+import SignUp from "../../page/user/UserSignup";
+import Home from "../../page/user/Home";
+import OtpForm from "../../page/user/Otp";
+import ResetPassword from "../../components/resetPassword";
+import ProtectLayout from "../protectLayout";
+import PublicLayout from "../PublicLayout";
+import Settings from "../../components/common/settings";
+import ViewProfile from "../../components/viewProfile";
+
+
+
 // Define application routes
 const routers = createBrowserRouter([
+  //User routes start here >>>>>>>>>>>>>>>>>>
   {
     path: "/",
     element: <Home />,
@@ -57,6 +68,15 @@ const routers = createBrowserRouter([
         }
       ]
     },
+    //Admin routes start here >>>>>>>>>>>>>>>>>>
+    {
+      path :'admin',
+      element : <AdminLayout/>,
+      children : [{
+        path :'login',
+        element : <Adminlogin/>
+      }]
+    }
   
 ]);
 

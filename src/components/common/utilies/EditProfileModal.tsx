@@ -144,6 +144,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       dispatch(setUser(response.user)); 
       setIsLoading(false);
       isRequestClose()
+      navigate('/')
     } catch (error: any) {
       setIsLoading(false);
       toast.error(error);
@@ -293,6 +294,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             >
               Save Profile
             </button>
+            <div className="flex justify-end items-end">
+              <button className="text-white" onClick={isRequestClose}>close</button>
+            </div>
           </div>
         </form>
     </Modal>
