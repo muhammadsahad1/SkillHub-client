@@ -8,9 +8,14 @@ import PasswordInput from "../../components/common/passwordInput";
 import { adminLogin } from "../../API/admin";
 import toast from "react-hot-toast";
 import { setUser } from "../../redux/userSlices";
+import { useDispatch } from "react-redux";
+import useGetUser from "../../hook/getUser";
+import { useNavigate } from "react-router-dom";
 
 const Adminlogin = () => {
   const [isloading, setLoading] = useState<boolean>(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const {
     register,
@@ -28,17 +33,26 @@ const Adminlogin = () => {
   const onSubmit = async (data: userData) => {
     setLoading(true);
     try {
-      const response = await adminLogin(data.email,data.password)
-      console.log("admin user from response =>",response)
-      if(response.success){
-        toast.success(response.message){
-          setUser(response.user)
-        }
+      const response = await adminLogin(data.email, data.password);
+      if (response.success) {
+        toast.success(response.message);
+        dispatch(setUser(response.admin));
+        navigate('/admin/dashBoard')
+      } else {
+        toast.error(response?.message);
       }
-    } catch (error) {
-      
+    } catch (error: any) {
+      if(error.response && error.response.data && error.response.data.message){
+        toast.error(error.response.data.message)
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
+      setLoading(false);
     }
   };
+
+  console.log("Current Admin => ",useGetUser())
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center px-4">
       <div className="fixed inset bg-opacity-50 flex items-center justify-center z-50">
@@ -51,14 +65,6 @@ const Adminlogin = () => {
       >
         <div className="w-full md:w-1/2 p-4 md:p-8 lg:p-10 flex flex-col items-center justify-center rounded-xl">
           <img src={adminLogo} className="mb-4" />
-          <div className="flex justify-center md:mt-8 ">
-            {/* <button
-              className="rounded-full w-1/2 sm:min-2xl md:w-full border-2  border-zinc-900 text-zinc-900 font-bold p-2 hover:bg-zinc-950 hover:text-zinc-100"
-              onClick={() => navigate("/auth/userSignup")}
-            >
-              Create account
-            </button> */}
-          </div>
         </div>
         <div className="w-full lg:w-1/2  p-6 md:p-10 flex flex-col items-center justify-center">
           <h2 className="font-bold font-poppins text-2xl md:text-4xl text-zinc-900 text-center mb-5">
@@ -99,36 +105,6 @@ const Adminlogin = () => {
               Log in
             </button>
           </form>
-          {/* <div className="flex justify-center items-center mt-3">
-            <button
-              className="rounded-full w-1/2 sm:max-xl: md:w-full border-2 text-sm border-zinc-900 text-zinc-900 font-semibold p-2 hover:bg-zinc-950 hover:text-zinc-100"
-              onClick={openModal}
-            >
-              Forgot Password?
-            </button>
-            <ForgotPasswordModal
-              isOpen={isModalOpen}
-              inRequestClose={closeModal}
-            />
-          </div> */}
-          {/* <div className="flex items-center my-4">
-            <div className="flex-grow border-t border-zinc-600 w-40"></div>
-            <span className="flex-shrink mx-3 text-zinc-600">or</span>
-            <div className="flex-grow border-t border-zinc-600 w-40"></div>
-          </div> */}
-
-          {/* <div className="flex-col justify-center items-center flex">
-            <div
-              id="signupButton"
-              className="google-login-button mt-0 flex justify-center w-full"
-            >
-              <GoogleLogin
-                onSuccess={handleGoogleLogin}
-                onError={() => toast.error("Login failed")}
-              />
-              <hr className="underline"></hr>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>

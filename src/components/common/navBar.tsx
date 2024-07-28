@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import skill from "../../assets/main logo.png";
-import skill1 from "../../assets/skill.png";
 import useGetUser from "../../hook/getUser";
 import { profileImage } from "../../API/user";
 import { Link } from "react-router-dom";

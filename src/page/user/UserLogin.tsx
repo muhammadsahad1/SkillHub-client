@@ -55,14 +55,15 @@ const UserLogin: React.FC = () => {
     setIsLoading(true);
     const response = await userLogin(data.email, data.password);
 
-    if (response.success && response.user.profile) {
+    if (response.success) {
       console.log(response);
       dispatch(setUser(response.user));
       navigate(`/`);
       setIsLoading(false);
-    } else {
+    } else if (response.message === "Your account has been blocked") {
       setIsLoading(false);
       toast.error(response.message);
+      navigate('/blockedUser')
     }
   };
 
@@ -104,11 +105,14 @@ const UserLogin: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center px-4">
-        <div className="fixed inset bg-opacity-50 flex items-center justify-center z-50">
+      <div className="fixed inset bg-opacity-50 flex items-center justify-center z-50">
         {isloading && <DotLoader color="black" />}
       </div>
-      <div className={`flex flex-col md:flex-row justify-center w-full max-w-screen-lg  ${
-          isloading ? "blur-sm" : ''}`}>
+      <div
+        className={`flex flex-col md:flex-row justify-center w-full max-w-screen-lg  ${
+          isloading ? "blur-sm" : ""
+        }`}
+      >
         <div className="w-full md:w-1/2 p-4 md:p-8 lg:p-10 flex flex-col items-center justify-center rounded-xl">
           <img src={sideImg} className="mb-4" />
           <div className="flex justify-center md:mt-8 ">

@@ -1,6 +1,7 @@
 const adminRoutes = {
-  login : 'admin/login',
-
+  login : 'admin/adminLogin',
+  getUsers : 'admin/getUsers',
+  blockUser : 'admin/blockUser'
 }
 
 export default adminRoutes

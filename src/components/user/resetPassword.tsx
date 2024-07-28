@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useLocation } from "react-router-dom";
-import { validatePassword } from "../utils/validation";
-import { resetPassword } from "../API/user";
+import { validatePassword } from "../../utils/validation";
+import { resetPassword } from "../../API/user";
 import { useNavigate } from "react-router-dom";
 import toast  from "react-hot-toast";
 import { DotLoader } from "react-spinners";
-import NavBar from "./common/navBar";
+import NavBar from "../common/navBar";
 
 const ResetPassword = () => {
   const [token,setToken] = useState<string>('')

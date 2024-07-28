@@ -4,14 +4,13 @@ import adminRoutes from "../services/endpoints/adminEndpoints";
 
 export const adminLogin = async (email: string, password: string) => {
   try {
-    
-    const response = await Api.post(adminRoutes.login,{
-      email : email ,
-      password : password
+    const response = await Api.post(adminRoutes.login, {
+      email: email,
+      password: password,
     });
-    console.log(response.data)
-    return response.data
-  } catch (error : any) {
+    console.log(response.data);
+    return response.data;
+  } catch (error: any) {
     if (error.response) {
       return error.response.data;
     } else if (error.request) {
@@ -20,4 +19,28 @@ export const adminLogin = async (email: string, password: string) => {
       return { success: false, message: error.message };
     }
   }
+};
+
+// Get Users
+export const getUsers = async () => {
+  try {
+    const response = await Api.get(adminRoutes.getUsers);
+    console.log("res for getUsers ==>", response.data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+// Blocking users
+export const blockUser = async (id: string) => {
+  const response = await Api.post(adminRoutes.blockUser, { id: id });
+  console.log("response =>", response.data);
+  return response.data;
 };

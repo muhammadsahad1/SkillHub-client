@@ -11,11 +11,14 @@ import UserLogin from "../../page/user/UserLogin";
 import SignUp from "../../page/user/UserSignup";
 import Home from "../../page/user/Home";
 import OtpForm from "../../page/user/Otp";
-import ResetPassword from "../../components/resetPassword";
+import ResetPassword from "../../components/user/resetPassword"
 import ProtectLayout from "../protectLayout";
 import PublicLayout from "../PublicLayout";
 import Settings from "../../components/common/settings";
-import ViewProfile from "../../components/viewProfile";
+import ViewProfile from "../../components/user/viewProfile";
+import AdminDashboard from "../../page/admin/AdminDashboard";
+import UserManagement from "../../page/admin/UserManagement";
+import BlockedUserPage from "../../page/user/BlockedUserPage";
 
 
 
@@ -25,6 +28,10 @@ const routers = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path : '/blockedUser',
+    element : <BlockedUserPage/>
   },
   {
     path : 'auth/',
@@ -75,7 +82,16 @@ const routers = createBrowserRouter([
       children : [{
         path :'login',
         element : <Adminlogin/>
-      }]
+      },
+      {
+        path : 'dashboard',
+        element : <AdminDashboard/>
+      },
+      {
+        path : 'ums',
+        element : <UserManagement/>
+      }
+    ]
     }
   
 ]);
