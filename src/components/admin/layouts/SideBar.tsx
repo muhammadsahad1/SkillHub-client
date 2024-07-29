@@ -4,7 +4,7 @@ import { NavLink  } from "react-router-dom";
 
 const SideBar = () => {
   return (
-    <div className="bg-zinc-950 rounded-tr-3xl min-h-screen w-1/6 ">
+    <div className="bg-zinc-950 rounded-tr-3xl min-h-screen w-1/6 fixed">
       <div className="flex items-start ">
         <img src={logo} alt="admin logo" className="w-24 h-24" />
         <h1 className="text-zinc-200 font-poppins font-bold mt-12 ">Admin</h1>

@@ -9,7 +9,7 @@ import { useMatch, useNavigate } from "react-router-dom";
 import PasswordInput from "./passwordInput";
 import loginPunch from '../../assets/change pass.png'
 
-const Settings = () => {
+const ChangePassword = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -52,7 +52,7 @@ const Settings = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <NavBar />
-      <div className="flex-grow flex flex-col justify-center items-center py-10 px-4 bg-zinc-950">
+      <div className="flex-grow flex flex-col justify-center items-center py-10 px-4">
         {loading && <DotLoader color="white" />}
         <div className="flex justify-center">
           <img src={loginPunch} className="w-44" />
@@ -79,7 +79,7 @@ const Settings = () => {
               placeholder="Enter a password"
             />
             <PasswordInput
-              id="confirmPassword"
+              id="confirm_password"
               label="Confirm password"
               register={register}
               validation={{
@@ -101,4 +101,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default ChangePassword;

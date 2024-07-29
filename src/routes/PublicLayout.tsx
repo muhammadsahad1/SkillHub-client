@@ -5,7 +5,7 @@ import React from "react";
 
 const PublicLayout : React.FC = () => {
   const currentUser :User = useGetUser()
-  return currentUser.profile ? <Navigate to='/'/> : <Outlet/>
+  return currentUser && currentUser.email ? <Navigate to='/'/> : <Outlet/>
 }
 
 export default PublicLayout

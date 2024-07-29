@@ -10,6 +10,8 @@ import { useDispatch  } from "react-redux";
 import { deleteUser } from "../../redux/userSlices";
 import { setUserImages } from "../../redux/userSlices";
 import { CgProfile } from "react-icons/cg";
+import { TbMessageDots } from "react-icons/tb";
+import { MdNotifications } from "react-icons/md";
 
 const NavBar: React.FC = () => {
   const [isDropDown, openDropDown] = useState<boolean>(false);
@@ -55,36 +57,38 @@ const NavBar: React.FC = () => {
   };
 
   console.log("currentUser", currentUser);
-
+  
   return (
-    <nav className="bg-zinc-100 shadow-sm shadow-zinc-300 shadow-bottom-only">
+    <nav className="bg-zinc-100 shadow-sm shadow-zinc-300 shadow-bottom-only fixed z-50 w-full  ">
       <div className="container mx-auto flex justify-between items-center px-4 py-4">
         <div className=" font-bold text-gray-800">
           <img className="w-20 h-12" src={skill} alt="Skill Logo" />
         </div>
-        <div className="flex items-center space-x-4 ">
-          <Link to="/" className="text-zinc-900 hover:text-gray-600">
+      {/* <div className="relative">
+        <input
+          type="text"
+          placeholder="Search..."
+          className="border border-gray-300 rounded-full py-1 px-4 focus:outline-none focus:ring-2 focus:ring-gray-400"
+        />
+      </div> */}
+        <div className="flex items-center space-x-4">
+          <Link to="/" className="text-zinc-900 font-bold hover:text-gray-600">
             Home
-          </Link>
-          {/* <Link to="/explore" className="text-gray-800 hover:text-gray-600">
+          </Link> 
+          <Link to="/explore" className="text-gray-800 font-bold hover:text-gray-600">
             Explore
-          </Link> */}
-          <div className="relative">
-            {/* <input
-              type="text"
-              placeholder="Search..."
-              className="border border-gray-300 rounded-full py-1 px-4 focus:outline-none focus:ring-2 focus:ring-gray-400"
-            /> */}
-          </div>
+          </Link>
+          <TbMessageDots size={32} className="cursor-pointer"/>
+          <MdNotifications size={32} className="cursor-pointer "/>
           <div className="relative" ref={dropDownRef}>
             <button className="profileIcon" onClick={handleDropDown}>
               {currentUser.picture?.imageUrl ? (
                 <img
                   src={currentUser.picture?.imageUrl}
-                  className="w-11 h-11 object-cover rounded-full"
+                  className="w-11 h-11 object-cover rounded-full "
                 />
               ) : (
-                <CgProfile size={32} />
+                <CgProfile size={32} className=" object-cover rounded-full " />
               )}
             </button>
             {isDropDown && (

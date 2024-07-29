@@ -14,11 +14,13 @@ import OtpForm from "../../page/user/Otp";
 import ResetPassword from "../../components/user/resetPassword"
 import ProtectLayout from "../protectLayout";
 import PublicLayout from "../PublicLayout";
-import Settings from "../../components/common/settings";
 import ViewProfile from "../../components/user/viewProfile";
 import AdminDashboard from "../../page/admin/AdminDashboard";
 import UserManagement from "../../page/admin/UserManagement";
 import BlockedUserPage from "../../page/user/BlockedUserPage";
+import SettingsPage from "../../page/user/SettingsPage";
+import PrivacyUserPage from "../../page/user/PrivacyUserPage";
+import NotificationSettingsPage from "../../page/NotificationSettingsPage";
 
 
 
@@ -70,8 +72,15 @@ const routers = createBrowserRouter([
         {
         
             path : 'settings',
-            element : <Settings/>
+            element : <SettingsPage/>
           
+        },
+        {
+          path : 'privacySettings',
+          element : <PrivacyUserPage/>
+        },{
+          path : 'notificationSettings',
+          element : <NotificationSettingsPage/>
         }
       ]
     },

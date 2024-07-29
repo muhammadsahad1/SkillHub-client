@@ -20,6 +20,7 @@ const initialState = {
   imageKey: "",
   coverImage: "",
   coverImageKey: "",
+  accountPrivacy : false,
   blocked: false,
   approved: false,
 };
@@ -74,8 +75,8 @@ const userSlice = createSlice({
         const { coverImageUrl, imageUrl } = action.payload;
         state.picture = {
           ...state.picture,
-          coverImageUrl : coverImageUrl || state.picture.coverImageUrl,
-          imageUrl : imageUrl || state.picture.imageUrl,
+          coverImageUrl : coverImageUrl || state.picture?.coverImageUrl,
+          imageUrl : imageUrl || state.picture?.imageUrl,
         };
       }
     },
@@ -83,6 +84,9 @@ const userSlice = createSlice({
       const { coverImage, coverImageKey } = action.payload;
       state.coverImage = coverImage;
       state.coverImageKey = coverImageKey;
+    },
+    setAccountPrivacy : (state , action){
+      state.accountPrivacy = action.payload
     },
     setRole: (state, action) => {
       state.role = action.payload;
@@ -118,6 +122,7 @@ export const {
   setRole,
   setUserImages,
   setCoverImage,
+  setAccountPrivacy,
   deleteUser,
 } = userSlice.actions;
 export default userSlice.reducer;

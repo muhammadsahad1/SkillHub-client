@@ -217,8 +217,32 @@ export const viewProfile = async () => {
     const response = await Api.get(userRoutes.viewProfile);
     console.log("response ===>", response.data);
     response.data;
-  } catch (error) {}
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
 };
+// Account Privacy
+export const  accountPrivacy = async (isPrivacy : boolean) => {
+  try {
+    const response = await Api.post(userRoutes.accountPrivacy,{ isPrivacy : isPrivacy})
+    // console.log("response.after actino =>",response.data )
+    return response.data
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+}
 
 // Logout user
 export const logoutUser = async () => {

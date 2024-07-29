@@ -84,7 +84,7 @@ const ViewProfile: React.FC = () => {
       
     }
   };
-console.log("cover imgeUr; =>",currentUser.picture?.coverImageUrl)
+  console.log("current -->",currentUser)
   return (
     <div className="w-full min-h-screen">
       <NavBar />
