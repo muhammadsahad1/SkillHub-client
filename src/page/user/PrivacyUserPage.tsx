@@ -1,14 +1,16 @@
 import React from "react";
-import Header from "../../components/user/layouts/Header";
 import SideBar from "../../components/user/layouts/SideBar";
 import PrivacyInformation from "../../components/user/PrivacyInformation";
+import NavBar from "../../components/common/navBar";
 
 const PrivacyUserPage = () => {
   return (
-    <div>
-      <Header />
+    <div className="flex">
       <SideBar />
-      <PrivacyInformation/>
+      <div className="flex-grow ml-64 mt-5 p-8"> {/* Adjust margin and padding to fit your layout */}
+      <NavBar/>
+        <PrivacyInformation />
+      </div>
     </div>
   );
 };

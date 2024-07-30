@@ -1,10 +1,10 @@
-import Viewprofile from "../../components/viewProfile"
+import ViewProfile from "../../components/user/viewProfile"
 
 
 const Profile : React.FC = () => {
   return (
     <div>
-      <Viewprofile/>
+      <ViewProfile/>
     </div>
   )
 }

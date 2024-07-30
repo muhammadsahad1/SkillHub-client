@@ -20,7 +20,8 @@ const initialState = {
   imageKey: "",
   coverImage: "",
   coverImageKey: "",
-  accountPrivacy : false,
+  showNotification: "",
+  accountPrivacy: false,
   blocked: false,
   approved: false,
 };
@@ -48,6 +49,8 @@ const userSlice = createSlice({
         imageKey,
         profileImage,
         approved,
+        showNotification,
+        accountPrivacy,
       } = action.payload;
       state.id = _id;
       state.name = name;
@@ -66,17 +69,19 @@ const userSlice = createSlice({
       state.imageKey = imageKey;
       state.profileImage = profileImage;
       state.approved = approved;
+      state.showNotification = showNotification;
+      state.accountPrivacy = accountPrivacy;
     },
     setEmail: (state, action) => {
       state.email = action.payload;
     },
-    setUserImages : (state, action) => {
+    setUserImages: (state, action) => {
       if (action.payload) {
         const { coverImageUrl, imageUrl } = action.payload;
         state.picture = {
           ...state.picture,
-          coverImageUrl : coverImageUrl || state.picture?.coverImageUrl,
-          imageUrl : imageUrl || state.picture?.imageUrl,
+          coverImageUrl: coverImageUrl || state.picture?.coverImageUrl,
+          imageUrl: imageUrl || state.picture?.imageUrl,
         };
       }
     },
@@ -85,8 +90,11 @@ const userSlice = createSlice({
       state.coverImage = coverImage;
       state.coverImageKey = coverImageKey;
     },
-    setAccountPrivacy : (state , action){
-      state.accountPrivacy = action.payload
+    setShowNotificationChange: (state, action) => {
+      state.showNotification = action.payload;
+    },
+    setAccountPrivacy: (state, action) => {
+      state.accountPrivacy = action.payload;
     },
     setRole: (state, action) => {
       state.role = action.payload;
@@ -124,5 +132,6 @@ export const {
   setCoverImage,
   setAccountPrivacy,
   deleteUser,
+  setShowNotificationChange,
 } = userSlice.actions;
 export default userSlice.reducer;

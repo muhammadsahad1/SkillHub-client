@@ -11,7 +11,9 @@ const userRoutes = {
   uploadCoverImg: "/user/coverImage",
   viewProfile: "/user/viewProfile",
   profileImage: "/user/profileImage",
-  accountPrivacy : '/user/accountPrivacy',
+  accountPrivacy: "/user/accountPrivacy",
+  showNotification: "/user/showNotification",
+  getSkillRelatedUsers: "/user/getSkillRelatedUsers",
   logout: "/user/logout",
 };
 

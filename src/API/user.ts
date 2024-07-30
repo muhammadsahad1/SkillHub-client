@@ -231,7 +231,36 @@ export const viewProfile = async () => {
 export const  accountPrivacy = async (isPrivacy : boolean) => {
   try {
     const response = await Api.post(userRoutes.accountPrivacy,{ isPrivacy : isPrivacy})
-    // console.log("response.after actino =>",response.data )
+    console.log("response.after actino =>",response.data )
+    return response.data
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+}
+// showNotification
+export const showNotification = async (isShowNotification : boolean) => {
+  try {
+    const response = await Api.post(userRoutes.showNotification,{isShowNotification : isShowNotification})
+    console.log("response ==>", response.data)
+    return response.data
+  } catch (error) {
+    
+  }
+}
+
+// Fetching the skill related users 
+export const getSkillRelatedUsers = async (currentUserSkill : string) => {
+  try {
+    const response = await Api.get(userRoutes.getSkillRelatedUsers ,{ params : {
+      skill : currentUserSkill
+    }})
+    console.log("fetched users ===>",response.data)
     return response.data
   } catch (error: any) {
     if (error.response) {

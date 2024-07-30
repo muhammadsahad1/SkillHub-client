@@ -4,14 +4,14 @@ import { coverImageUpload, profileImage } from "../../API/user";
 import { setCoverImage, setUserImages } from "../../redux/userSlices";
 import { useDispatch } from "react-redux";
 import NavBar from "../common/navBar";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import bgImage from "../../assets/sideImage.png";
 import { BiEdit } from "react-icons/bi";
 import { TbCameraPlus } from "react-icons/tb";
 import EditProfileModal from "../common/utilies/EditProfileModal";
 import CoverImageModal from "../common/utilies/CoverImageModal";
 import { FaUserCircle } from "react-icons/fa";
-import nonProfile from "../assets/nonProfile.jpg";
+import noProfile from '../../assets/no profile.png'
 import toast from "react-hot-toast";
 
 const ViewProfile: React.FC = () => {
@@ -20,14 +20,14 @@ const ViewProfile: React.FC = () => {
 
   const currentUser = useGetUser();
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   // Image fetch Request for profile image
   const fetchProfileImage = async () => {
     if (currentUser?.id) {
       try {
         const response = await profileImage();
-        console.log("URLS==>",response.imageUrls)
-        if(response.imageUrls){
+        console.log("URLS==>", response.imageUrls);
+        if (response.imageUrls) {
           dispatch(setUserImages(response.imageUrls));
         }
       } catch (error) {
@@ -38,9 +38,7 @@ const ViewProfile: React.FC = () => {
 
   // Initially call the fetch
   useEffect(() => {
-
-      fetchProfileImage();
-    
+    fetchProfileImage();
   }, [currentUser?.id]);
 
   // Edit profile Modal open
@@ -51,7 +49,6 @@ const ViewProfile: React.FC = () => {
   // to close the modal
   const closeModal = () => {
     setIsOpen(false);
-
   };
 
   // to open add cover image
@@ -62,29 +59,26 @@ const ViewProfile: React.FC = () => {
   // here api calling to backend
   const handleChangeCoverImg = async (imageFile: File) => {
     try {
-
       const formData = new FormData();
       formData.append("coverImage", imageFile);
-    
-      for (const pair of formData.entries()) {  
+
+      for (const pair of formData.entries()) {
         console.log(`${pair[0]}: ${pair[1]}`);
       }
-      
+
       const response = await coverImageUpload(formData);
       dispatch(setCoverImage(response.user));
-    
+
       if (response.success) {
         toast.success(response.message);
       } else {
         toast.error("cover image upload failed");
       }
-
     } catch (error: any) {
       toast.error(error.message);
-      
     }
   };
-  console.log("current -->",currentUser)
+  console.log("current -->", currentUser);
   return (
     <div className="w-full min-h-screen">
       <NavBar />
@@ -93,10 +87,10 @@ const ViewProfile: React.FC = () => {
           {currentUser.picture?.coverImageUrl ? (
             <div className=" w-full md:h-72 shadow-lg bg-zinc-400">
               <img
-              src={currentUser.picture?.coverImageUrl}
-              alt="Cover"
-              className="w-full h-48 md:h-72 object-cover"
-            />
+                src={currentUser.picture?.coverImageUrl}
+                alt="Cover"
+                className="w-full h-48 md:h-72 object-cover"
+              />
             </div>
           ) : (
             <img
@@ -123,9 +117,7 @@ const ViewProfile: React.FC = () => {
                 className="w-32 h-32 md:w-40 md:h-40 object-cover rounded-full border-4 border-white"
               />
             ) : (
-              <div className="w-32 h-32 md:w-40 md:h-40  rounded-full border-4 border-white flex items-center justify-center">
-                <FaUserCircle size={44} />
-              </div>
+            <img src={noProfile} alt="" className="w-36 h-32 md:w-40 md:h-40 object-cover rounded-full "/>
             )}
           </div>
         </div>
@@ -143,29 +135,58 @@ const ViewProfile: React.FC = () => {
             isOpen={isCoverImgModalOpen}
             onRequestClose={() => setCoverImgModalOpen(false)}
             onCoverImageChange={handleChangeCoverImg}
-          />
+            />
 
-          <div className="flex flex-col items-start mt-16 md:mt-24">
+            { currentUser.profile ? 
+            (
+          <div className="flex flex-col items-start mt-16 md:mt-10">
             <h1 className="text-2xl font-bold text-white">
               {currentUser?.name || "User Name"}
             </h1>
-            <p className="text-gray-400">@{currentUser?.name || "tagname"}</p>
-            <p className="text-gray-400 text-start px-4 md:px-0">
+            <p className="text-zinc-900 font-semibold ">
+              @{currentUser?.name || "tagname"}
+            </p>
+            <p className="text-zinc-900 font-semibold text-start fonrshowNotificationBV  px-4 md:px-0">
               {currentUser.bio}
             </p>
             <div className="flex space-x-2 mt-2">
-              <p className="text-gray-400">Skill :</p>
-              <p className="text-gray-400">{currentUser.skill}</p>
+              <p className="text-zinc-900 font-semibold ">Skill :</p>
+              <p className="text-zinc-900 font-semibold ">
+                {currentUser.skill}
+              </p>
             </div>
             <div className="flex space-x-2 mt-2">
-              <p className="text-gray-400">Country :</p>
-              <p className="text-gray-400">{currentUser.country}</p>
+              <p className="text-zinc-900 font-semibold ">Country :</p>
+              <p className="text-zinc-900 font-semibold ">
+                {currentUser.country}
+              </p>
             </div>
             <div className="flex space-x-2 mt-2">
-              <p className="text-gray-400">State :</p>
-              <p className="text-gray-400">{currentUser?.states}</p>
+              <p className="text-zinc-900 font-semibold ">State :</p>
+              <p className="text-zinc-900 font-semibold ">
+                {currentUser?.states}
+              </p>
+            </div>
+            <div className="flex space-x-4">
+              <Link to="/auth/followings">
+                <button className="font-semibold mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                  following
+                </button>
+              </Link>
+              <Link to="/auth/followers">
+              <button className="font-semibold mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                followers
+              </button>
+              </Link>
             </div>
           </div>
+              
+            ) : (
+              <div className="mt-32">
+
+                <h2 className="text-zinc-900 font-bold "> No profile details</h2>
+              </div>
+            )}
         </div>
       </div>
     </div>

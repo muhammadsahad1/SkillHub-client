@@ -45,10 +45,10 @@ const AccountInformation = () => {
 
   return (
     <div className="w-full flex justify-center items-center mt-28">
-      <div className="w-1/2 shadow-md rounded-mg p-6 mb-7">
-        <h1 className="font-poppins font-bold mb-4  text-3xl">Personal Information</h1>
+      <div className="w-full max-w-2xl shadow-md rounded-lg p-6 mb-7">
+        <h1 className="font-poppins font-bold mb-4 text-3xl">Personal Information</h1>
         <p className="font-montserrat">Update your personal details below</p>
-      
+        
         <div className="mt-8 cursor-pointer">
           {currentUser.picture?.imageUrl ? (
             <img
@@ -60,9 +60,7 @@ const AccountInformation = () => {
             <CgProfile
               size={80}
               className="text-zinc-500 bg-transparent rounded-full p-1 cursor-pointer"
-              onClick={() =>
-                document.getElementById("profileImageInput")?.click()
-              }
+              onClick={() => document.getElementById("profileImageInput")?.click()}
             />
           )}
           <p className="font-semibold mt-3">Upload or change your profile picture</p>
@@ -73,24 +71,25 @@ const AccountInformation = () => {
           accept="image/*"
           className="hidden"
         />
+
         <div className="flex-grow mt-4">
-          <div className="flex space-x-5">
-            <div className="mb-4 ">
+          <div className="flex flex-col md:flex-row md:space-x-5">
+            <div className="mb-4 flex-1">
               <label className="block font-bold text-zinc-800">Name</label>
               <input
                 type="text"
                 defaultValue={currentUser.name}
                 readOnly
-                className="mt-1 block w-full border border-gray-600  text-zinc-800 rounded-md p-2"
+                className="mt-1 block w-full border border-gray-600 text-zinc-800 rounded-md p-2"
               />
             </div>
-            <div className="mb-4">
+            <div className="mb-4 flex-1">
               <label className="block text-zinc-800 font-bold">Skill</label>
               <input
                 type="text"
                 defaultValue={currentUser.skill}
                 readOnly
-                className="mt-1 block w-full border border-gray-600  text-zinc-800 rounded-md p-2"
+                className="mt-1 block w-full border border-gray-600 text-zinc-800 rounded-md p-2"
               />
             </div>
           </div>
@@ -101,35 +100,37 @@ const AccountInformation = () => {
               type="text"
               defaultValue={currentUser.bio}
               readOnly
-              className="mt-1 block w-full border  border-gray-600  text-zinc-800 rounded-md p-2"
+              className="mt-1 block w-full border border-gray-600 text-zinc-800 rounded-md p-2"
             />
           </div>
-          <div className="flex space-x-5">
-            <div className="mb-4">
+
+          <div className="flex flex-col md:flex-row md:space-x-5">
+            <div className="mb-4 flex-1">
               <label className="block text-zinc-800 font-bold">Country</label>
               <input
                 type="text"
                 defaultValue={currentUser.country}
                 readOnly
-                className="mt-1 block w-full border  border-gray-600  text-zinc-800 rounded-md p-2"
+                className="mt-1 block w-full border border-gray-600 text-zinc-800 rounded-md p-2"
               />
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4 flex-1">
               <label className="block text-zinc-800 font-bold">State</label>
               <input
                 type="text"
                 defaultValue={currentUser.states}
                 readOnly
-                className="mt-1 block w-full border  border-gray-600  text-zinc-800 rounded-md p-2"
+                className="mt-1 block w-full border border-gray-600 text-zinc-800 rounded-md p-2"
               />
             </div>
           </div>
         </div>
-      <div className="flex justify-end">
+
+        <div className="flex justify-end">
           <button
             type="submit"
-            className="px-4 tracking-wide bg-zinc-900 font-bold  text-white py-2 rounded-md"
+            className="px-4 tracking-wide bg-zinc-900 font-bold text-white py-2 rounded-md"
             onClick={handleOpenModal}
           >
             Update Profile

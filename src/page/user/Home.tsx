@@ -1,17 +1,56 @@
+import { useEffect, useState } from "react";
+import React from "react";
 import NavBar from "../../components/common/navBar";
+import UsersRelatedSkill from "../../components/user/UsersRelatedSkill";
 import useGetUser from "../../hook/getUser";
+import { getSkillRelatedUsers } from "../../API/user";
 
+export interface IuserSkillCardProps {
+  userName: string;
+  profileUrl: string;
+  skill: string;
+  bio: string;
+}
 
-const Home : React.FC = () => {
+const Home: React.FC = () => {
+  const currentUser = useGetUser();
+  const currentUserSkill = currentUser.skill;
+  const [skillRelatedUsers, setSkillRelatedUsers] = useState<
+    IuserSkillCardProps[]
+  >([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
-  const user = useGetUser()
-  console.log("user Home",user)
+  const fetchSkillRelatedUsers = async () => {
+    try {
+      const result = await getSkillRelatedUsers(currentUserSkill);
+      if (result.success) {
+        setSkillRelatedUsers(result);
+      }
+    } catch (error) {
+      
+    }
+  };
+
+  console.log("fetched User ==>",skillRelatedUsers)
+
+  React.useEffect(() => {
+    if (currentUser.skill) {
+      fetchSkillRelatedUsers();
+    }
+  }, []);
 
   return (
-    <div className=" bg-zinc-950 flex flex-col h-screen">
-      <NavBar/>
-      <div className="flex justify-center items-center"> 
-        <h2 className="text-white text-4xl font-bold mt-6">WELCOME TO SKILL SHARING PLATFORM</h2></div>
+    <div className=" flex flex-col h-screen">
+      <NavBar />
+      {currentUser.skill ? (
+        <UsersRelatedSkill users={skillRelatedUsers} />
+      ) : (
+        <div className="flex justify-center items-center">
+          <h2 className="text-zinc-950 text-4xl font-bold mt-20">
+            WELCOME TO SKILL SHARING PLATFORM
+          </h2>
+        </div>
+      )}
     </div>
   );
 };
