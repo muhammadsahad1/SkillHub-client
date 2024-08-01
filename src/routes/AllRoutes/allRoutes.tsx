@@ -21,6 +21,7 @@ import NotificationSettingsPage from "../../page/user/NotificationSettingsPage";
 import Profile from "../../page/user/profile";
 import FollowingPage from "../../page/user/FollowingPage";
 import FollowersPage from "../../page/user/FollowersPage";
+import OtherProfileViewPage from "../../page/OtherProfileViewPage";
 
 // Define application routes
 const routers = createBrowserRouter([
@@ -82,6 +83,10 @@ const routers = createBrowserRouter([
       {
         path :"followers",
         element : <FollowersPage/>
+      },
+      {
+        path:'OtherProfileView/:userId',
+        element : <OtherProfileViewPage/>
       }
     ],
   },

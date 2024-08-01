@@ -6,8 +6,11 @@ import useGetUser from "../../hook/getUser";
 import { getSkillRelatedUsers } from "../../API/user";
 
 export interface IuserSkillCardProps {
+  _id: string;
   userName: string;
   profileUrl: string;
+  coverImgUrl: string;
+  country : string,
   skill: string;
   bio: string;
 }
@@ -24,14 +27,12 @@ const Home: React.FC = () => {
     try {
       const result = await getSkillRelatedUsers(currentUserSkill);
       if (result.success) {
-        setSkillRelatedUsers(result);
+        setSkillRelatedUsers(result.userDetails);
       }
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   };
 
-  console.log("fetched User ==>",skillRelatedUsers)
+  console.log("fetched User ==>", skillRelatedUsers);
 
   React.useEffect(() => {
     if (currentUser.skill) {

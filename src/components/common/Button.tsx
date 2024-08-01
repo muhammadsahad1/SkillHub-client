@@ -1,11 +1,16 @@
-import React from 'react'
+import React from "react";
 
-const Button = () => {
-  return (
-    <button className="shadow-[0_0_0_3px_#000000_inset] px-6 py-2 bg-transparent border border-black dark:border-white dark:text-white text-black rounded-lg font-bold transform hover:-translate-y-1 transition duration-400">
-        Figma Outline
-      </button>
-  )
+interface ButtonProps {
+  content: string;
+  onClick?: () => void;
 }
 
-export default Button
+const Button:React.FC<ButtonProps> = ({ content,onClick }) => {
+  return (
+    <button onClick={onClick} className="border-2 border-zinc-900 px-6 py-2   hover:bg-[#4ba8f4] hover:text-white dark:text-neutral-200 transition duration-200 rounded-lg font-bold transform hover:-translate-y-1 duration-400">
+      <h1 className="tracking-wide font">{content}</h1>
+    </button>
+  );
+};
+
+export default Button;

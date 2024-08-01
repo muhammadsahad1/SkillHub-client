@@ -139,13 +139,13 @@ const ViewProfile: React.FC = () => {
 
             { currentUser.profile ? 
             (
-          <div className="flex flex-col items-start mt-16 md:mt-10">
-            <h1 className="text-2xl font-bold text-white">
-              {currentUser?.name || "User Name"}
-            </h1>
-            <p className="text-zinc-900 font-semibold ">
+              <div className="flex flex-col items-start mt-16 md:mt-10">
+              <h1 className="text-2xl font-bold text-zinc-900 mb-2">
+                {currentUser?.name || "User Name"}
+              </h1>
+            {/* <p className="text-zinc-900 font-semibold ">
               @{currentUser?.name || "tagname"}
-            </p>
+            </p> */}
             <p className="text-zinc-900 font-semibold text-start fonrshowNotificationBV  px-4 md:px-0">
               {currentUser.bio}
             </p>

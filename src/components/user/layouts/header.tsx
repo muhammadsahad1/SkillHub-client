@@ -1,11 +1,11 @@
-  import { useRef, useState } from 'react';
+  import { useEffect, useRef, useState } from 'react';
   import logo from '../../../assets/skill.png';
   import useGetUser from '../../../hook/getUser';
   import { CgProfile } from "react-icons/cg";
   import { Link, useNavigate } from 'react-router-dom';
   import { useDispatch } from 'react-redux';
-  import { logoutUser } from '../../../API/user';
-  import { deleteUser } from '../../../redux/userSlices';
+  import { logoutUser, profileImage } from '../../../API/user';
+  import { deleteUser, setUserImages } from '../../../redux/userSlices';
   import toast from 'react-hot-toast';
   import { TbMessageDots } from 'react-icons/tb';
   import { MdNotifications } from 'react-icons/md';
@@ -20,7 +20,7 @@
 
     const handleLogout = async () => {
       try {
-        const response = await logoutUser();
+        const response = await logoutU  ser();
         if (response.success) {
           dispatch(deleteUser());
           navigate("/");
@@ -34,6 +34,28 @@
     const handleDropDown = () => {
       setIsDropDown(!isDropDown)
     }
+
+      // Image fetch Request for profile image
+  const fetchProfileImage = async () => {
+    if (currentUser?.id) {
+      try {
+        const response = await profileImage();
+        console.log("URLS==>", response.imageUrls);
+        if (response.imageUrls) {
+          dispatch(setUserImages(response.imageUrls));
+        }
+      } catch (error) {
+        console.error("Error fetching profile image:", error);
+      }
+    }
+  };
+
+  // Initially call the fetch
+  useEffect(() => {
+    fetchProfileImage();
+  }, [currentUser?.id]);
+
+
     return (
       <nav className="bg-zinc-100 shadow-sm shadow-zinc-300 shadow-bottom-only fixed z-50 w-full  ">
       <div className="container mx-auto flex justify-between items-center px-4 py-4">

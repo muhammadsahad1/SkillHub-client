@@ -1,4 +1,4 @@
-import { userFormData } from "../@types/user";
+import { FollowParams, userFormData } from "../@types/user";
 import { IVerifyCreateUser } from "../@types/createUser";
 import Api from "../services/axios";
 import userRoutes from "../services/endpoints/userEndpoints";
@@ -174,16 +174,16 @@ export const createProfile = async (userProfile: User) => {
   }
 };
 // upload cover image
-export const coverImageUpload = async (formdata : FormData) => {
+export const coverImageUpload = async (formdata: FormData) => {
   try {
-    console.log("api call")
-    const response = await Api.post(userRoutes.uploadCoverImg , formdata , {
+    console.log("api call");
+    const response = await Api.post(userRoutes.uploadCoverImg, formdata, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
     console.log("first res for cover img", response.data);
-    return response.data
+    return response.data;
   } catch (error: any) {
     if (error.response) {
       return error.response.data;
@@ -228,11 +228,13 @@ export const viewProfile = async () => {
   }
 };
 // Account Privacy
-export const  accountPrivacy = async (isPrivacy : boolean) => {
+export const accountPrivacy = async (isPrivacy: boolean) => {
   try {
-    const response = await Api.post(userRoutes.accountPrivacy,{ isPrivacy : isPrivacy})
-    console.log("response.after actino =>",response.data )
-    return response.data
+    const response = await Api.post(userRoutes.accountPrivacy, {
+      isPrivacy: isPrivacy,
+    });
+    console.log("response.after actino =>", response.data);
+    return response.data;
   } catch (error: any) {
     if (error.response) {
       return error.response.data;
@@ -242,25 +244,77 @@ export const  accountPrivacy = async (isPrivacy : boolean) => {
       return { success: false, message: error.message };
     }
   }
-}
+};
 // showNotification
-export const showNotification = async (isShowNotification : boolean) => {
+export const showNotification = async (isShowNotification: boolean) => {
   try {
-    const response = await Api.post(userRoutes.showNotification,{isShowNotification : isShowNotification})
-    console.log("response ==>", response.data)
+    const response = await Api.post(userRoutes.showNotification, {
+      isShowNotification: isShowNotification,
+    });
+    console.log("response ==>", response.data);
+    return response.data;
+  } catch (error) {}
+};
+
+// Fetching the skill related users
+export const getSkillRelatedUsers = async (currentUserSkill: string) => {
+  try {
+    const response = await Api.get(userRoutes.getSkillRelatedUsers, {
+      params: {
+        skill: currentUserSkill,
+      },
+    });
+    console.log("fetched users ===>", response.data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+// get the Other userDetails
+export const getOtherUserDetails = async (userId: string) => {
+  try {
+    const response = await Api.get(userRoutes.getUserDetails, {
+      params: { userId: userId },
+    });
+
+    return response.data
+
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+
+// follow click
+export const followApi = async ({toFollowingId,fromFollowerId}: FollowParams ) => {
+  try {
+    
+    const response = await Api.post(userRoutes.userFollowing,{
+      toFollowingId,fromFollowerId
+    })
     return response.data
   } catch (error) {
     
   }
 }
 
-// Fetching the skill related users 
-export const getSkillRelatedUsers = async (currentUserSkill : string) => {
+// get my followings
+export const getMyFollowings = async () => {
   try {
-    const response = await Api.get(userRoutes.getSkillRelatedUsers ,{ params : {
-      skill : currentUserSkill
-    }})
-    console.log("fetched users ===>",response.data)
+    const response = await Api.get(userRoutes.getMyFollowings) 
+    console.log("ress=>",response.data);
     return response.data
   } catch (error: any) {
     if (error.response) {

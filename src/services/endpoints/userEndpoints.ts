@@ -14,7 +14,10 @@ const userRoutes = {
   accountPrivacy: "/user/accountPrivacy",
   showNotification: "/user/showNotification",
   getSkillRelatedUsers: "/user/getSkillRelatedUsers",
+  getUserDetails : '/user/getUserDetails',
+  getMyFollowings : '/user/getMyFollowings',
+  userFollowing :'/user/followup',
   logout: "/user/logout",
 };
 
-export default userRoutes;
+export default userRoutes;    

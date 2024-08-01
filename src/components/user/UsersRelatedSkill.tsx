@@ -8,7 +8,7 @@ interface UsersRelatedSkillProps {
 
 
 const UsersRelatedSkill : React.FC<UsersRelatedSkillProps> = ({users}) => {
-
+  
   return (
     <div>
     <OutlinedCard users={users}/>

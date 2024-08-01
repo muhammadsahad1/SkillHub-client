@@ -4,3 +4,8 @@ export interface userFormData {
   password? : string,
   confirm_password? : string
 }
+
+export interface FollowParams {
+  toFollowingId: string;
+  fromFollowerId: string | undefined;
+}

@@ -8,7 +8,7 @@ import toast  from "react-hot-toast";
 import { DotLoader } from "react-spinners";
 import NavBar from "../common/navBar";
 
-const ResetPassword = () => {
+const ResetPassword:React.FC  = () => {
   const [token,setToken] = useState<string>('')
   const [loading,setLoading] = useState<boolean>(false)
   const location = useLocation();
