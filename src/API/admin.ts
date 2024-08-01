@@ -4,10 +4,13 @@ import adminRoutes from "../services/endpoints/adminEndpoints";
 
 export const adminLogin = async (email: string, password: string) => {
   try {
+    console.log("api call");
+    
     const response = await Api.post(adminRoutes.login, {
       email: email,
       password: password,
     });
+    
     console.log(response.data);
     return response.data;
   } catch (error: any) {
@@ -24,7 +27,7 @@ export const adminLogin = async (email: string, password: string) => {
 // Get Users
 export const getUsers = async () => {
   try {
-    const response = await Api.get(adminRoutes.getUsers);
+    const response = await Api.get(adminRoutes.users);
     console.log("res for getUsers ==>", response.data);
     return response.data;
   } catch (error: any) {
@@ -44,3 +47,10 @@ export const blockUser = async (id: string) => {
   console.log("response =>", response.data);
   return response.data;
 };
+
+// Logout admin
+export const adminLogout = async () => {
+  const response = await Api.post(adminRoutes.logout)
+  return response.data
+
+}

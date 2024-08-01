@@ -33,6 +33,7 @@ const Adminlogin = () => {
   const onSubmit = async (data: userData) => {
     setLoading(true);
     try {
+      console.log("data ====>",data)
       const response = await adminLogin(data.email, data.password);
       if (response.success) {
         toast.success(response.message);

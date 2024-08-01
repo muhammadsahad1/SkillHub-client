@@ -283,8 +283,7 @@ export const getOtherUserDetails = async (userId: string) => {
       params: { userId: userId },
     });
 
-    return response.data
-
+    return response.data;
   } catch (error: any) {
     if (error.response) {
       return error.response.data;
@@ -296,25 +295,64 @@ export const getOtherUserDetails = async (userId: string) => {
   }
 };
 
-
 // follow click
-export const followApi = async ({toFollowingId,fromFollowerId}: FollowParams ) => {
+export const followApi = async ({
+  toFollowingId,
+  fromFollowerId,
+}: FollowParams) => {
   try {
-    
-    const response = await Api.post(userRoutes.userFollowing,{
-      toFollowingId,fromFollowerId
-    })
-    return response.data
-  } catch (error) {
-    
-  }
-}
+    const response = await Api.post(userRoutes.userFollowing, {
+      toFollowingId,
+      fromFollowerId,
+    });
+    return response.data;
+  } catch (error) {}
+};
 
 // get my followings
 export const getMyFollowings = async () => {
   try {
-    const response = await Api.get(userRoutes.getMyFollowings) 
-    console.log("ress=>",response.data);
+    const response = await Api.get(userRoutes.getMyFollowings);
+    console.log("ress=>", response.data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+// unFollow
+export const unFollow = async (
+  toUnFollowId: string,
+  fromFollowerId: string | undefined
+) => {
+  try {
+    
+    const response = await Api.post(userRoutes.unFollow, {
+      toUnFollowId: toUnFollowId,
+      fromFollowerId: fromFollowerId,
+    });
+    return response.data
+    
+} catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+// listFollowers
+export const myFollowers = async () => {
+  try {
+    const response = await Api.get(userRoutes.userFollowers)
+    console.log("res ==> ",response.data)
     return response.data
   } catch (error: any) {
     if (error.response) {

@@ -1,5 +1,5 @@
 import { useLocation, useParams } from "react-router-dom";
-import OtherProfileView from "../components/user/OtherProfileView";
+import OtherProfileView from "../../components/user/OtherProfileView";
 
 interface ImageUrls {
   profileImageUrl: string;

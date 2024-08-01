@@ -20,7 +20,7 @@
 
     const handleLogout = async () => {
       try {
-        const response = await logoutU  ser();
+        const response = await logoutUser();
         if (response.success) {
           dispatch(deleteUser());
           navigate("/");
@@ -39,8 +39,9 @@
   const fetchProfileImage = async () => {
     if (currentUser?.id) {
       try {
+
+        console.log("res in first ==>")
         const response = await profileImage();
-        console.log("URLS==>", response.imageUrls);
         if (response.imageUrls) {
           dispatch(setUserImages(response.imageUrls));
         }

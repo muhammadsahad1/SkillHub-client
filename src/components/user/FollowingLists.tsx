@@ -1,16 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { getMyFollowings } from "../../API/user";
+import { Link, useNavigate } from "react-router-dom";
+import { getMyFollowings, unFollow } from "../../API/user";
+import useGetUser from "../../hook/getUser";
+import { User } from "../../@types/allTypes";
+import toast from "react-hot-toast";
+import { FaUserAlt } from "react-icons/fa";
 
 const FollowingLists = () => {
-  const [followings, setFollowing] = useState();
+  const [followings, setFollowing] = useState<User[] | undefined>();
+  const currentUser = useGetUser();
 
   const fetchFollowingUser = async () => {
     try {
       const result = await getMyFollowings();
       setFollowing(result);
-    } catch (error) {
+    } catch (error) {}
+  };
 
+  // remove followings user
+  const handleUnfollow = async (toUnFollowId: string) => {
+    try {
+      const fromFollowerId = currentUser.id;
+      const result = await unFollow(toUnFollowId, fromFollowerId);
+      if (result.success) {
+        setFollowing((preFollowings) =>
+          preFollowings?.filter((following) => following._id != toUnFollowId)
+        );
+        toast.success("Unfollowed user");
+      }
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
@@ -22,32 +41,39 @@ const FollowingLists = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-4 mt-28">
-      <h2 className="text-xl font-semibold mb-4">People who followed you</h2>
+      <h2 className="text-xl font-semibold mb-4">People you followed</h2>
       <div className="space-y-4">
         {followings && followings.length > 0 ? (
-          followings.map((follower) => (
+          followings.map((following) => (
             <div
-              key={follower._id}
+              key={following?._id}
               className="flex items-center justify-between p-4 bg-white shadow rounded-lg"
             >
               <div className="flex items-center space-x-4">
+              {following.imageUrl ? (
                 <img
-                  src={follower.imageUrl}
-                  alt={follower.name}
+                  src={following?.imageUrl}
+                  alt={following.name}
                   className="w-12 h-12 rounded-full object-cover"
                 />
+              ) : (
+                <FaUserAlt className="w-12 h-12 text-zinc-800 rounded-full object-cover" />
+              )}
                 <div>
-                  <h3 className="font-medium text-gray-900">{follower.name}</h3>
-                  <p className="text-sm text-gray-600">{follower.location}</p>
+                  <h3 className="font-medium text-gray-900">
+                    {following.name}
+                  </h3>
+                  <p className="text-sm text-gray-600">{following.location}</p>
                 </div>
               </div>
               <div className="flex space-x-2">
-                <button className="shadow-[inset_0_0_0_2px_#616467] text-black px-3 py-1 rounded-md tracking-widest font-bold bg-transparent hover:bg-[#18181b] hover:text-white dark:text-neutral-200 transition duration-200">
-                  Follow
+                <button
+                  className="shadow-[inset_0_0_0_2px_#616467] text-black px-3 py-1 rounded-md tracking-widest font-bold bg-transparent hover:bg-[#18181b] hover:text-white dark:text-neutral-200 transition duration-200"
+                  onClick={() => handleUnfollow(following._id)}
+                >
+                  Unfollow
                 </button>
-                <button className="font-semibold px-3 py-1 rounded-md bg-gray-300 text-gray-700 hover:bg-gray-400">
-                  Remove
-                </button>
+              
               </div>
             </div>
           ))

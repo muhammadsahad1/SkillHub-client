@@ -16,7 +16,9 @@ const userRoutes = {
   getSkillRelatedUsers: "/user/getSkillRelatedUsers",
   getUserDetails : '/user/getUserDetails',
   getMyFollowings : '/user/getMyFollowings',
+  unFollow : '/user/unFollow',
   userFollowing :'/user/followup',
+  userFollowers :'/user/followers',
   logout: "/user/logout",
 };
 

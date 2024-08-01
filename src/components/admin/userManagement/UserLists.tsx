@@ -91,7 +91,7 @@ const UserList: React.FC = () => {
             </thead>
             <tbody>
               {users.map((user) => (
-                <tr key={user.id} className="text-center font-semibold">
+                <tr key={user?._id} className="text-center font-semibold">
                   <td className="py-2 px-4 border-b">{user.name}</td>
                   <td className="py-2 px-4 border-b">{user.email}</td>
                   <td className="py-2 px-4 border-b">{user.role}</td>

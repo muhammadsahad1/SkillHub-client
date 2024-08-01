@@ -55,15 +55,15 @@ const UserLogin: React.FC = () => {
     setIsLoading(true);
     const response = await userLogin(data.email, data.password);
 
-    if (response.success) {
+    if (response.message === "Your account has been blocked") {
       console.log(response);
+      setIsLoading(false);
+      toast.error(response.message);
+      navigate("/blockedUser");
+    } else if (response.success) {
       dispatch(setUser(response.user));
       navigate(`/`);
       setIsLoading(false);
-    } else if (response.message === "Your account has been blocked") {
-      setIsLoading(false);
-      toast.error(response.message);
-      navigate('/blockedUser')
     }
   };
 

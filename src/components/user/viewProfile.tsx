@@ -139,8 +139,8 @@ const ViewProfile: React.FC = () => {
 
             { currentUser.profile ? 
             (
-              <div className="flex flex-col items-start mt-16 md:mt-10">
-              <h1 className="text-2xl font-bold text-zinc-900 mb-2">
+              <div className="flex flex-col items-start mt-16 md:mt-10 ">
+              <h1 className="text-2xl font-bold text-zinc-900 mb-2 mt-5">
                 {currentUser?.name || "User Name"}
               </h1>
             {/* <p className="text-zinc-900 font-semibold ">

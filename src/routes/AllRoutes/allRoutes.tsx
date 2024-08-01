@@ -21,7 +21,7 @@ import NotificationSettingsPage from "../../page/user/NotificationSettingsPage";
 import Profile from "../../page/user/profile";
 import FollowingPage from "../../page/user/FollowingPage";
 import FollowersPage from "../../page/user/FollowersPage";
-import OtherProfileViewPage from "../../page/OtherProfileViewPage";
+import OtherProfileViewPage from "../../page/user/OtherProfileViewPage";
 
 // Define application routes
 const routers = createBrowserRouter([

@@ -16,11 +16,13 @@ export interface IuserSkillCardProps {
 }
 
 const Home: React.FC = () => {
+
   const currentUser = useGetUser();
   const currentUserSkill = currentUser.skill;
   const [skillRelatedUsers, setSkillRelatedUsers] = useState<
     IuserSkillCardProps[]
   >([]);
+  
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const fetchSkillRelatedUsers = async () => {
@@ -40,6 +42,7 @@ const Home: React.FC = () => {
     }
   }, []);
 
+  
   return (
     <div className=" flex flex-col h-screen">
       <NavBar />
