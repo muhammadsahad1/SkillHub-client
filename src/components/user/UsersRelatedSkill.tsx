@@ -1,17 +1,51 @@
-import React from 'react'
+import React, { useState } from 'react'
 import OutlinedCard from '../common/Card'
-import { IuserSkillCardProps } from '../../page/user/Home';
+import { getSkillRelatedUsers } from '../../API/user';
+import useGetUser from '../../hook/getUser';
 
-interface UsersRelatedSkillProps {
-  users: IuserSkillCardProps[];
+
+export interface IuserSkillCardProps {
+  _id?: string;
+  userName?: string;
+  profileUrl?: string;
+  coverImgUrl?: string;
+  country?: string,
+  skill?: string;
+  bio?: string;
 }
 
 
-const UsersRelatedSkill : React.FC<UsersRelatedSkillProps> = ({users}) => {
+const UsersRelatedSkill = () => {
+  
+  
+  const currentUser = useGetUser();
+  const currentUserSkill = currentUser.skill;
+  const [skillRelatedUsers, setSkillRelatedUsers] = useState<
+    IuserSkillCardProps[]
+  >([]);
+  
+  const [isLoading, setLoading] = useState<boolean>(false);
+  
+  const fetchSkillRelatedUsers = async () => {
+    try {
+      const result = await getSkillRelatedUsers(currentUserSkill);
+      if (result.success) {
+        setSkillRelatedUsers(result.userDetails);
+      }
+    } catch (error) {}
+  };
+  
+  
+  React.useEffect(() => {
+    if (currentUser.skill) {
+      fetchSkillRelatedUsers();
+    }
+  }, []);
+  
   
   return (
     <div>
-    <OutlinedCard users={users}/>
+    <OutlinedCard users={skillRelatedUsers}/>
     </div>
   )
 }

@@ -13,7 +13,7 @@ const UserList: React.FC = () => {
       if (!users.length) {
         toast("No users exist!", {
           icon: "ℹ️",
-          duration: 4000, // Adjust the time the toast stays on the screen (in milliseconds)
+          duration: 4000, 
         });
       } else {
         setUsers(users);

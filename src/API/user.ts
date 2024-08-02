@@ -331,14 +331,12 @@ export const unFollow = async (
   fromFollowerId: string | undefined
 ) => {
   try {
-    
     const response = await Api.post(userRoutes.unFollow, {
       toUnFollowId: toUnFollowId,
       fromFollowerId: fromFollowerId,
     });
-    return response.data
-    
-} catch (error: any) {
+    return response.data;
+  } catch (error: any) {
     if (error.response) {
       return error.response.data;
     } else if (error.request) {
@@ -351,9 +349,8 @@ export const unFollow = async (
 // listFollowers
 export const myFollowers = async () => {
   try {
-    const response = await Api.get(userRoutes.userFollowers)
-    console.log("res ==> ",response.data)
-    return response.data
+    const response = await Api.get(userRoutes.userFollowers);
+    return response.data;
   } catch (error: any) {
     if (error.response) {
       return error.response.data;
@@ -363,7 +360,42 @@ export const myFollowers = async () => {
       return { success: false, message: error.message };
     }
   }
-}
+};
+// remove follower from followers list
+export const removeFollower = async (toRemoveId: string) => {
+  try {
+    const response = await Api.post(userRoutes.removeFollower, {
+      toRemoveId: toRemoveId,
+    });
+    console.log("res ====> > >> >> >> >> >> ", response.data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+// followBack
+export const followBack = async (toFollowId: string) => {
+  try {
+    const result = await Api.post(userRoutes.followBack, {
+      toFollowId: toFollowId,
+    });
+    return result.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
 
 // Logout user
 export const logoutUser = async () => {

@@ -5,9 +5,11 @@ import useGetUser from "../../hook/getUser";
 import { User } from "../../@types/allTypes";
 import toast from "react-hot-toast";
 import { FaUserAlt } from "react-icons/fa";
+import { showToastError, showToastSuccess } from "../common/utilies/toast";
 
 const FollowingLists = () => {
   const [followings, setFollowing] = useState<User[] | undefined>();
+  const navigate = useNavigate();
   const currentUser = useGetUser();
 
   const fetchFollowingUser = async () => {
@@ -26,10 +28,10 @@ const FollowingLists = () => {
         setFollowing((preFollowings) =>
           preFollowings?.filter((following) => following._id != toUnFollowId)
         );
-        toast.success("Unfollowed user");
+        showToastSuccess("Unfollowed user");
       }
     } catch (error: any) {
-      toast.error(error.message);
+      showToastError(error.message);
     }
   };
 
@@ -47,18 +49,36 @@ const FollowingLists = () => {
           followings.map((following) => (
             <div
               key={following?._id}
-              className="flex items-center justify-between p-4 bg-white shadow rounded-lg"
+              className="flex items-center justify-between p-4 bg-white shadow round"
             >
               <div className="flex items-center space-x-4">
-              {following.imageUrl ? (
-                <img
-                  src={following?.imageUrl}
-                  alt={following.name}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-              ) : (
-                <FaUserAlt className="w-12 h-12 text-zinc-800 rounded-full object-cover" />
-              )}
+                {following?.imageUrl ? (
+                  <img
+                    src={following?.imageUrl}
+                    alt={following.name}
+                    className="w-12 h-12 rounded-full object-cover ed-lg cursor-pointer"
+                    onClick={() =>
+                      navigate(`/auth/OtherProfileView/${following._id}`, {
+                        state: {
+                          profileImageUrl: following?.imageUrl,
+                          coverImageurl: following?.coverImageUrl,
+                        },
+                      })
+                    }
+                  />
+                ) : (
+                  <FaUserAlt
+                    className="w-12 h-12 text-zinc-800 rounded-full object-covered-lg cursor-pointer"
+                    onClick={() =>
+                      navigate(`/auth/OtherProfileView/${following._id}`, {
+                        state: {
+                          profileImageUrl: following?.imageUrl,
+                          coverImageurl: following?.coverImageUrl,
+                        },
+                      })
+                    }
+                  />
+                )}
                 <div>
                   <h3 className="font-medium text-gray-900">
                     {following.name}
@@ -73,7 +93,6 @@ const FollowingLists = () => {
                 >
                   Unfollow
                 </button>
-              
               </div>
             </div>
           ))

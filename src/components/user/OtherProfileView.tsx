@@ -4,6 +4,7 @@ import {
   followApi,
   getOtherUserDetails,
   profileImage,
+  unFollow,
 } from "../../API/user";
 import { setCoverImage, setUserImages } from "../../redux/userSlices";
 import { useDispatch } from "react-redux";
@@ -14,10 +15,11 @@ import { BiEdit } from "react-icons/bi";
 import { TbCameraPlus } from "react-icons/tb";
 import { FaUserCircle } from "react-icons/fa";
 import noProfile from "../../assets/no profile.png";
-import toast from "react-hot-toast";
+import { showToastError , showToastSuccess } from "../common/utilies/toast";
 import { User } from "../../@types/allTypes";
 import Button from "../common/Button";
 import useGetUser from "../../hook/getUser";
+
 
 interface OtherProfileViewProps {
   userId: string;
@@ -30,23 +32,22 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   profileImageUrl,
   coverImageUrl,
 }) => {
-
   const [userDetails, setUserDetails] = useState<User>();
-  const [isFollowing,setIsFollowing] = useState<boolean>(false)
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
   const currentUser = useGetUser();
 
   const fetchUserDetails = async () => {
     try {
       const result = await getOtherUserDetails(userId);
-      setUserDetails(result.user)
-      setIsFollowing(result.user.followers.includes(currentUser.id)); //here we checking the follower in following list 
-
-    } catch (error) {
-      
+      setUserDetails(result.user);
+      setIsFollowing(result.user.followers.includes(currentUser.id)); //here we checking the follower in following list
+    } catch (error: any) {
+      showToastError(error.message);
     }
   };
 
-
+  console.log("isFollowing ==? ",isFollowing)
   useEffect(() => {
     if (userId) {
       fetchUserDetails();
@@ -56,16 +57,39 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   // handle Follow
   const followThisUser = async () => {
     try {
-    
-      await followApi({
+      setLoading(true);
+      const result = await followApi({
         toFollowingId: userId,
         fromFollowerId: currentUser.id,
       });
-      setIsFollowing(true)
-    } catch (error) {}
+      if(result.success){
+        setIsFollowing(true)
+        showToastSuccess("Followed")
+      }else{
+        showToastError("Followed failed")
+      }
+
+      setLoading(false);
+    } catch (error: any) {
+      showToastError(error.message);
+    }
   };
 
-  console.log("userDetailssss ====>", userDetails);
+  // handling the unFOllow
+  const handleUnfollow = async () => {
+    try {
+      setLoading(true);
+      const fromFollowerId = currentUser.id;
+      const result = await unFollow(userId, fromFollowerId);
+      if(result.success){
+        setIsFollowing(false)
+        showToastSuccess("Unfollowed")
+      }
+      setLoading(false);
+    } catch (error: any) {
+       showToastError(error.message);
+    }
+  };
 
   return (
     <div className="w-full min-h-screen">
@@ -105,17 +129,20 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
           </div>
         </div>
         <div className="relative p-6">
-          <div
-            className="flex justify-end items-center"
-          
-          >{
-            isFollowing ? (
-              <Button content={"Following"} />
+          <div className="flex justify-end items-center">
+            {isFollowing ? (
+              <Button
+                content={"Following"}
+                onClick={handleUnfollow}
+                isLoading={isLoading}
+              />
             ) : (
-              <Button content={"Follow"}   onClick={followThisUser} />
-            )
-          }
-          
+              <Button
+                content={"Follow"}
+                onClick={followThisUser}
+                isLoading={isLoading}
+              />
+            )}
           </div>
           {userDetails ? (
             <div className="flex flex-col items-start mt-16 md:mt-7">

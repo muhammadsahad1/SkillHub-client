@@ -19,6 +19,8 @@ const userRoutes = {
   unFollow : '/user/unFollow',
   userFollowing :'/user/followup',
   userFollowers :'/user/followers',
+  removeFollower : '/user/follower',
+  followBack : '/user/followBack',
   logout: "/user/logout",
 };
 
