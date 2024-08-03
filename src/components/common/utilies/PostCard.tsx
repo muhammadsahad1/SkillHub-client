@@ -1,48 +1,89 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
+import PostSpringModal from "../../post/MediaPostModal";
+import useGetUser from "../../../hook/getUser";
 
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
-);
+const OutlinedCard: React.FC = () => {
+  const [isOpen, setModalOpen] = useState<boolean>(false);
 
-const card = (
-  <React.Fragment>
-    <CardContent>
-      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-        Word of the Day
-      </Typography>
-      <Typography variant="h5" component="div">
-        be{bull}nev{bull}o{bull}lent
-      </Typography>
-      <Typography sx={{ mb: 1.5 }} color="text.secondary">
-        adjective
-      </Typography>
-      <Typography variant="body2">
-        well meaning and kindly.
-        <br />
-        {'"a benevolent smile"'}
-      </Typography>
-    </CardContent>
-    <CardActions>
-      <Button size="small">Learn More</Button>
-    </CardActions>
-  </React.Fragment>
-);
+  const currentUser = useGetUser();
 
-export default function OutlinedCard() {
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   return (
-    <Box sx={{ minWidth: 275 }}>
-      <Card variant="outlined">{card}</Card>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        width: "100%",
+      }}
+    >
+      <Card
+        variant="outlined"
+        sx={{
+          backgroundColor: "white",
+          color: "black",
+          borderRadius: "16px",
+          boxShadow: 5,
+          width: "100%",
+          maxWidth: 600,
+          mx: "auto",
+          my: 4,
+        }}
+      >
+        <CardContent>
+          <Typography
+            sx={{
+              fontSize: 14,
+              marginBottom: 1,
+              color: "black",
+              fontWeight: "bold",
+            }}
+            color="text.secondary"
+            gutterBottom
+          >
+            <span className="font-poppins">Word of the Day</span>
+          </Typography>
+          <Typography
+            variant="h5"
+            component="div"
+            className="flex justify-between space-x-3"
+          >
+            <img
+              src={currentUser?.picture?.imageUrl}
+              alt=""
+              className="w-12 h-12 rounded-full object-cover"
+            />
+            <input
+              type="text"
+              placeholder="Share your thoughts..."
+              className="mt-1 block w-full border text-sm border-gray-300 text-gray-800 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 tracking-wider"
+            />
+          </Typography>
+        </CardContent>
+        <CardActions sx={{ justifyContent: "flex-end", padding: "16px" }}>
+          <button
+            className="shadow-md text-sm px-6 py-2 font-poppins bg-zinc-900 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 tracking-wider"
+            onClick={openModal}
+          >
+            Media
+          </button>
+        </CardActions>
+      </Card>
+      <PostSpringModal isOpen={isOpen} onClose={closeModal} />
     </Box>
   );
-}
+};
+
+export default OutlinedCard;

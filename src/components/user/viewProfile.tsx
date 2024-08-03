@@ -13,7 +13,7 @@ import CoverImageModal from "../common/utilies/CoverImageModal";
 import { FaUserCircle } from "react-icons/fa";
 import noProfile from "../../assets/no profile.png";
 import toast from "react-hot-toast";
-import SkeletonLoader from "../common/utilies/Skelton";
+import SkeletonLoader from "../common/skeleton/Skelton";
 
 const ViewProfile: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -67,9 +67,9 @@ const ViewProfile: React.FC = () => {
       const formData = new FormData();
       formData.append("coverImage", imageFile);
 
-      for (const pair of formData.entries()) {
-        console.log(`${pair[0]}: ${pair[1]}`);
-      }
+      // for (const pair of formData.entries()) {
+      //   console.log(`${pair[0]}: ${pair[1]}`);
+      // }
 
       const response = await coverImageUpload(formData);
       dispatch(setCoverImage(response.user));
@@ -83,9 +83,9 @@ const ViewProfile: React.FC = () => {
       toast.error(error.message);
     }
   };
-  console.log("current -->", currentUser);
+
   return (
-    <div className="w-full min-h-screen">
+    <div className="w-full min-h-screen mt-20">
       <NavBar />
       {isLoading ? (
         <div>

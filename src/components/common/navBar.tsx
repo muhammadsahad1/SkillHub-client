@@ -59,7 +59,7 @@ const NavBar: React.FC = () => {
   console.log("currentUser", currentUser);
   
   return (
-    <nav className="bg-zinc-100 shadow-sm fixed w-full z-50 top-0 left-0">
+    <nav className="bg-zinc-black shadow-lg fixed w-full z-50 top-0 left-0">
     <div className="container mx-auto flex justify-between items-center px-4 py-4">
       <div className="font-bold text-gray-800">
         <img className="w-20 h-12" src={skill} alt="Skill Logo" />

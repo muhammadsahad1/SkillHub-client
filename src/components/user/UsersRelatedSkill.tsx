@@ -44,7 +44,8 @@ const UsersRelatedSkill = () => {
   
   
   return (
-    <div>
+    <div className='mt-5'>
+    <p className='font-poppins font-semibold text-zinc-900'>Your Skill Network</p>
     <OutlinedCard users={skillRelatedUsers}/>
     </div>
   )

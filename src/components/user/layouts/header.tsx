@@ -58,7 +58,7 @@
 
 
     return (
-      <nav className="bg-zinc-100 shadow-sm shadow-zinc-300 shadow-bottom-only fixed z-50 w-full  ">
+      <nav className="bg-black shadow-xl shadow-zinc-950 shadow-bottom-only fixed z-50 w-full  ">
       <div className="container mx-auto flex justify-between items-center px-4 py-4">
         <div className=" font-bold text-gray-800">
           <img className="w-20 h-12" src={logo} alt="Skill Logo" />

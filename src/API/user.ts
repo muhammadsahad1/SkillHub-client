@@ -382,10 +382,10 @@ export const removeFollower = async (toRemoveId: string) => {
 // followBack
 export const followBack = async (toFollowId: string) => {
   try {
-    const result = await Api.post(userRoutes.followBack, {
+    const response = await Api.post(userRoutes.followBack, {
       toFollowId: toFollowId,
     });
-    return result.data;
+    return response.data;
   } catch (error: any) {
     if (error.response) {
       return error.response.data;
@@ -396,6 +396,22 @@ export const followBack = async (toFollowId: string) => {
     }
   }
 };
+// createPost and Uploading
+export const uploadPost = async ( formData : FormData) => {
+  try {
+    console.log("api call vilichu ----> ")
+    const response = await Api.post(userRoutes.uploadPost,formData,{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+
+    console.log("result ===>",response.data)
+    return response.data
+  } catch (error) {
+    
+  }
+}
 
 // Logout user
 export const logoutUser = async () => {

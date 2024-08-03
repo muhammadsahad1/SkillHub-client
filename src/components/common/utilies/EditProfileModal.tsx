@@ -69,7 +69,11 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const handlePreviewImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setimagePreview(URL.createObjectURL(file));
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setimagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 

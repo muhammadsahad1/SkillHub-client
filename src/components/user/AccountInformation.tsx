@@ -16,7 +16,6 @@ const AccountInformation = () => {
     if (currentUser?.id) {
       try {
         const response = await profileImage();
-        console.log("URLS==>",response.imageUrls)
         if(response.imageUrls){
           dispatch(setUserImages(response.imageUrls));
         }

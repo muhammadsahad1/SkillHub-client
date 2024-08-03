@@ -31,7 +31,7 @@ const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }) => {
   );
 
   return (
-    <Box sx={{ position: "relative", width: "100%", mt: 4 }}>
+    <Box sx={{ position: "relative", width: "100%", mt: 2 }}>
       <Box
         sx={{
           display: "flex",
@@ -45,10 +45,10 @@ const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }) => {
       >
         {displayedUsers.map((user) => (
           <Card
-            key={user.id}
+            key={user._id}
             variant="outlined"
             sx={{
-              width: { xs: 150, sm: 190 },
+              width: { xs: 150, sm: 180 },
               borderColor: "black",
               borderRadius: "16px",
               boxShadow: 3,
@@ -67,7 +67,7 @@ const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }) => {
                 className="w-full h-20 object-cover rounded-t-md"
               />
               <Typography sx={{ mb: 1, p: 1 }} color="text.secondary">
-                <h2 className="font-semibold">{user.name}</h2>
+                <span className="font-semibold">{user.name}</span>
               </Typography>
               <Typography variant="body2" sx={{ p: 1 }}>
                 <b>
@@ -83,6 +83,7 @@ const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }) => {
               <Button
                 size="small"
                 color="primary"
+                
                 onClick={() =>
                   navigate(`/auth/OtherProfileView/${user._id}`, {
                     state: {
@@ -92,7 +93,7 @@ const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }) => {
                   })
                 }
               >
-                View profile
+                <h2 className="px-10 text-xs font-semibold">View profile</h2>
               </Button>
             </CardActions>
           </Card>
@@ -105,8 +106,8 @@ const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }) => {
             justifyContent: "space-between",
             position: "absolute",
             top: "50%",
-            left: 0,
-            right: 0,
+            left: -60,
+            right: -60,
             transform: "translateY(-50%)",
             px: 2,
           }}

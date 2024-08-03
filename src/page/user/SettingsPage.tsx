@@ -7,7 +7,7 @@ const SettingsPage = () => {
   return (
     <div className="flex">
     <SideBar />
-    <div className="flex-grow ml-64 mt-5 p-8"> {/* Adjust margin and padding to fit your layout */}
+    <div className="flex-grow ml-64 mt-5 p-8"> 
       <NavBar />
       <AccountInformation />
     </div>

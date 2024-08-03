@@ -83,7 +83,8 @@ const CoverImageModal: React.FC<CoverImageModalProps> = ({
         )}
         <div className="flex-grow"></div>
         <div className="flex justify-evenly mb-4 sm mt-4">
-          <button className="text-zinc-900 font-bold p-2 w-full md:w-auto px-10 md:px-20 bg-zinc-50 font-poppins border rounded-full border-zinc-900 hover:bg-red-600 hover:text-zinc-200 hover:border-zinc-200 duration-300 mb-2 md:mb-0">
+          <button className="text-zinc-900 font-bold p-2 w-full md:w-auto px-10 md:px-20 bg-zinc-50 font-poppins border rounded-full border-zinc-900 hover:bg-red-600 hover:text-zinc-200 hover:border-zinc-200 duration-300 mb-2 md:mb-0"
+          onClick={() => setImageSrc('')}>
             Delete
           </button>
           <input type="file" hidden id="addImage" onChange={handlUploadImage} />
