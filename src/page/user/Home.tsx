@@ -4,9 +4,17 @@ import NavBar from "../../components/common/navBar";
 import UsersRelatedSkill from "../../components/user/UsersRelatedSkill";
 import useGetUser from "../../hook/getUser";
 import DisplayPostCard from "../post/DisplayPostCard";
+import useGetPosts from "../../hook/getPosts";
+import FeedPostsLists from "../../components/post/FeedPostsLists";
 
 const Home: React.FC = () => {
+
+  const getPosts = useGetPosts()
+  console.log("getPosts ====>",getPosts);
+  
+
   const currentUser = useGetUser();
+  
   return (
     <div className="flex min-h-screen justify-center">
       <NavBar />
@@ -20,6 +28,8 @@ const Home: React.FC = () => {
               <DisplayPostCard />
               <hr className="mt-8 border-zinc-400" />
               <UsersRelatedSkill />
+              <hr className="mt-8 border-zinc-400" />
+              <FeedPostsLists/>
             </div>
           </>
         ) : (

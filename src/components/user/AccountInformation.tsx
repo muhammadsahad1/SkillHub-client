@@ -133,7 +133,7 @@ const AccountInformation = () => {
             onClick={handleOpenModal}
           >
             Update Profile
-            {/* <BiEdit className="mt-2" /> */}
+            
           </button>
           <EditProfileModal isOpen={isModalOpen} isRequestClose={closeModal} />
         </div>

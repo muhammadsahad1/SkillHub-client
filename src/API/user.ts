@@ -396,22 +396,6 @@ export const followBack = async (toFollowId: string) => {
     }
   }
 };
-// createPost and Uploading
-export const uploadPost = async ( formData : FormData) => {
-  try {
-    console.log("api call vilichu ----> ")
-    const response = await Api.post(userRoutes.uploadPost,formData,{
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-
-    console.log("result ===>",response.data)
-    return response.data
-  } catch (error) {
-    
-  }
-}
 
 // Logout user
 export const logoutUser = async () => {

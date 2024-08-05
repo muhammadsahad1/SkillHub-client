@@ -14,11 +14,14 @@ import { FaUserCircle } from "react-icons/fa";
 import noProfile from "../../assets/no profile.png";
 import toast from "react-hot-toast";
 import SkeletonLoader from "../common/skeleton/Skelton";
+import { removeAllPost } from "../../redux/features/postSlices";
+import ProfilePostsActivity from "./profile/ProfilePostsActivity";
 
 const ViewProfile: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isCoverImgModalOpen, setCoverImgModalOpen] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false); 
+
 
   const currentUser = useGetUser();
   const dispatch = useDispatch();
@@ -26,6 +29,7 @@ const ViewProfile: React.FC = () => {
   // Image fetch Request for profile image
   const fetchProfileImage = async () => {
     setLoading(true);
+
     if (currentUser?.id) {
       try {
         const response = await profileImage();
@@ -91,10 +95,9 @@ const ViewProfile: React.FC = () => {
         <div>
           <SkeletonLoader />
         </div>
-        
       ) : (
-        <div className="border-3 rounded-t-none border-zinc-800 shadow-sm shadow-zinc-900 w-full md:w-3/4 mx-auto rounded-lg overflow-hidden ">
-          <div className="relative">
+        <div className="rounded-t-none border-zinc-800 shadow-sm shadow-zinc-900 w-full md:w-3/4 mx-auto rounded-lg overflow-hidden ">
+          <div className="relative border-3">
             {currentUser.picture?.coverImageUrl ? (
               <div className=" w-full md:h-72 shadow-lg bg-zinc-400">
                 <img
@@ -202,9 +205,12 @@ const ViewProfile: React.FC = () => {
                 </h2>
               </div>
             )}
+            <hr className="mt-8 border-zinc-400" />
           </div>
+            <ProfilePostsActivity />
         </div>
       )}
+      <hr className="mt-8 border-zinc-400" />
     </div>
   );
 };

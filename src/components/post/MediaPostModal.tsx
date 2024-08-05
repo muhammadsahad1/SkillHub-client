@@ -4,7 +4,13 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import noIgmg from "../../assets/no img.png";
-import { uploadPost } from "../../API/user";
+import { showToastError, showToastSuccess } from "../common/utilies/toast";
+import { BarLoader } from "react-spinners";
+import { useUploadPost } from "../../hook/usePosts";
+import { Ipost, setPost } from "../../redux/features/postSlices";
+import { useDispatch, UseDispatch } from "react-redux";
+import { PostType } from "../../@types/postType";
+import useGetPosts from "../../hook/getPosts";
 
 const style = {
   position: "absolute" as "absolute",
@@ -33,8 +39,10 @@ interface PropsValues {
 }
 
 const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [caption, setCaption] = useState<string>("");
+  const uploadPostMutation = useUploadPost();
 
   const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -46,31 +54,77 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
       reader.readAsDataURL(file);
     }
   };
+
   const handlePostMedia = async () => {
-    if (imageSrc && caption) {
+    setLoading(true);
+    const fileInput = document.getElementById("addImage") as HTMLInputElement;
+    const file = fileInput.files?.[0];
+
+    if (file) {
+      let postType: PostType;
+      if (file?.type.startsWith("image/")) {
+        postType = PostType.IMAGE;
+      } else if (file?.type.startsWith("video/")) {
+        postType = PostType.VIDEO;
+      } else {
+        postType = PostType.THOUGHTS;
+      }
+
       const formData = new FormData();
-      formData.append("postImage", imageSrc);
+      formData.append("postImage", file);
       formData.append("caption", caption);
+      formData.append("type", postType);
 
       try {
-        const result = await uploadPost(formData);
-        
-      
-      } catch (error) {}
+        // using reactQuery ====> for effciency
+        const result = await uploadPostMutation.mutateAsync(formData);
+        if (result.success) {
+          setImageSrc("");
+          setLoading(false);
+          showToastSuccess(result.message);
+          onClose();
+        } else {
+          setLoading(false);
+          showToastError(result.message);
+        }
+      } catch (error) {
+        setLoading(false);
+        showToastError("An error occurred while uploading the post.");
+      }
+    } else {
+      setLoading(false);
+      showToastError("Please provide an image or caption.");
     }
   };
+
+  const handlClose = () => {
+    setImageSrc("");
+    setCaption("");
+    onClose();
+  };
+
+  console.log(useGetPosts());
 
   return (
     <Modal
       className="min-w-2xl"
       open={isOpen}
-      onClose={onClose}
+      onClose={handlClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <div className="flex flex-col items-center space-y-4">
-          <Typography variant="h6" component="h2" className="text-center ">
+        {isLoading && (
+          <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
+            <BarLoader color="black" />
+          </div>
+        )}
+        <div
+          className={`relative flex flex-col items-center space-y-4 ${
+            isLoading ? "blur-sm" : ""
+          }`}
+        >
+          <Typography variant="h6" component="h2" className="text-center">
             <span className="font-poppins font-semibold text-zinc-800">
               Upload Media
             </span>
@@ -80,7 +134,7 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
             <img
               src={imageSrc || noIgmg}
               alt="Uploaded content or placeholder"
-              className={` ${
+              className={`${
                 imageSrc
                   ? "max-w-full max-h-full object-contain"
                   : "max-w-32 max-h-full object-contain"
@@ -91,8 +145,6 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
           {imageSrc && (
             <div className="w-full">
               <textarea
-                name=""
-                id=""
                 placeholder="Add a caption..."
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
@@ -102,44 +154,36 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
           )}
 
           <input
-            id="mediaInput"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleUploadImage}
-          />
-        </div>
-        <div className="flex justify-evenly mb-1 sm mt-6">
-          {imageSrc && (
-            <button
-              className="text-zinc-900 font-bold p-2 w-full md:w-auto px-10 md:px-20 bg-zinc-50 font-poppins border rounded-full border-zinc-900 hover:bg-red-600 hover:text-zinc-200 hover:border-zinc-200 duration-300 mb-2 md:mb-0"
-              onClick={() => setImageSrc("")}
-            >
-              Delete
-            </button>
-          )}
-
-          <input
             type="file"
             hidden
             id="addImage"
             onChange={handleUploadImage}
           />
-          {imageSrc ? (
-            <button
-              className="text-zinc-900 font-bold p-2 w-full md:w-auto px-10 md:px-20 bg-zinc-50 font-poppins border rounded-full border-zinc-900 hover:bg-blue-500 hover:text-zinc-200 hover:border-zinc-200 duration-300"
-              onClick={handlePostMedia}
-            >
-              Post
-            </button>
-          ) : (
-            <button
-              className="text-zinc-900 font-bold p-2 w-full md:w-auto px-10 md:px-20 bg-zinc-50 font-poppins border rounded-full border-zinc-900 hover:bg-zinc-900 hover:text-zinc-200 hover:border-zinc-200 duration-300"
-              onClick={() => document.getElementById("addImage")?.click()}
-            >
-              Add image
-            </button>
-          )}
+          <div className="flex justify-evenly w-full mt-4">
+            {imageSrc && (
+              <button
+                className="text-zinc-900 font-bold p-2 w-full md:w-auto px-10 md:px-20 bg-zinc-50 font-poppins border rounded-full border-zinc-900 hover:bg-red-600 hover:text-zinc-200 hover:border-zinc-200 duration-300 mb-2 md:mb-0"
+                onClick={() => setImageSrc("")}
+              >
+                Delete
+              </button>
+            )}
+            {imageSrc ? (
+              <button
+                className="text-zinc-900 font-bold p-2 w-full md:w-auto px-10 md:px-20 bg-zinc-50 font-poppins border rounded-full border-zinc-900 hover:bg-blue-500 hover:text-zinc-200 hover:border-zinc-200 duration-300"
+                onClick={handlePostMedia}
+              >
+                Post
+              </button>
+            ) : (
+              <button
+                className="text-zinc-900 font-bold p-2 w-full md:w-auto px-10 md:px-20 bg-zinc-50 font-poppins border rounded-full border-zinc-900 hover:bg-zinc-900 hover:text-zinc-200 hover:border-zinc-200 duration-300"
+                onClick={() => document.getElementById("addImage")?.click()}
+              >
+                Add image
+              </button>
+            )}
+          </div>
         </div>
       </Box>
     </Modal>
