@@ -10,7 +10,7 @@ import { useUploadPost } from "../../hook/usePosts";
 import { Ipost, setPost } from "../../redux/features/postSlices";
 import { useDispatch, UseDispatch } from "react-redux";
 import { PostType } from "../../@types/postType";
-import useGetPosts from "../../hook/getPosts";
+
 
 const style = {
   position: "absolute" as "absolute",
@@ -103,7 +103,6 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
     onClose();
   };
 
-  console.log(useGetPosts());
 
   return (
     <Modal

@@ -1,4 +1,5 @@
 const userRoutes = {
+  // begin
   signup: "/user/register",
   createUser: "/user/createUser",
   resentOtp: "/user/resentOtp",
@@ -7,6 +8,8 @@ const userRoutes = {
   fogotPassword: "/user/forgotPassword",
   resetPassword: "/user/resetPassword",
   changePassword: "/user/changePassword",
+
+  // profile
   createProfile: "/user/createProfile",
   uploadCoverImg: "/user/coverImage",
   viewProfile: "/user/viewProfile",
@@ -14,17 +17,24 @@ const userRoutes = {
   accountPrivacy: "/user/accountPrivacy",
   showNotification: "/user/showNotification",
   getSkillRelatedUsers: "/user/getSkillRelatedUsers",
-  getUserDetails : '/user/getUserDetails',
-  getMyFollowings : '/user/getMyFollowings',
-  unFollow : '/user/unFollow',
-  userFollowing :'/user/followup',
-  userFollowers :'/user/followers',
-  removeFollower : '/user/follower',
-  followBack : '/user/followBack',
-  uploadPost : '/user/uploadPost',
-  fetchPosts : '/user/posts',
-  delelePost : '/user/posts',
+  getUserDetails: "/user/getUserDetails",
+
+  // followings $ followers
+  getMyFollowings: "/user/getMyFollowings",
+  unFollow: "/user/unFollow",
+  userFollowing: "/user/followup",
+  userFollowers: "/user/followers",
+  removeFollower: "/user/follower",
+  followBack: "/user/followBack",
+
+  // posts
+  uploadPost: "/user/uploadPost",
+  fetchPosts: "/user/posts",
+  delelePost: "/user/posts",
+  editPost: "/user/post",
+  postLike: "/user/postLike",
+  fetchMyPost: "/user/myPosts",
   logout: "/user/logout",
 };
 
-export default userRoutes;    
+export default userRoutes;

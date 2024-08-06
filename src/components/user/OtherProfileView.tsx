@@ -172,7 +172,12 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                 </p>
               </div>
               <div className="flex space-x-4">
-                <Link to="/auth/followers">
+                <Link to={`/auth/OthersFollowers/${userId}`}>
+                  <button className="font-semibold mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                    <h1 className="tracking-wide">Followers</h1>
+                  </button>
+                </Link>
+                <Link to={`/auth/OthersFollowings/${userId}`}>
                   <button className="font-semibold mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
                     <h1 className="tracking-wide">Followers</h1>
                   </button>

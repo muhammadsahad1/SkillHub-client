@@ -101,7 +101,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       </Menu>
       <CardMedia
         component="img"
-        image={post.imageUrl}
+        image={post.postUrl}
         alt="Post image"
         sx={{
           height: 190,

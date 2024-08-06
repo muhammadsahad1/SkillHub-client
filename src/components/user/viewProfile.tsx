@@ -10,11 +10,9 @@ import { BiEdit } from "react-icons/bi";
 import { TbCameraPlus } from "react-icons/tb";
 import EditProfileModal from "../common/utilies/EditProfileModal";
 import CoverImageModal from "../common/utilies/CoverImageModal";
-import { FaUserCircle } from "react-icons/fa";
 import noProfile from "../../assets/no profile.png";
 import toast from "react-hot-toast";
 import SkeletonLoader from "../common/skeleton/Skelton";
-import { removeAllPost } from "../../redux/features/postSlices";
 import ProfilePostsActivity from "./profile/ProfilePostsActivity";
 
 const ViewProfile: React.FC = () => {
@@ -50,8 +48,9 @@ const ViewProfile: React.FC = () => {
     fetchProfileImage();
   }, [currentUser?.id]);
 
+  console.log(useGetUser())
   // Edit profile Modal open
-  const openEditModal = () => {
+  const openEditModal = () => { 
     setIsOpen(true);
   };
 

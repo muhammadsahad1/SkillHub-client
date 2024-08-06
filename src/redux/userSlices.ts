@@ -78,6 +78,7 @@ const userSlice = createSlice({
     setUserImages: (state, action) => {
       if (action.payload) {
         const { coverImageUrl, imageUrl } = action.payload;
+
         state.picture = {
           ...state.picture,
           coverImageUrl: coverImageUrl || state.picture?.coverImageUrl,
@@ -87,6 +88,7 @@ const userSlice = createSlice({
     },
     setCoverImage: (state, action) => {
       const { coverImage, coverImageKey } = action.payload;
+      console.log("coveeriMagekyyyyy ==>",coverImageKey)
       state.coverImage = coverImage;
       state.coverImageKey = coverImageKey;
     },

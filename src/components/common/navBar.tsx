@@ -13,6 +13,7 @@ import { CgProfile } from "react-icons/cg";
 import { TbMessageDots } from "react-icons/tb";
 import { MdNotifications } from "react-icons/md";
 
+
 const NavBar: React.FC = () => {
   const [isDropDown, openDropDown] = useState<boolean>(false);
   const dropDownRef = useRef<HTMLDivElement>(null);
@@ -48,6 +49,7 @@ const NavBar: React.FC = () => {
       const response = await logoutUser();
       if (response.success) {
         dispatch(deleteUser());
+    
         navigate("/");
         toast.success(response.message);
       }

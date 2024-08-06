@@ -215,7 +215,7 @@ export const profileImage = async () => {
 export const viewProfile = async () => {
   try {
     const response = await Api.get(userRoutes.viewProfile);
-    console.log("response ===>", response.data);
+
     response.data;
   } catch (error: any) {
     if (error.response) {
@@ -233,7 +233,7 @@ export const accountPrivacy = async (isPrivacy: boolean) => {
     const response = await Api.post(userRoutes.accountPrivacy, {
       isPrivacy: isPrivacy,
     });
-    console.log("response.after actino =>", response.data);
+    
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -251,7 +251,7 @@ export const showNotification = async (isShowNotification: boolean) => {
     const response = await Api.post(userRoutes.showNotification, {
       isShowNotification: isShowNotification,
     });
-    console.log("response ==>", response.data);
+  
     return response.data;
   } catch (error) {}
 };
@@ -264,7 +264,7 @@ export const getSkillRelatedUsers = async (currentUserSkill: string) => {
         skill: currentUserSkill,
       },
     });
-    console.log("fetched users ===>", response.data);
+    
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -367,7 +367,7 @@ export const removeFollower = async (toRemoveId: string) => {
     const response = await Api.post(userRoutes.removeFollower, {
       toRemoveId: toRemoveId,
     });
-    console.log("res ====> > >> >> >> >> >> ", response.data);
+  
     return response.data;
   } catch (error: any) {
     if (error.response) {

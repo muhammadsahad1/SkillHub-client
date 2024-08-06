@@ -1,38 +1,28 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { uploadPost, fetchFeed, deletPost } from "../API/post";
+import { uploadPost, fetchFeed, deletPost, editPost, postLike, fetchMyPosts } from "../API/post";
 import useGetUser from "./getUser";
 import {
   showToastError,
   showToastSuccess,
 } from "../components/common/utilies/toast";
-import { useDispatch } from "react-redux";
-import { Ipost, removePost, setPost } from "../redux/features/postSlices";
 
-// hook to upload a post and refetch the feed
+// Hook to upload a post and refetch the feed
 const useUploadPost = () => {
   const queryClient = useQueryClient();
-  const dispatch = useDispatch();
-
   return useMutation(uploadPost, {
     onSuccess: (data) => {
       queryClient.invalidateQueries("feed");
-      const post: Ipost = {
-        id: data.post._id,
-        userId: data.post.userId,
-        postUrl: data.post.signedUrl,
-        caption: data.post.caption,
-        skill: data.post.skill,
-        createdAt: data.post.createdAt,
-        updatedAt: data.post.updatedAt,
-      };
-      dispatch(setPost(post));
+      queryClient.invalidateQueries("posts");
+      console.log("data after uploaded post ==>", data);
     },
     onError: (error: Error) => {
       console.error("Upload error:", error.message);
+      showToastError("Failed to upload post");
     },
   });
 };
 
+// Hook to get posts
 const useGetPosts = () => {
   const user = useGetUser();
   return useQuery(["posts", user?.skill], () => fetchFeed(user?.skill), {
@@ -41,21 +31,69 @@ const useGetPosts = () => {
   });
 };
 
-const useDeletePost = () => {
-  const dispatch = useDispatch();
-  const queryClient = useQueryClient();
+// Hook to get posts
 
+const useGetMyPosts = () => {
+  const user = useGetUser(); 
+  return useQuery(
+    ['posts', user?.id], 
+    () => fetchMyPosts(), 
+    {
+      enabled: !!user?.id, 
+      staleTime: 5 * 60 * 1000, 
+      refetchOnWindowFocus: false, 
+    }
+  );
+};
+// Hook to delete a post
+const useDeletePost = () => {
+  const queryClient = useQueryClient();
   return useMutation(deletPost, {
     onSuccess: (data) => {
       if (data.success) {
         showToastSuccess(data.message);
         queryClient.invalidateQueries("posts");
-        dispatch(removePost(data.post._id));
       } else {
         showToastError(data.message);
       }
-    }
+    },
+    onError: (error: Error) => {
+      showToastError("Failed to delete post");
+    },
   });
 };
 
-export { useUploadPost, useGetPosts, useDeletePost };
+// Hook to edit a post
+const useEditPost = () => {
+  const queryClient = useQueryClient();
+  return useMutation(editPost, {
+    onSuccess: (data) => {
+      if (data) {
+        showToastSuccess(data.message);
+        queryClient.invalidateQueries("posts");
+      }
+    },
+    onError: (error: Error) => {
+      showToastError("Failed to edit post");
+    },
+  });
+};
+
+
+// Hook to like a post
+const usePostLike = () => {
+  const queryClient = useQueryClient();
+  return useMutation(postLike, {
+    onSuccess: (data) => {
+      if (data.success) {
+        showToastSuccess(data.message);
+        queryClient.invalidateQueries("posts");
+      }
+    },
+    onError: (error: Error) => {
+      showToastError("Failed to like post");
+    },
+  });
+};
+
+export { useUploadPost, useGetPosts, useDeletePost, useEditPost, usePostLike,useGetMyPosts };
