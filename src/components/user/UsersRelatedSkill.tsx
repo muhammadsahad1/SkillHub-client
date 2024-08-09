@@ -29,6 +29,8 @@ const UsersRelatedSkill = () => {
   const fetchSkillRelatedUsers = async () => {
     try {
       const result = await getSkillRelatedUsers(currentUserSkill);
+      console.log("result==>",result);
+      
       if (result.success) {
         setSkillRelatedUsers(result.userDetails);
       }

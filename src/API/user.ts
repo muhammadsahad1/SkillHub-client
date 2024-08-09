@@ -199,6 +199,8 @@ export const coverImageUpload = async (formdata: FormData) => {
 export const profileImage = async () => {
   try {
     const response = await Api.get(userRoutes.profileImage);
+    console.log("resssssssssssssss+====>", response.data);
+
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -215,6 +217,7 @@ export const profileImage = async () => {
 export const viewProfile = async () => {
   try {
     const response = await Api.get(userRoutes.viewProfile);
+    console.log("rs  in view profile ===>", response.data);
 
     response.data;
   } catch (error: any) {
@@ -233,7 +236,7 @@ export const accountPrivacy = async (isPrivacy: boolean) => {
     const response = await Api.post(userRoutes.accountPrivacy, {
       isPrivacy: isPrivacy,
     });
-    
+
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -251,7 +254,7 @@ export const showNotification = async (isShowNotification: boolean) => {
     const response = await Api.post(userRoutes.showNotification, {
       isShowNotification: isShowNotification,
     });
-  
+
     return response.data;
   } catch (error) {}
 };
@@ -264,7 +267,7 @@ export const getSkillRelatedUsers = async (currentUserSkill: string) => {
         skill: currentUserSkill,
       },
     });
-    
+
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -367,7 +370,7 @@ export const removeFollower = async (toRemoveId: string) => {
     const response = await Api.post(userRoutes.removeFollower, {
       toRemoveId: toRemoveId,
     });
-  
+
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -386,6 +389,71 @@ export const followBack = async (toFollowId: string) => {
       toFollowId: toFollowId,
     });
     return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+export const otherFollowers = async (userId: string) => {
+  try {
+    const response = await Api.get(userRoutes.othersFollowers, {
+      params: {
+        userId: userId,
+      },
+    });
+    console.log("res in frontend ===>", response.data); 
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+export const othersFollowings = async (userId: string) => {
+  try {
+    console.log("userId ==>", userId);
+
+    const response = await Api.get(userRoutes.othersFollowings, {
+      params: {
+        userId: userId,
+      },
+    });
+    console.log("res in frontend ===>", response.data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+// getOthers posts
+export const getOthersPosts = async (userId: string) => {
+  try {
+
+    const result = await Api.get(userRoutes.getOthersPosts,{
+      params : {
+        userId : userId
+      }
+    });
+    console.log("result after the feth teh posts of onthers ==>",result.data);
+    return result.data
+    
   } catch (error: any) {
     if (error.response) {
       return error.response.data;

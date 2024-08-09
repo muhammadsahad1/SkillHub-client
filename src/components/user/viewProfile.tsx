@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import useGetUser from "../../hook/getUser";
 import { coverImageUpload, profileImage } from "../../API/user";
-import { setCoverImage, setUserImages } from "../../redux/userSlices";
+import {
+  setCoverImage,
+  setFollowingsFollowersCount,
+  setUserImages,
+} from "../../redux/userSlices";
 import { useDispatch } from "react-redux";
 import NavBar from "../common/navBar";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,22 +22,26 @@ import ProfilePostsActivity from "./profile/ProfilePostsActivity";
 const ViewProfile: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isCoverImgModalOpen, setCoverImgModalOpen] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false); 
-
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const currentUser = useGetUser();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   // Image fetch Request for profile image
   const fetchProfileImage = async () => {
-    setLoading(true);
-
     if (currentUser?.id) {
+      setLoading(true);
       try {
         const response = await profileImage();
-        console.log("URLS==>", response.imageUrls);
         if (response.imageUrls) {
           dispatch(setUserImages(response.imageUrls));
+          dispatch(
+            setFollowingsFollowersCount({
+              followersCount: response.imageUrls.followersCount,
+              followingsCount: response.imageUrls.followingsCount,
+            })
+          );
           setLoading(false);
         }
       } catch (error) {
@@ -48,9 +56,8 @@ const ViewProfile: React.FC = () => {
     fetchProfileImage();
   }, [currentUser?.id]);
 
-  console.log(useGetUser())
   // Edit profile Modal open
-  const openEditModal = () => { 
+  const openEditModal = () => {
     setIsOpen(true);
   };
 
@@ -70,17 +77,13 @@ const ViewProfile: React.FC = () => {
       const formData = new FormData();
       formData.append("coverImage", imageFile);
 
-      // for (const pair of formData.entries()) {
-      //   console.log(`${pair[0]}: ${pair[1]}`);
-      // }
-
       const response = await coverImageUpload(formData);
       dispatch(setCoverImage(response.user));
 
       if (response.success) {
         toast.success(response.message);
       } else {
-        toast.error("cover image upload failed");
+        toast.error("Cover image upload failed");
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -88,17 +91,17 @@ const ViewProfile: React.FC = () => {
   };
 
   return (
-    <div className="w-full min-h-screen mt-20">
+    <div className="w-full min-h-screen bg-gray-100">
       <NavBar />
       {isLoading ? (
         <div>
           <SkeletonLoader />
         </div>
       ) : (
-        <div className="rounded-t-none border-zinc-800 shadow-sm shadow-zinc-900 w-full md:w-3/4 mx-auto rounded-lg overflow-hidden ">
-          <div className="relative border-3">
+        <div className="rounded-lg border border-gray-800 shadow-lg w-full md:w-3/4 mx-auto bg-white overflow-hidden">
+          <div className="relative">
             {currentUser.picture?.coverImageUrl ? (
-              <div className=" w-full md:h-72 shadow-lg bg-zinc-400">
+              <div className="w-full md:h-72 bg-gray-300">
                 <img
                   src={currentUser.picture?.coverImageUrl}
                   alt="Cover"
@@ -114,40 +117,39 @@ const ViewProfile: React.FC = () => {
             )}
 
             <button
-              className="absolute right-5 top-5 bg-transparent border rounded-full border-zinc-950 p-2 hover:bg-zinc-900"
+              className="absolute right-5 top-5 bg-transparent border rounded-full border-gray-800 p-2 hover:bg-gray-900"
               onClick={handleCoverImage}
             >
               <TbCameraPlus
                 size={32}
-                className="text-zinc-900 bg-transparent rounded-full p-1 transition duration-100 hover:text-white hover:bg-zinc-900"
+                className="text-gray-800 bg-transparent rounded-full p-1 transition duration-100 hover:text-white hover:bg-gray-900"
               />
             </button>
-            <div className="absolute bottom-0 left-40 transform -translate-x-1/2 translate-y-1/2">
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
               {currentUser?.picture?.imageUrl ? (
                 <img
                   src={currentUser?.picture?.imageUrl}
                   alt={`${currentUser.name}'s profile`}
-                  className="w-32 h-32 md:w-40 md:h-40 object-cover rounded-full border-4 border-white"
+                  className="w-36 h-36 md:w-44 md:h-44 object-cover rounded-full border-4 border-white shadow-lg"
                 />
               ) : (
                 <img
                   src={noProfile}
                   alt=""
-                  className="w-36 h-32 md:w-40 md:h-40 object-cover rounded-full "
+                  className="w-36 h-36 md:w-44 md:h-44 object-cover rounded-full shadow-lg"
                 />
               )}
             </div>
           </div>
-          <div className="relative p-6">
+          <div className="relative p-8">
             <button
-              className="absolute right-4 top-4 border-2 rounded-xl flex items-center  border-zinc-900 text-zinc-900 font-bold p-2 hover:bg-zinc-900 hover:text-zinc-100"
+              className="absolute right-4 top-4 border-2 rounded-xl flex items-center border-gray-800 text-gray-800 font-poppins font-bold p-2 hover:bg-gray-900 hover:text-white"
               onClick={openEditModal}
             >
               <BiEdit className="mr-2" />
               Edit Profile
             </button>
             <EditProfileModal isOpen={isOpen} isRequestClose={closeModal} />
-
             <CoverImageModal
               isOpen={isCoverImgModalOpen}
               onRequestClose={() => setCoverImgModalOpen(false)}
@@ -155,61 +157,74 @@ const ViewProfile: React.FC = () => {
             />
 
             {currentUser.profile ? (
-              <div className="flex flex-col items-start mt-16 md:mt-10 ">
-                <h1 className="text-2xl font-bold text-zinc-900 mb-2 mt-5">
+              <div className="flex flex-col items-center md:items-start mt-6">
+                <h1 className="text-3xl font-poppins font-bold text-gray-800 mb-2">
                   {currentUser?.name || "User Name"}
                 </h1>
-                {/* <p className="text-zinc-900 font-semibold ">
-              @{currentUser?.name || "tagname"}
-            </p> */}
-                <p className="text-zinc-900 font-semibold text-start fonrshowNotificationBV  px-4 md:px-0">
+
+                <p className="text-zinc-900 font-semibold mb-3">
+                  <span className="text-zinc-700">
+                    {currentUser.followersCount} followers
+                  </span>
+                  <span className="text-zinc-700">
+                    {" "}
+                    | {currentUser.followingsCount} followings
+                  </span>
+                </p>
+                <p className="text-gray-800 font-poppins text-center md:text-left px-4 md:px-0 mb-4">
                   {currentUser.bio}
                 </p>
-                <div className="flex space-x-2 mt-2">
-                  <p className="text-zinc-900 font-semibold ">Skill :</p>
-                  <p className="text-zinc-900 font-semibold ">
-                    {currentUser.skill}
-                  </p>
+                <div className="flex flex-wrap justify-center md:justify-start space-x-4 md:space-x-6 mt-4">
+                  <div className="flex items-center space-x-2">
+                    <p className=" text-gray-800 font-poppins font-semibold">
+                      Skill:
+                    </p>
+                    <p className="text-gray-800 font-poppins">
+                      {currentUser.skill}
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <p className="text-gray-800 font-poppins font-semibold">
+                      Country:
+                    </p>
+                    <p className="text-gray-800 font-poppins">
+                      {currentUser.country}
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <p className="text-gray-800 font-poppins font-semibold">
+                      State:
+                    </p>
+                    <p className="text-gray-800 font-poppins">
+                      {currentUser?.states}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex space-x-2 mt-2">
-                  <p className="text-zinc-900 font-semibold ">Country :</p>
-                  <p className="text-zinc-900 font-semibold ">
-                    {currentUser.country}
-                  </p>
-                </div>
-                <div className="flex space-x-2 mt-2">
-                  <p className="text-zinc-900 font-semibold ">State :</p>
-                  <p className="text-zinc-900 font-semibold ">
-                    {currentUser?.states}
-                  </p>
-                </div>
-                <div className="flex space-x-4">
+                <div className="flex justify-center md:justify-start space-x-4 mt-6">
                   <Link to="/auth/followings">
-                    <button className="font-semibold mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
-                      following
+                    <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-gray-950 text-gray-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                      <h1 className="tracking-wide">Following</h1>
                     </button>
                   </Link>
                   <Link to="/auth/followers">
-                    <button className="font-semibold mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
-                      followers
+                    <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-gray-950 text-gray-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                      <h1 className="tracking-wide">Followers</h1>
                     </button>
                   </Link>
                 </div>
               </div>
             ) : (
-              <div className="mt-32">
-                <h2 className="text-zinc-900 font-bold ">
-                  {" "}
+              <div className="mt-32 text-center">
+                <h2 className="text-gray-800 font-poppins font-bold">
                   No profile details
                 </h2>
               </div>
             )}
-            <hr className="mt-8 border-zinc-400" />
+            <hr className="my-8 border-gray-300" />
           </div>
-            <ProfilePostsActivity />
+          <ProfilePostsActivity />
         </div>
       )}
-      <hr className="mt-8 border-zinc-400" />
     </div>
   );
 };

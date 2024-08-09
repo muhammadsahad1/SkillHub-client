@@ -8,7 +8,8 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 100%; /* Default light background (whitesmoke) */
+    --background-dark: 224 71.4% 4.1%; /* Custom dark background */
     --foreground: 224 71.4% 4.1%;
     --card: 0 0% 100%;
     --card-foreground: 224 71.4% 4.1%;
@@ -36,7 +37,7 @@ body {
   }
 
   .dark {
-    --background: 224 71.4% 4.1%;
+    --background: 224 71.4% 4.1%; /* Dark background */
     --foreground: 210 20% 98%;
     --card: 224 71.4% 4.1%;
     --card-foreground: 210 20% 98%;
@@ -68,6 +69,10 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-whitesmoke text-foreground;
+    @apply font-sans;
+  }
+  .dark body {
+    @apply bg-background-dark text-foreground;
   }
 }

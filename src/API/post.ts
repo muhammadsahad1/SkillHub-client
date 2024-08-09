@@ -47,7 +47,6 @@ export const fetchMyPosts = async () => {
   }
 };
 
-
 // Delete a post
 export const deletPost = async (postId: string) => {
   try {
@@ -94,12 +93,95 @@ export const editPost = async ({
 // like post
 export const postLike = async (postId: string) => {
   try {
-    console.log("api calll");
-    
     const response = await Api.post(userRoutes.postLike, { postId: postId });
-    console.log("res in first for post like",response.data)
+    console.log("res in first for post like", response.data);
     return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
 
+// Adding comment on post
+export const addComment = async ({
+  postId,
+  comment,
+}: {
+  postId: string;
+  comment: string;
+}) => {
+  try {
+    const response = await Api.post(userRoutes.addComment, {
+      postId: postId,
+      comment: comment,
+    });
+
+    console.log("res in first for post like", response.data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+// deleteing comment
+export const commentDelete = async ({
+  commentId,
+  postId,
+}: {
+  commentId: string;
+  postId: string;
+}) => {
+  try {
+    const response = await Api.delete(userRoutes.deleteComment, {
+      data: {
+        postId: postId,
+        commentId: commentId,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+// editing comment
+export const editingComment = async ({
+  commentId,
+  postId,
+  updatedText,
+}: {
+  commentId: string;
+  postId: string;
+  updatedText: string;
+}) => {
+  try {
+    const response = await Api.put(userRoutes.editComment, {
+      data: {
+        postId: postId,
+        commentId: commentId,
+        updatedText: updatedText,
+      },
+    });
+
+    console.log("res after edit comment", response.data);
+    return response.data;
   } catch (error: any) {
     if (error.response) {
       return error.response.data;

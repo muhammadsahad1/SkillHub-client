@@ -7,10 +7,7 @@ import noIgmg from "../../assets/no img.png";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { BarLoader } from "react-spinners";
 import { useUploadPost } from "../../hook/usePosts";
-import { Ipost, setPost } from "../../redux/features/postSlices";
-import { useDispatch, UseDispatch } from "react-redux";
 import { PostType } from "../../@types/postType";
-
 
 const style = {
   position: "absolute" as "absolute",
@@ -47,11 +44,21 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
   const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImageSrc(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
+      const validVideoTypes = ["video/mp4", "video/avi", "video/mkv"];
+
+      if (
+        validImageTypes.includes(file.type) ||
+        validVideoTypes.includes(file.type)
+      ) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setImageSrc(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        showToastError("Please upload a valid image or video file.");
+      }
     }
   };
 
@@ -102,7 +109,6 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
     setCaption("");
     onClose();
   };
-
 
   return (
     <Modal

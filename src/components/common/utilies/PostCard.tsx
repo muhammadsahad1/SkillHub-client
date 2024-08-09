@@ -10,7 +10,6 @@ import useGetUser from "../../../hook/getUser";
 
 const OutlinedCard: React.FC = () => {
   const [isOpen, setModalOpen] = useState<boolean>(false);
-
   const currentUser = useGetUser();
 
   const openModal = () => {

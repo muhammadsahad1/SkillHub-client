@@ -24,6 +24,8 @@ const initialState = {
   accountPrivacy: false,
   blocked: false,
   approved: false,
+  followingsCount : 0,
+  followersCount : 0,
 };
 
 const userSlice = createSlice({
@@ -51,6 +53,7 @@ const userSlice = createSlice({
         approved,
         showNotification,
         accountPrivacy,
+        
       } = action.payload;
       state.id = _id;
       state.name = name;
@@ -71,7 +74,9 @@ const userSlice = createSlice({
       state.approved = approved;
       state.showNotification = showNotification;
       state.accountPrivacy = accountPrivacy;
-    },
+      state.followersCount = action.payload.followersCount;
+      state.followingsCount = action.payload.followingsCount;
+    },  
     setEmail: (state, action) => {
       state.email = action.payload;
     },
@@ -88,9 +93,16 @@ const userSlice = createSlice({
     },
     setCoverImage: (state, action) => {
       const { coverImage, coverImageKey } = action.payload;
-      console.log("coveeriMagekyyyyy ==>",coverImageKey)
       state.coverImage = coverImage;
       state.coverImageKey = coverImageKey;
+    },
+    setFollowingsFollowersCount : (state,action) => {
+      console.log("action ===>",action.payload);
+      
+      const { followersCount , followingsCount } = action.payload
+      
+      state.followersCount = followersCount
+      state.followingsCount = followingsCount
     },
     setShowNotificationChange: (state, action) => {
       state.showNotification = action.payload;
@@ -101,6 +113,7 @@ const userSlice = createSlice({
     setRole: (state, action) => {
       state.role = action.payload;
     },
+    
     deleteUser: (state) => {
       state.id = "";
       state.name = "";
@@ -120,6 +133,7 @@ const userSlice = createSlice({
       state.imageKey = "";
       state.coverImage = "";
       state.coverImageKey = "";
+      state.accountPrivacy = false,
       state.blocked = false;
       state.approved = false;
     },
@@ -135,5 +149,6 @@ export const {
   setAccountPrivacy,
   deleteUser,
   setShowNotificationChange,
+  setFollowingsFollowersCount,
 } = userSlice.actions;
 export default userSlice.reducer;

@@ -15,7 +15,7 @@ const FeedPostsLists = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       {data.posts.map((post: any) => (
-        <HomePostCard key={post.id} post={post} />
+        <HomePostCard key={post._id} post={post} />
       ))}
     </Box>
   );

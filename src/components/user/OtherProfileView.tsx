@@ -1,25 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  coverImageUpload,
-  followApi,
-  getOtherUserDetails,
-  profileImage,
-  unFollow,
-} from "../../API/user";
-import { setCoverImage, setUserImages } from "../../redux/userSlices";
-import { useDispatch } from "react-redux";
+import { followApi, getOthersPosts, getOtherUserDetails, unFollow } from "../../API/user";
 import NavBar from "../common/navBar";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import bgImage from "../../assets/sideImage.png";
-import { BiEdit } from "react-icons/bi";
-import { TbCameraPlus } from "react-icons/tb";
-import { FaUserCircle } from "react-icons/fa";
 import noProfile from "../../assets/no profile.png";
-import { showToastError , showToastSuccess } from "../common/utilies/toast";
+import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { User } from "../../@types/allTypes";
 import Button from "../common/Button";
 import useGetUser from "../../hook/getUser";
-
+import ProfilePostsActivity from "./profile/ProfilePostsActivity";
+import OthersProfilePostsActivity from "./profile/OthersProfilePostsActivity";
 
 interface OtherProfileViewProps {
   userId: string;
@@ -33,28 +23,30 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   coverImageUrl,
 }) => {
   const [userDetails, setUserDetails] = useState<User>();
+  const [posts, setPosts] = useState([]);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const [isFollowingList, setFollowingList] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const currentUser = useGetUser();
 
   const fetchUserDetails = async () => {
     try {
       const result = await getOtherUserDetails(userId);
       setUserDetails(result.user);
-      setIsFollowing(result.user.followers.includes(currentUser.id)); //here we checking the follower in following list
+      setFollowingList(result.user.following.includes(currentUser.id));
+      setIsPrivate(result.user.accountPrivacy);
     } catch (error: any) {
       showToastError(error.message);
     }
   };
 
-  console.log("isFollowing ==? ",isFollowing)
   useEffect(() => {
     if (userId) {
       fetchUserDetails();
     }
   }, [userId]);
 
-  // handle Follow
   const followThisUser = async () => {
     try {
       setLoading(true);
@@ -62,42 +54,40 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
         toFollowingId: userId,
         fromFollowerId: currentUser.id,
       });
-      if(result.success){
-        setIsFollowing(true)
-        showToastSuccess("Followed")
-      }else{
-        showToastError("Followed failed")
+      if (result.success) {
+        setIsFollowing(true);
+        showToastSuccess("Followed");
+      } else {
+        showToastError("Follow failed");
       }
-
       setLoading(false);
     } catch (error: any) {
       showToastError(error.message);
     }
   };
 
-  // handling the unFOllow
   const handleUnfollow = async () => {
     try {
       setLoading(true);
       const fromFollowerId = currentUser.id;
       const result = await unFollow(userId, fromFollowerId);
-      if(result.success){
-        setIsFollowing(false)
-        showToastSuccess("Unfollowed")
+      if (result.success) {
+        setIsFollowing(false);
+        showToastSuccess("Unfollowed");
       }
       setLoading(false);
     } catch (error: any) {
-       showToastError(error.message);
+      showToastError(error.message);
     }
   };
 
   return (
-    <div className="w-full min-h-screen">
+    <div className="w-full min-h-screen bg-gray-100">
       <NavBar />
-      <div className="border-3 rounded-t-none border-zinc-800 shadow-sm shadow-zinc-900 w-full md:w-3/4 mx-auto rounded-lg overflow-hidden ">
+      <div className="border-3 rounded-lg border-zinc-800 shadow-lg w-full md:w-3/4 mx-auto bg-white overflow-hidden">
         <div className="relative">
           {coverImageUrl ? (
-            <div className=" w-full md:h-72 shadow-lg bg-zinc-400">
+            <div className="w-full md:h-72 bg-gray-300">
               <img
                 src={coverImageUrl}
                 alt="Cover"
@@ -112,83 +102,100 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
             />
           )}
 
-          <div className="absolute bottom-0 left-40 transform -translate-x-1/2 translate-y-1/2">
+          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
             {profileImageUrl ? (
               <img
                 src={profileImageUrl}
-                alt="s profile"
-                className="w-32 h-32 md:w-40 md:h-40 object-cover rounded-full border-4 border-white"
+                alt="Profile"
+                className="w-36 h-36 md:w-44 md:h-44 object-cover rounded-full border-4 border-white shadow-lg"
               />
             ) : (
               <img
                 src={noProfile}
-                alt=""
-                className="w-36 h-32 md:w-40 md:h-40 object-cover rounded-full"
+                alt="No Profile"
+                className="w-36 h-36 md:w-44 md:h-44 object-cover rounded-full shadow-lg"
               />
             )}
           </div>
         </div>
-        <div className="relative p-6">
-          <div className="flex justify-end items-center">
+        <div className="relative p-8">
+          <div className="flex justify-end items-center mb-6">
             {isFollowing ? (
               <Button
                 content={"Following"}
                 onClick={handleUnfollow}
                 isLoading={isLoading}
+                className="bg-red-500 text-white hover:bg-red-600"
               />
             ) : (
               <Button
                 content={"Follow"}
                 onClick={followThisUser}
                 isLoading={isLoading}
+                className="bg-blue-500 text-white hover:bg-blue-600"
               />
             )}
           </div>
           {userDetails ? (
-            <div className="flex flex-col items-start mt-16 md:mt-7">
-              <h1 className="text-2xl font-bold text-zinc-900 mb-2">
+            <div className="flex flex-col items-center md:items-start mt-6">
+              <h1 className="text-3xl font-poppins font-bold text-gray-800 mb-2">
                 {userDetails?.name || "User Name"}
               </h1>
+              {!isPrivate || (isPrivate && isFollowingList) ? (
+                <>
+                  <p className="text-zinc-900 font-semibold mb-3">
+                  <span className="text-zinc-700">
+                  {userDetails?.followers?.length} followers 
+                  </span>
+                  <span className="text-zinc-700">
+                    {" "}
+                    | {userDetails.following?.length} followings
+                  </span>
+                </p>
 
-              <p className="text-zinc-900 font-semibold text-start fonrshowNotificationBV  px-4 md:px-0">
-                {userDetails.bio}
-              </p>
-              <div className="flex space-x-2 mt-2">
-                <p className="text-zinc-900 font-semibold ">Skill :</p>
-                <p className="text-zinc-900 font-semibold ">
-                  {userDetails.skill}
+                  <p className="text-gray-800 font-poppins text-center md:text-left px-4 md:px-0 mb-4">
+                    {userDetails.bio}
+                  </p>
+                  <div className="flex flex-wrap justify-center md:justify-start space-x-4 md:space-x-6 mt-4">
+                    <div className="flex items-center space-x-2">
+                      <p className="text-gray-800 font-poppins font-semibold font-poppins font-semibold">Skill:</p>
+                      <p className="text-gray-800 font-poppins">{userDetails.skill}</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <p className="text-gray-800 font-poppins font-semibold font-poppins font-semibold">Country:</p>
+                      <p className="text-gray-800 font-poppins">{userDetails.country}</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <p className="text-gray-800 font-poppins font-semibold font-poppins font-semibold">State:</p>
+                      <p className="text-gray-800 font-poppins">{userDetails?.states}</p>
+                    </div>
+                  </div>
+                  <div className="flex justify-center md:justify-start space-x-4 mt-6">
+                    <Link to={`/auth/OthersFollowers/${userId}`}>
+                    <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                        <h1 className="tracking-wide">Followers</h1>
+                      </button>
+                    </Link>
+                    <Link to={`/auth/OthersFollowings/${userId}`}>
+                    <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                        <h1 className="tracking-wide">Followings</h1>
+                      </button>
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <p className="text-gray-800 font-semibold mt-4">
+                  This account is private. Follow to see their full profile.
                 </p>
-              </div>
-              <div className="flex space-x-2 mt-2">
-                <p className="text-zinc-900 font-semibold ">Country :</p>
-                <p className="text-zinc-900 font-semibold ">
-                  {userDetails.country}
-                </p>
-              </div>
-              <div className="flex space-x-2 mt-2">
-                <p className="text-zinc-900 font-semibold ">State :</p>
-                <p className="text-zinc-900 font-semibold ">
-                  {userDetails?.states}
-                </p>
-              </div>
-              <div className="flex space-x-4">
-                <Link to={`/auth/OthersFollowers/${userId}`}>
-                  <button className="font-semibold mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
-                    <h1 className="tracking-wide">Followers</h1>
-                  </button>
-                </Link>
-                <Link to={`/auth/OthersFollowings/${userId}`}>
-                  <button className="font-semibold mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
-                    <h1 className="tracking-wide">Followers</h1>
-                  </button>
-                </Link>
-              </div>
+              )}
             </div>
           ) : (
-            <div className="mt-32">
-              <h2 className="text-zinc-900 font-bold "> No profile details</h2>
+            <div className="mt-32 text-center">
+              <h2 className="text-gray-800 font-bold">No profile details</h2>
             </div>
           )}
+          <hr className="my-8 border-gray-300" />
+          <OthersProfilePostsActivity userId={userId} />
         </div>
       </div>
     </div>

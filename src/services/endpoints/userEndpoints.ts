@@ -18,7 +18,8 @@ const userRoutes = {
   showNotification: "/user/showNotification",
   getSkillRelatedUsers: "/user/getSkillRelatedUsers",
   getUserDetails: "/user/getUserDetails",
-
+  getOthersPosts : "/user/OthersPosts",
+  
   // followings $ followers
   getMyFollowings: "/user/getMyFollowings",
   unFollow: "/user/unFollow",
@@ -26,6 +27,8 @@ const userRoutes = {
   userFollowers: "/user/followers",
   removeFollower: "/user/follower",
   followBack: "/user/followBack",
+  othersFollowers: "/user/othersFollowers",
+  othersFollowings: "/user/othersFollowings",
 
   // posts
   uploadPost: "/user/uploadPost",
@@ -34,6 +37,10 @@ const userRoutes = {
   editPost: "/user/post",
   postLike: "/user/postLike",
   fetchMyPost: "/user/myPosts",
+  addComment : "/user/addComment",
+  deleteComment : "/user/deleteComment",
+  editComment : "/user/editComment",
+
   logout: "/user/logout",
 };
 
