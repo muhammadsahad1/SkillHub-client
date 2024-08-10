@@ -190,7 +190,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           {post.caption}
         </Typography>
       </CardContent>
-      <CardActions
+      {/* <CardActions
         disableSpacing
         sx={{
           height: 30,
@@ -209,7 +209,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         <IconButton aria-label="report">
           <ReportIcon />
         </IconButton>
-      </CardActions>
+      </CardActions> */}
 
       <Modal
         open={isEditModalOpen}

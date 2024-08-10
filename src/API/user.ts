@@ -480,3 +480,22 @@ export const logoutUser = async () => {
     }
   }
 };
+
+export const fetchSearchUsers = async ( query : string) => {
+  try {
+    const response = await Api.get(userRoutes.searchUser,{
+      params : { query }
+    })
+    console.log("after users search ==>",response.data)
+    return response.data
+    
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+}

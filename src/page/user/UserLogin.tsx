@@ -14,6 +14,7 @@ import { googleLogin } from "../../API/user";
 import { DotLoader } from "react-spinners";
 import ForgotPasswordModal from "../../components/common/utilies/ForgotPasswordModal";
 import PasswordInput from "../../components/common/passwordInput";
+import { showToastError } from "../../components/common/utilies/toast";
 
 type UserData = {
   email: string;
@@ -62,6 +63,9 @@ const UserLogin: React.FC = () => {
     } else if (response.success) {
       dispatch(setUser(response.user));
       navigate(`/`);
+      setIsLoading(false);
+    }else{
+      showToastError(response.message)
       setIsLoading(false);
     }
   };

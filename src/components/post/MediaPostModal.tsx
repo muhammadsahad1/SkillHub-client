@@ -38,6 +38,8 @@ interface PropsValues {
 const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [caption, setCaption] = useState<string>("");
   const uploadPostMutation = useUploadPost();
 
@@ -47,10 +49,13 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
       const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
       const validVideoTypes = ["video/mp4", "video/avi", "video/mkv"];
 
-      if (
-        validImageTypes.includes(file.type) ||
-        validVideoTypes.includes(file.type)
-      ) {
+      if (validVideoTypes.includes(file.type)) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setImageSrc(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else if (validImageTypes.includes(file.type)) {
         const reader = new FileReader();
         reader.onload = (e) => {
           setImageSrc(e.target?.result as string);

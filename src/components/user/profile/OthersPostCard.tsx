@@ -90,8 +90,7 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
   };  
 
   return (
-    <Card sx={{ 
-      bgcolor:"black", 
+    <Card sx={{  
       maxWidth: 800,
       margin: "auto",
       marginTop: 3,

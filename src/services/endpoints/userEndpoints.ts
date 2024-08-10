@@ -29,6 +29,7 @@ const userRoutes = {
   followBack: "/user/followBack",
   othersFollowers: "/user/othersFollowers",
   othersFollowings: "/user/othersFollowings",
+  searchUser : "/user/searchUser",
 
   // posts
   uploadPost: "/user/uploadPost",

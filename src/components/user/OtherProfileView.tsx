@@ -149,7 +149,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                   </span>
                   <span className="text-zinc-700">
                     {" "}
-                    | {userDetails.following?.length} followings
+                    | {userDetails?.following?.length} followings
                   </span>
                 </p>
 

@@ -12,6 +12,7 @@ import { setUserImages } from "../../redux/userSlices";
 import { CgProfile } from "react-icons/cg";
 import { TbMessageDots } from "react-icons/tb";
 import { MdNotifications } from "react-icons/md";
+import SearchUsers from "./searchUsers";
 
 
 const NavBar: React.FC = () => {
@@ -63,8 +64,12 @@ const NavBar: React.FC = () => {
   return (
     <nav className="bg-zinc-100 shadow-lg fixed w-full z-50 top-0 left-0">
     <div className="container mx-auto flex justify-between items-center px-4 py-4">
+      <div className="flex justify-start">
       <div className="font-bold text-gray-800">
         <img className="w-20 h-12" src={skill} alt="Skill Logo" />
+      </div>
+
+      <SearchUsers />
       </div>
       <div className="flex items-center space-x-4">
         <Link to="/" className="text-zinc-900 font-bold hover:text-gray-600">
