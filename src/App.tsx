@@ -7,11 +7,11 @@ import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { SocketProvider } from "./contexts/SocketContext";
 
 interface AppProps {
   children: ReactNode;
 }
-
 
 const theme = createTheme();
 
@@ -26,7 +26,7 @@ function App({ children }: AppProps) {
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <GoogleOAuthProvider clientId={clientId}>
-              {children}
+              <SocketProvider>{children}</SocketProvider>
               <Toaster />
             </GoogleOAuthProvider>
           </PersistGate>

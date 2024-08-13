@@ -164,7 +164,23 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         <MenuItem onClick={handleEdit}>Edit</MenuItem>
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
-      <CardMedia
+      { post.type === "video" ? (
+    <CardMedia
+    component="video"
+    src={post.imageUrl} // Assuming `post.imageUrl` contains the video URL
+    controls
+    sx={{
+      mb: 2,
+      p: 0,
+      m: 0,
+      overflow: "hidden",
+      height: 400,
+      width: "100%",
+      objectFit: "cover",
+    }}
+  />
+      ) : (
+        <CardMedia
         component="img"
         image={post.imageUrl}
         alt="Post image"
@@ -178,6 +194,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           objectFit: "cover",
         }}
       />
+      )}
+
       <CardContent>
         <Typography
           variant="body2"

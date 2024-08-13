@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
-import noIgmg from "../../assets/no img.png";
+import noImg from "../../assets/no img.png";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { BarLoader } from "react-spinners";
 import { useUploadPost } from "../../hook/usePosts";
@@ -37,28 +37,25 @@ interface PropsValues {
 
 const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaSrc, setMediaSrc] = useState<string | null>(null);
   const [caption, setCaption] = useState<string>("");
   const uploadPostMutation = useUploadPost();
 
-  const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadMedia = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
       const validVideoTypes = ["video/mp4", "video/avi", "video/mkv"];
 
-      if (validVideoTypes.includes(file.type)) {
+      if (
+        validImageTypes.includes(file.type) ||
+        validVideoTypes.includes(file.type)
+      ) {
+        setMediaFile(file);
         const reader = new FileReader();
         reader.onload = (e) => {
-          setImageSrc(e.target?.result as string);
-        };
-        reader.readAsDataURL(file);
-      } else if (validImageTypes.includes(file.type)) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setImageSrc(e.target?.result as string);
+          setMediaSrc(e.target?.result as string);
         };
         reader.readAsDataURL(file);
       } else {
@@ -68,50 +65,51 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
   };
 
   const handlePostMedia = async () => {
+    if (!mediaFile && !caption) {
+      showToastError("Please provide an image, video, or caption.");
+      return;
+    }
+
     setLoading(true);
-    const fileInput = document.getElementById("addImage") as HTMLInputElement;
-    const file = fileInput.files?.[0];
 
-    if (file) {
-      let postType: PostType;
-      if (file?.type.startsWith("image/")) {
-        postType = PostType.IMAGE;
-      } else if (file?.type.startsWith("video/")) {
-        postType = PostType.VIDEO;
+    let postType: PostType = PostType.THOUGHTS;
+    if (mediaFile?.type.startsWith("image/")) {
+      postType = PostType.IMAGE;
+    } else if (mediaFile?.type.startsWith("video/")) {
+      postType = PostType.VIDEO;
+    }
+
+    const formData = new FormData();
+    if (mediaFile) {
+      formData.append("postImage", mediaFile);
+    }
+    formData.append("caption", caption);
+    formData.append("type", postType);
+
+    try {
+      const result = await uploadPostMutation.mutateAsync(formData);
+      if (result.success) {
+        showToastSuccess(result.message);
+        resetForm();
+        onClose();
       } else {
-        postType = PostType.THOUGHTS;
+        showToastError(result.message);
       }
-
-      const formData = new FormData();
-      formData.append("postImage", file);
-      formData.append("caption", caption);
-      formData.append("type", postType);
-
-      try {
-        // using reactQuery ====> for effciency
-        const result = await uploadPostMutation.mutateAsync(formData);
-        if (result.success) {
-          setImageSrc("");
-          setLoading(false);
-          showToastSuccess(result.message);
-          onClose();
-        } else {
-          setLoading(false);
-          showToastError(result.message);
-        }
-      } catch (error) {
-        setLoading(false);
-        showToastError("An error occurred while uploading the post.");
-      }
-    } else {
+    } catch (error) {
+      showToastError("An error occurred while uploading the post.");
+    } finally {
       setLoading(false);
-      showToastError("Please provide an image or caption.");
     }
   };
 
-  const handlClose = () => {
-    setImageSrc("");
+  const resetForm = () => {
+    setMediaFile(null);
+    setMediaSrc(null);
     setCaption("");
+  };
+
+  const handleClose = () => {
+    resetForm();
     onClose();
   };
 
@@ -119,7 +117,7 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
     <Modal
       className="min-w-2xl"
       open={isOpen}
-      onClose={handlClose}
+      onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -141,18 +139,29 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
           </Typography>
 
           <div className="w-full max-w-md aspect-video flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
-            <img
-              src={imageSrc || noIgmg}
-              alt="Uploaded content or placeholder"
-              className={`${
-                imageSrc
-                  ? "max-w-full max-h-full object-contain"
-                  : "max-w-32 max-h-full object-contain"
-              }`}
-            />
+            {mediaSrc ? (
+              mediaFile?.type.startsWith("image/") ? (
+                <img
+                  src={mediaSrc}
+                  alt="Uploaded content"
+                  className="max-w-full max-h-full object-contain"
+                />
+              ) : (
+                <video
+                  src={mediaSrc}
+                  controls
+                  className="max-w-full max-h-full object-contain"
+                />
+              )
+            ) : (
+              <img
+                src={noImg}
+                alt="No content"
+                className="max-w-32 max-h-full object-contain"
+              />
+            )}
           </div>
-
-          {imageSrc && (
+          {mediaSrc && (
             <div className="w-full">
               <textarea
                 placeholder="Add a caption..."
@@ -166,19 +175,20 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
           <input
             type="file"
             hidden
-            id="addImage"
-            onChange={handleUploadImage}
+            id="addMedia"
+            onChange={handleUploadMedia}
+            accept="image/*, video/*"
           />
           <div className="flex justify-evenly w-full mt-4">
-            {imageSrc && (
+            {mediaSrc && (
               <button
                 className="text-zinc-900 font-bold p-2 w-full md:w-auto px-10 md:px-20 bg-zinc-50 font-poppins border rounded-full border-zinc-900 hover:bg-red-600 hover:text-zinc-200 hover:border-zinc-200 duration-300 mb-2 md:mb-0"
-                onClick={() => setImageSrc("")}
+                onClick={resetForm}
               >
                 Delete
               </button>
             )}
-            {imageSrc ? (
+            {mediaSrc || caption ? (
               <button
                 className="text-zinc-900 font-bold p-2 w-full md:w-auto px-10 md:px-20 bg-zinc-50 font-poppins border rounded-full border-zinc-900 hover:bg-blue-500 hover:text-zinc-200 hover:border-zinc-200 duration-300"
                 onClick={handlePostMedia}
@@ -188,9 +198,9 @@ const PostSpringModal: React.FC<PropsValues> = ({ isOpen, onClose }) => {
             ) : (
               <button
                 className="text-zinc-900 font-bold p-2 w-full md:w-auto px-10 md:px-20 bg-zinc-50 font-poppins border rounded-full border-zinc-900 hover:bg-zinc-900 hover:text-zinc-200 hover:border-zinc-200 duration-300"
-                onClick={() => document.getElementById("addImage")?.click()}
+                onClick={() => document.getElementById("addMedia")?.click()}
               >
-                Add image
+                Add media
               </button>
             )}
           </div>

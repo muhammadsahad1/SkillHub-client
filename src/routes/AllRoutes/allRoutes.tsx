@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
+import React from "react";
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>> User's Routes >>>>>>>>>>>>>>>>>>>>>>>>>>>>
 import AdminLayout from "../layouts/AdminLayout";
@@ -24,6 +25,7 @@ import FollowersPage from "../../page/user/FollowersPage";
 import OtherProfileViewPage from "../../page/user/OtherProfileViewPage";
 import OthersFollowingsPage from "../../page/user/OthersFollowingsPage";
 import OthersFollowersPage from "../../page/user/OthersFollowersPage";
+import ChatPage from "../../page/chat/ChatPage";
 
 // Define application routes
 const routers = createBrowserRouter([
@@ -95,6 +97,10 @@ const routers = createBrowserRouter([
       },
       {  path : 'OthersFollowers/:userId',
         element : <OthersFollowersPage/>
+      },
+      {
+        path :'chat/:userId',
+        element :<ChatPage/>
       }
     ],
   },
@@ -120,3 +126,6 @@ const routers = createBrowserRouter([
 ]);
 
 export default routers;
+
+
+

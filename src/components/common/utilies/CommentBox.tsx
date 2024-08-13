@@ -26,6 +26,13 @@ export default function CommentBox({ postId, onClose }: CommentBoxProps) {
   const [comment, setComment] = useState<string>("");
   const [isValid, setValid] = useState<boolean>(true);
   const addCommentMutation = useAddComment();
+  const commentInputRef = React.useRef<HTMLInputElement>(null)
+
+  React.useEffect(()=>{
+    if(commentInputRef.current){
+      commentInputRef.current.focus()
+    }
+  },[])
 
   const handleAddComment = async () => {
     try {
@@ -54,6 +61,7 @@ export default function CommentBox({ postId, onClose }: CommentBoxProps) {
         <p className="font-poppins font-semibold text-zinc-900">Your comment</p>
       </FormLabel>
       <TextField
+      inputRef={commentInputRef}
         onChange={handleSetComment}
         value={comment}
         placeholder="Type something here…"

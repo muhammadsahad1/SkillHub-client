@@ -42,6 +42,10 @@ const userRoutes = {
   deleteComment : "/user/deleteComment",
   editComment : "/user/editComment",
 
+  // Conversations
+  getChatUsers : '/user/getChat',
+  sendChat : '/user/sendChat',
+
   logout: "/user/logout",
 };
 

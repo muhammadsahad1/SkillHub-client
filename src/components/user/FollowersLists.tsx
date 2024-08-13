@@ -22,7 +22,6 @@ const FollowersLists = () => {
     fetchFollowers();
   }, []);
 
-  console.log(followers);
 
   //To Remove the follower
   const handleRemove = async (toRemoveId: string) => {

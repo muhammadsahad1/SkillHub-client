@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { followApi, getOthersPosts, getOtherUserDetails, unFollow } from "../../API/user";
+import {
+  followApi,
+  getOthersPosts,
+  getOtherUserDetails,
+  unFollow,
+} from "../../API/user";
 import NavBar from "../common/navBar";
 import { Link } from "react-router-dom";
 import bgImage from "../../assets/sideImage.png";
@@ -8,7 +13,7 @@ import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { User } from "../../@types/allTypes";
 import Button from "../common/Button";
 import useGetUser from "../../hook/getUser";
-import ProfilePostsActivity from "./profile/ProfilePostsActivity";
+import { AiFillMessage } from "react-icons/ai";
 import OthersProfilePostsActivity from "./profile/OthersProfilePostsActivity";
 
 interface OtherProfileViewProps {
@@ -138,46 +143,70 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
           </div>
           {userDetails ? (
             <div className="flex flex-col items-center md:items-start mt-6">
-              <h1 className="text-3xl font-poppins font-bold text-gray-800 mb-2">
-                {userDetails?.name || "User Name"}
-              </h1>
+              <div className="flex items-start">
+                <h1 className="text-3xl font-poppins font-bold text-gray-800 mb-2 mr-4">
+                  {userDetails?.name || "User Name"}
+                </h1>
+                <Link to={`/auth/chat/${userId}`}>
+                  <AiFillMessage
+                    className="message-icon"
+                    size={32}
+                    style={{
+                      cursor: "pointer",
+                      color: "rgba(74, 74, 74, 8)",
+                    }}
+                  />
+                </Link>
+              </div>
               {!isPrivate || (isPrivate && isFollowingList) ? (
                 <>
                   <p className="text-zinc-900 font-semibold mb-3">
-                  <span className="text-zinc-700">
-                  {userDetails?.followers?.length} followers 
-                  </span>
-                  <span className="text-zinc-700">
-                    {" "}
-                    | {userDetails?.following?.length} followings
-                  </span>
-                </p>
+                    <span className="text-zinc-700">
+                      {userDetails?.followers?.length} followers
+                    </span>
+                    <span className="text-zinc-700">
+                      {" "}
+                      | {userDetails?.following?.length} followings
+                    </span>
+                  </p>
 
                   <p className="text-gray-800 font-poppins text-center md:text-left px-4 md:px-0 mb-4">
                     {userDetails.bio}
                   </p>
                   <div className="flex flex-wrap justify-center md:justify-start space-x-4 md:space-x-6 mt-4">
                     <div className="flex items-center space-x-2">
-                      <p className="text-gray-800 font-poppins font-semibold font-poppins font-semibold">Skill:</p>
-                      <p className="text-gray-800 font-poppins">{userDetails.skill}</p>
+                      <p className="text-gray-800 font-poppins font-semibold font-poppins font-semibold">
+                        Skill:
+                      </p>
+                      <p className="text-gray-800 font-poppins">
+                        {userDetails.skill}
+                      </p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <p className="text-gray-800 font-poppins font-semibold font-poppins font-semibold">Country:</p>
-                      <p className="text-gray-800 font-poppins">{userDetails.country}</p>
+                      <p className="text-gray-800 font-poppins font-semibold font-poppins font-semibold">
+                        Country:
+                      </p>
+                      <p className="text-gray-800 font-poppins">
+                        {userDetails.country}
+                      </p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <p className="text-gray-800 font-poppins font-semibold font-poppins font-semibold">State:</p>
-                      <p className="text-gray-800 font-poppins">{userDetails?.states}</p>
+                      <p className="text-gray-800 font-poppins font-semibold font-poppins font-semibold">
+                        State:
+                      </p>
+                      <p className="text-gray-800 font-poppins">
+                        {userDetails?.states}
+                      </p>
                     </div>
                   </div>
                   <div className="flex justify-center md:justify-start space-x-4 mt-6">
                     <Link to={`/auth/OthersFollowers/${userId}`}>
-                    <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                      <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
                         <h1 className="tracking-wide">Followers</h1>
                       </button>
                     </Link>
                     <Link to={`/auth/OthersFollowings/${userId}`}>
-                    <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                      <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
                         <h1 className="tracking-wide">Followings</h1>
                       </button>
                     </Link>

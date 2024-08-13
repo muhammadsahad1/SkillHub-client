@@ -153,7 +153,7 @@ const UserLogin: React.FC = () => {
             </div>
             <PasswordInput
               id="password"
-              label="New password"
+              label="password"
               register={register}
               validation={{ validate: validatePassword }}
               errors={errors?.newPassword}

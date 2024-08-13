@@ -8,9 +8,10 @@ const FeedPostsLists = () => {
 
     // console.log("posts fetched ==+>" , posts)
 
-  if (!data || !data.posts.length) {
+  if (!data || !data?.posts?.length) {
     return <Typography>No posts found</Typography>;
   }
+
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
