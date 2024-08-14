@@ -336,13 +336,13 @@ const HomePostCard = ({ post }: any) => {
             backgroundColor: "#f9f9f9",
           }}
         >
-          <CommentBox postId={post._id} />
+          <CommentBox postId={post._id} onClose={handleCommentMenuClose}/>
         </Box>
       )}
 
       {/* Menu for Post Actions */}
       <Menu
-        anchorEl={anchorEl}
+        anchorEl={anchorEl} 
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
@@ -399,7 +399,7 @@ const HomePostCard = ({ post }: any) => {
           isOpen={isDeleteModalOpen}
           isClose={closeDeleteModal}
           onConfirm={handleDelete}
-          title={" Post Delete "}
+          title={"Post Delete"}
           content={"Are you sure you want to delete this post?"}
         />
       )}

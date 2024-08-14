@@ -6,14 +6,15 @@ export const fetchChatUsers = async (
   userToChatId: string
 ) => {
   try {
-    console.log("userto000000000000000000 ===>",userToChatId);
-    
+  
     const response = await Api.get(userRoutes.getChatUsers, {
       params: {
         senderId: senderId,
         userToChatId: userToChatId, 
       },
     });
+    console.log("res ===>",response.data);
+    
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -47,3 +48,20 @@ export const sendChat = async (senderId: string, id: string , messages : string)
     }
   }
 };
+
+// fetching the chatUsers 
+export const getConversationsUsers = async () => {
+  try {
+    const response = await Api.get(userRoutes.fetchUsers);
+    console.log("reesssssssss ====>",response.data);
+    return response.data
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+}

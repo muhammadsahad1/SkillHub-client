@@ -108,6 +108,7 @@ const useAddComment = () => {
           queryClient.invalidateQueries(['posts']);
           queryClient.invalidateQueries(['post', data.postId]);
         } else {
+          
           showToastError(data.message);
         }
     }

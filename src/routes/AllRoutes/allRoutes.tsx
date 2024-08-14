@@ -1,131 +1,216 @@
 import { createBrowserRouter } from "react-router-dom";
-import React from "react";
+import React, { Suspense } from "react";
+import { DotLoader } from "react-spinners";
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>> User's Routes >>>>>>>>>>>>>>>>>>>>>>>>>>>>
-import AdminLayout from "../layouts/AdminLayout";
-import Adminlogin from "../../page/admin/Adminlogn";
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>> User's Routes >>>>>>>>>>>>>>>>>>>>>>>>>>>>
-import UserLogin from "../../page/user/UserLogin";
-import SignUp from "../../page/user/UserSignup";
-import Home from "../../page/user/Home";
-import OtpForm from "../../page/user/Otp";
-import ResetPassword from "../../components/user/resetPassword";
-import ProtectLayout from "../protectLayout";
-import PublicLayout from "../PublicLayout";
-import AdminDashboard from "../../page/admin/AdminDashboard";
-import UserManagement from "../../page/admin/UserManagement";
-import BlockedUserPage from "../../page/user/BlockedUserPage";
-import SettingsPage from "../../page/user/SettingsPage";
-import PrivacyUserPage from "../../page/user/PrivacyUserPage";
-import NotificationSettingsPage from "../../page/user/NotificationSettingsPage";
-import Profile from "../../page/user/profile";
-import FollowingPage from "../../page/user/FollowingPage";
-import FollowersPage from "../../page/user/FollowersPage";
-import OtherProfileViewPage from "../../page/user/OtherProfileViewPage";
-import OthersFollowingsPage from "../../page/user/OthersFollowingsPage";
-import OthersFollowersPage from "../../page/user/OthersFollowersPage";
-import ChatPage from "../../page/chat/ChatPage";
+// Wrapping with React.lazy for lazy loading
+const AdminLayout = React.lazy(() => import("../layouts/AdminLayout"));
+const Adminlogin = React.lazy(() => import("../../page/admin/Adminlogn"));
+const UserLogin = React.lazy(() => import("../../page/user/UserLogin"));
+const SignUp = React.lazy(() => import("../../page/user/UserSignup"));
+const Home = React.lazy(() => import("../../page/user/Home"));
+const OtpForm = React.lazy(() => import("../../page/user/Otp"));
+const ResetPassword = React.lazy(() => import("../../components/user/resetPassword"));
+const ProtectLayout = React.lazy(() => import("../protectLayout"));
+const PublicLayout = React.lazy(() => import("../PublicLayout"));
+const AdminDashboard = React.lazy(() => import("../../page/admin/AdminDashboard"));
+const UserManagement = React.lazy(() => import("../../page/admin/UserManagement"));
+const BlockedUserPage = React.lazy(() => import("../../page/user/BlockedUserPage"));
+const SettingsPage = React.lazy(() => import("../../page/user/SettingsPage"));
+const PrivacyUserPage = React.lazy(() => import("../../page/user/PrivacyUserPage"));
+const NotificationSettingsPage = React.lazy(() => import("../../page/user/NotificationSettingsPage"));
+const Profile = React.lazy(() => import("../../page/user/profile"));
+const FollowingPage = React.lazy(() => import("../../page/user/FollowingPage"));
+const FollowersPage = React.lazy(() => import("../../page/user/FollowersPage"));
+const OtherProfileViewPage = React.lazy(() => import("../../page/user/OtherProfileViewPage"));
+const OthersFollowingsPage = React.lazy(() => import("../../page/user/OthersFollowingsPage"));
+const OthersFollowersPage = React.lazy(() => import("../../page/user/OthersFollowersPage"));
+const ChatPage = React.lazy(() => import("../../page/chat/ChatPage"));
 
 // Define application routes
 const routers = createBrowserRouter([
-  //User routes start here >>>>>>>>>>>>>>>>>>
   {
     path: "/",
-    element: <Home />,
+    element: (
+      <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+        <Home />
+      </Suspense>
+    ),
   },
   {
     path: "/blockedUser",
-    element: <BlockedUserPage />,
+    element: (
+      <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+        <BlockedUserPage />
+      </Suspense>
+    ),
   },
   {
     path: "auth/",
-    element: <PublicLayout />,
+    element: (
+      <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+        <PublicLayout />
+      </Suspense>
+    ),
     children: [
       {
         path: "userLogin",
-        element: <UserLogin />,
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <UserLogin />
+          </Suspense>
+        ),
       },
       {
         path: "resetPassword",
-        element: <ResetPassword />,
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <ResetPassword />
+          </Suspense>
+        ),
       },
       {
         path: "userSignup",
-        element: <SignUp />,
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <SignUp />
+          </Suspense>
+        ),
       },
       {
         path: "otp",
-        element: <OtpForm />,
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <OtpForm />
+          </Suspense>
+        ),
       },
     ],
   },
   {
     path: "auth/",
-    element: <ProtectLayout />,
+    element: (
+      <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+        <ProtectLayout />
+      </Suspense>
+    ),
     children: [
       {
         path: "viewProfile",
-        element: <Profile />,
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <Profile />
+          </Suspense>
+        ),
       },
       {
         path: "settings",
-        element: <SettingsPage />,
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <SettingsPage />
+          </Suspense>
+        ),
       },
       {
         path: "privacySettings",
-        element: <PrivacyUserPage />,
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <PrivacyUserPage />
+          </Suspense>
+        ),
       },
       {
         path: "notificationSettings",
-        element: <NotificationSettingsPage />,
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <NotificationSettingsPage />
+          </Suspense>
+        ),
       },
       {
         path: "followings",
-        element: <FollowingPage />,
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <FollowingPage />
+          </Suspense>
+        ),
       },
       {
-        path :"followers",
-        element : <FollowersPage/>
+        path: "followers",
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <FollowersPage />
+          </Suspense>
+        ),
       },
       {
-        path:'OtherProfileView/:userId',
-        element : <OtherProfileViewPage/>
-      },{
-        path : 'OthersFollowings/:userId',
-        element : <OthersFollowingsPage/>
-      },
-      {  path : 'OthersFollowers/:userId',
-        element : <OthersFollowersPage/>
+        path: "OtherProfileView/:userId",
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <OtherProfileViewPage />
+          </Suspense>
+        ),
       },
       {
-        path :'chat/:userId',
-        element :<ChatPage/>
-      }
+        path: "OthersFollowings/:userId",
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <OthersFollowingsPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "OthersFollowers/:userId",
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <OthersFollowersPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "chat/:userId",
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <ChatPage />
+          </Suspense>
+        ),
+      },
     ],
   },
-  //Admin routes start here >>>>>>>>>>>>>>>>>>
+  // Admin routes start here >>>>>>>>>>>>>>>>>>
   {
     path: "admin",
-    element: <AdminLayout />,
+    element: (
+      <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+        <AdminLayout />
+      </Suspense>
+    ),
     children: [
       {
         path: "login",
-        element: <Adminlogin />,
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <Adminlogin />
+          </Suspense>
+        ),
       },
       {
         path: "dashboard",
-        element: <AdminDashboard />,
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <AdminDashboard />
+          </Suspense>
+        ),
       },
       {
         path: "ums",
-        element: <UserManagement />,
+        element: (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
+            <UserManagement />
+          </Suspense>
+        ),
       },
     ],
   },
 ]);
 
 export default routers;
-
-
-

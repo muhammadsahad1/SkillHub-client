@@ -16,29 +16,40 @@ import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import { BiPaperPlane } from "react-icons/bi";
 import EmojiPicker from "emoji-picker-react";
 import TimeLine from "./TimeLine";
-import { useSocket } from "../../contexts/SocketContext";
+// import { useSocket } from "../../contexts/SocketContext";
+import { Socket } from "socket.io-client";
 import useGetUser from "../../hook/getUser";
 import { useParams } from "react-router-dom";
 import { fetchChatUsers, sendChat } from "../../API/conversation";
 
-const ChatComponent = () => {
+const ChatComponent = ({ socket }: { socket: Socket }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [message, setMessage] = useState<string>("");
-  const [chat, setChat] = useState<any>({ messages: [] });
+  const [chats, setChat] = useState<any>([]);
   const [user, setUser] = useState<any>({});
-  const socket = useSocket();
+  // const socket = useSocket();
   const sender = useGetUser();
 
   const { userId } = useParams();
 
   const fetchChat = async () => {
     try {
-      const userChat = await fetchChatUsers(sender.id as string, userId as string);
-      // setUser()
+      const userChat = await fetchChatUsers(
+        sender.id as string,
+        userId as string
+      );
+      console.log("res ====> userChat ==>", userChat);
+
+      setUser(userChat?.userWithProfileImage);
+
+      setChat(userChat?.messages || []);
+      socket?.emit("joinRoom", { senderId: sender.id, receiverId: userId });
     } catch (error) {
       console.log("error", error);
     }
   };
+  console.log("chattt ===> ===>", chats);
+  console.log("user ====> ===>", user);
 
   useEffect(() => {
     if (userId) {
@@ -46,61 +57,48 @@ const ChatComponent = () => {
     }
   }, [userId, sender.id]);
 
-  console.log("user id ===>",sender.id);
-  
-  
+  useEffect(() => {
+    if (socket) {
+      const handleReieveData = (data: string) => {
+        setChat((prevChat: string) => [...prevChat, data]);
+      };
+      socket.on("receiveData", handleReieveData);
+
+      return () => {
+        socket.off("receiveData", handleReieveData);
+      };
+    }
+  }, [socket]);
+
+  console.log("user id ===>", sender.id);
 
   const sendMessage = async () => {
     try {
-      console.log("called ayi ");
-      
-      const messages = message;
+      if (!socket) {
+        console.error("Socket is not initialized");
+        return;
+      }
+
+      const messages = message.trim();
+      if (!message) {
+        return;
+      }
+
       let newMessage = {
         _id: new Date().getTime().toString(),
         senderId: sender.id,
         receiverId: userId,
+        message: messages,
         media: "",
         createAt: new Date().toISOString(),
       };
       setMessage("");
-      socket?.emit("sendData", { ...newMessage });
+      socket.emit("sendData", { ...newMessage });
       await sendChat(sender.id as string, userId as string, messages as string);
-      setMessage("");
       // again fetch chat after the message send
       fetchChat();
     } catch (error) {}
   };
-
-
-  const messages = [
-    {
-      id: 1,
-      sender: "self",
-      text: "Hey! How are you?",
-      time: "2:00 PM",
-    },
-    {
-      id: 2,
-      sender: "Anil",
-      text: "I'm good, thanks! How about you?",
-      time: "2:01 PM",
-    },
-    {
-      id: 3,
-      sender: "self",
-      text: "Doing well, just working on some code.",
-      time: "2:02 PM",
-    },
-    {
-      id: 4,
-      sender: "Anil",
-      text: "Nice! Keep it up.",
-      time: "2:03 PM",
-    },
-  ];
-  
-  
-
 
   const onEmojiClick = (event, emojiObject) => {
     setMessage(message + emojiObject.emoji);
@@ -135,7 +133,7 @@ const ChatComponent = () => {
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Avatar
-            src="/path-to-anil-avatar.jpg"
+            src={user?.profileImageUrl}
             alt="Anil"
             sx={{ width: 48, height: 48 }}
           />
@@ -143,13 +141,16 @@ const ChatComponent = () => {
             <Typography
               variant="subtitle1"
               color="#151719"
-              className="font-bold"
+              fontFamily="Poppins"
+              fontWeight="Bold"
             >
-              Anil
+              {user?.name}
             </Typography>
-            <Typography variant="body2" color="#151719" sx={{ opacity: 0.7 }}>
-              Online - Last seen, 2:02pm
-            </Typography>
+            <Typography
+              variant="body2"
+              color="#151719"
+              sx={{ opacity: 0.7 }}
+            ></Typography>
           </Box>
         </Box>
         <Box>
@@ -187,60 +188,104 @@ const ChatComponent = () => {
           backgroundPosition: "end",
         }}
       >
-        <TimeLine />
-        {messages.map((message) => (
-          <Fade in={true} key={message.id}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent:
-                  message.sender === "self" ? "flex-end" : "flex-start",
-                mb: 2,
-              }}
-            >
-              <Paper
-                elevation={3}
-                sx={{
-                  p: 1.5,
-                  bgcolor:
-                    message.sender === "self"
-                      ? "rgba(31, 31, 31, 0.9)"
-                      : "rgba(255, 255, 255, 0.9)",
-                  color: message.sender === "self" ? "white" : "text.primary",
-                  borderRadius: 2,
-                  maxWidth: "70%",
-                  backdropFilter: "blur(5px)",
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    transform: "translateY(-2px)",
-                    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                  },
-                }}
-                className="font-poppins"
-              >
-                <Typography
-                  variant="body1"
-                  className={message.sender === "self" ? "font-bold" : ""}
-                >
-                  {message.text}
-                </Typography>
-                <Typography
-                  variant="caption"
+        {chats.length > 0 ? (
+          <>
+            <TimeLine />
+            {chats.map((message: any) => (
+              <Fade in={true} key={message._id}>
+                <Box
                   sx={{
-                    display: "block",
-                    mt: 0.5,
-                    textAlign: "right",
-                    opacity: 0.7,
+                    display: "flex",
+                    justifyContent:
+                      message.senderId === sender.id
+                        ? "flex-end"
+                        : "flex-start",
+                    mb: 2,
                   }}
                 >
-                  {message.time}
-                </Typography>
-              </Paper>
-            </Box>
-          </Fade>
-        ))}
+                  <Paper
+                    elevation={3}
+                    sx={{
+                      p: 1.5,
+                      bgcolor:
+                        message.senderId === sender.id
+                          ? "rgba(31, 31, 31, 0.9)"
+                          : "rgba(255, 255, 255, 0.9)",
+                      color:
+                        message.senderId === sender.id
+                          ? "white"
+                          : "text.primary",
+                      borderRadius: 2,
+                      maxWidth: "70%",
+                      backdropFilter: "blur(5px)",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                      },
+                    }}
+                    className="font-poppins"
+                  >
+                    <Typography
+                      variant="body1"
+                      className={
+                        message.senderId === sender.id ? "font-bold" : ""
+                      }
+                    >
+                      {message.message}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        display: "block",
+                        mt: 0.5,
+                        textAlign: "right",
+                        opacity: 0.7,
+                      }}
+                    >
+                      {message.time}
+                    </Typography>
+                  </Paper>
+                </Box>
+              </Fade>
+            ))}
+          </>
+        ) : (
+          <Box
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              borderRadius: 2,
+              padding: 4,
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{
+                color: "grey.100",
+                mb: 2,
+                textAlign: "center",
+                fontFamily: "Poppins",
+              }}
+            >
+              Welcome to Your Skill Exchange Hub
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ color: "grey.300", textAlign: "center", maxWidth: 400 }}
+            >
+              Ready to grow your skills? Select a conversation from the list or
+              start a new chat to connect and share knowledge with fellow
+              learners and experts. Engage, learn, and contribute to a community
+              of growth.
+            </Typography>
+          </Box>
+        )}
       </Box>
-
       {/* Message Input */}
       <Paper
         component="form"
@@ -261,8 +306,9 @@ const ChatComponent = () => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => {
-            if(e.key === "Enter"){
-              sendMessage()
+            if (e.key === "Enter") {
+              e.preventDefault();
+              sendMessage();
             }
           }}
         />
@@ -275,7 +321,7 @@ const ChatComponent = () => {
         </IconButton>
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
         <IconButton color="primary" sx={{ p: "10px" }}>
-          <BiPaperPlane onClick={sendMessage}/>
+          <BiPaperPlane onClick={sendMessage} />
         </IconButton>
       </Paper>
 

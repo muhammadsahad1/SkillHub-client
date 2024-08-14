@@ -12,37 +12,37 @@ import { showToastError } from "./toast";
 interface CommentBoxProps {
   postId: string;
   userId: string;
-  comments: any[];
   onClose: () => void;
-  openCommentMenu: (event: React.MouseEvent<HTMLElement>) => void;
-  isCommentMenuOpen: boolean;
-  handleCommentMenuClose: () => void;
-  deletingComment: (commentId: string) => void;
-  handleEditComment: (commentId: string, newComment: string) => void;
 }
 
 export default function CommentBox({ postId, onClose }: CommentBoxProps) {
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [comment, setComment] = useState<string>("");
   const [isValid, setValid] = useState<boolean>(true);
   const addCommentMutation = useAddComment();
-  const commentInputRef = React.useRef<HTMLInputElement>(null)
+  const commentInputRef = React.useRef<HTMLInputElement>(null);
 
-  React.useEffect(()=>{
-    if(commentInputRef.current){
-      commentInputRef.current.focus()
+  React.useEffect(() => {
+    if (commentInputRef.current) {
+      commentInputRef.current.focus();
     }
-  },[])
+  }, []);
 
   const handleAddComment = async () => {
     try {
-      await addCommentMutation.mutateAsync({ postId, comment });
-      onClose();
-    } catch (error) {
+      if (comment) {
+        console.log("comment ===>",comment , postId);
+        
+        await addCommentMutation.mutateAsync({ postId, comment });
+        onClose();
+        setComment("");
+      }
+    } catch (error: any) {
+      console.error("Error in handleAddComment:", error);
       showToastError("An error occurred while uploading the comment.");
     }
   };
-
   const handleSetComment = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -61,7 +61,7 @@ export default function CommentBox({ postId, onClose }: CommentBoxProps) {
         <p className="font-poppins font-semibold text-zinc-900">Your comment</p>
       </FormLabel>
       <TextField
-      inputRef={commentInputRef}
+        inputRef={commentInputRef}
         onChange={handleSetComment}
         value={comment}
         placeholder="Type something here…"

@@ -45,6 +45,7 @@ const userRoutes = {
   // Conversations
   getChatUsers : '/user/getChat',
   sendChat : '/user/sendChat',
+  fetchUsers : '/user/chatUsers',
 
   logout: "/user/logout",
 };
