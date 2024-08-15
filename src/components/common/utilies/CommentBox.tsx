@@ -16,7 +16,7 @@ interface CommentBoxProps {
 }
 
 export default function CommentBox({ postId, onClose }: CommentBoxProps) {
-
+  
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [comment, setComment] = useState<string>("");
   const [isValid, setValid] = useState<boolean>(true);

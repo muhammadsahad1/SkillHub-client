@@ -1,4 +1,6 @@
 export interface User {
+  followers: any;
+  following: any;
   states?: string;
   id?: string;
   name: string;

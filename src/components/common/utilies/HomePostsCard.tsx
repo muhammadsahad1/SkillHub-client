@@ -137,6 +137,9 @@ const HomePostCard = ({ post }: any) => {
     }
   };
 
+  console.log("posts ===>",post);
+  
+
   const handlePostLike = async () => {
     try {
       const wasLiked = !isLiked;
@@ -209,7 +212,7 @@ const HomePostCard = ({ post }: any) => {
     >
       <CardHeader
         avatar={
-          <Link to={`auth/OtherProfileView/${post?.userId}`}>
+          <Link to="auth/OtherProfileView" state={post?.userId}>
             <Avatar src={post.userImageUrl} />
           </Link>
         }
@@ -317,6 +320,13 @@ const HomePostCard = ({ post }: any) => {
             {post?.comments?.length} Comments
           </ActionButton>
         </Box>
+        <Box>
+        {/* {post?.comments ? (
+          {post.comments}
+        ) : (
+
+        )} */}
+        </Box>
         <IconButton
           aria-controls="comment-menu"
           aria-haspopup="true"
@@ -336,13 +346,13 @@ const HomePostCard = ({ post }: any) => {
             backgroundColor: "#f9f9f9",
           }}
         >
-          <CommentBox postId={post._id} onClose={handleCommentMenuClose}/>
+          <CommentBox postId={post._id} onClose={handleCommentMenuClose} />
         </Box>
       )}
 
       {/* Menu for Post Actions */}
       <Menu
-        anchorEl={anchorEl} 
+        anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >

@@ -16,21 +16,21 @@ import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import { BiPaperPlane } from "react-icons/bi";
 import EmojiPicker from "emoji-picker-react";
 import TimeLine from "./TimeLine";
-// import { useSocket } from "../../contexts/SocketContext";
 import { Socket } from "socket.io-client";
 import useGetUser from "../../hook/getUser";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { fetchChatUsers, sendChat } from "../../API/conversation";
+import { useSocket } from "../../hook/useSocket";
 
-const ChatComponent = ({ socket }: { socket: Socket }) => {
+const ChatComponent = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [chats, setChat] = useState<any>([]);
   const [user, setUser] = useState<any>({});
-  // const socket = useSocket();
+  const { socket } = useSocket()
   const sender = useGetUser();
-
-  const { userId } = useParams();
+  const location = useLocation();
+  const { userId } = location.state as { userId: string };
 
   const fetchChat = async () => {
     try {
@@ -38,7 +38,6 @@ const ChatComponent = ({ socket }: { socket: Socket }) => {
         sender.id as string,
         userId as string
       );
-      console.log("res ====> userChat ==>", userChat);
 
       setUser(userChat?.userWithProfileImage);
 
@@ -48,8 +47,6 @@ const ChatComponent = ({ socket }: { socket: Socket }) => {
       console.log("error", error);
     }
   };
-  console.log("chattt ===> ===>", chats);
-  console.log("user ====> ===>", user);
 
   useEffect(() => {
     if (userId) {
@@ -60,7 +57,9 @@ const ChatComponent = ({ socket }: { socket: Socket }) => {
   useEffect(() => {
     if (socket) {
       const handleReieveData = (data: string) => {
-        setChat((prevChat: string) => [...prevChat, data]);
+
+          setChat((prevChat: string) => [...prevChat, data]);
+     
       };
       socket.on("receiveData", handleReieveData);
 
@@ -69,8 +68,6 @@ const ChatComponent = ({ socket }: { socket: Socket }) => {
       };
     }
   }, [socket]);
-
-  console.log("user id ===>", sender.id);
 
   const sendMessage = async () => {
     try {

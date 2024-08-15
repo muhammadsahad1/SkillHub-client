@@ -1,32 +1,31 @@
-// import React,{ createContext , useContext ,useEffect , useState} from 'react'
-// import SocketService from "../services/socketService";
-// import useGetUser from '../hook/getUser';
+import React, { ReactNode, useEffect, useState } from "react";
+import { SocketContext } from "../@types/socketTypes";
+import { io, Socket } from "socket.io-client";
 
-// const socketContext = createContext<SocketService | null>(null)
+interface SocketProviderProps {
+  children: ReactNode;
+}
 
-// export const useSocket = () => {
-//   return useContext(socketContext)
-// }
+export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
+  const [socket, setSocket] = useState<Socket | null>(null);
 
-// export const SocketProvider :React.FC<{children : React.ReactNode}> = ({ children }) => {
-// const user = useGetUser()
-// const [socketService,setSocketService] = useState<SocketService | null>(null)
-  
-//   useEffect(() => {
-//     if(user.id){
+  useEffect(() => {
+    //initialize the socket with url of backend
+    const newSocket = io(`${import.meta.env.VITE_BASE_URL}`);
+    setSocket(newSocket);
+    //calling the connect event for connect to server
+    newSocket.on("connect", () => {
+      console.log("client connected to server ===> ID ===> ", newSocket.id);
+    });
+    //cleaner function for clean the unnessary mount
+    return () => {
+      newSocket.close();
+    };
+  }, []);
 
-//       const socketUrl = import.meta.env.BASE_URL
-//       const server = new SocketService(socketUrl)
-      
-//       setSocketService(server)
-      
-//       return ()=> {
-//         server.disconnect()
-//       }    
-//     }
-//   }
-//   ,[])
-
-//   return <socketContext.Provider value={socketService}> {children} </socketContext.Provider>
-
-// }
+  return (
+    <SocketContext.Provider value={{ socket }}>
+      {children}
+    </SocketContext.Provider>
+  );
+};

@@ -285,7 +285,8 @@ export const getOtherUserDetails = async (userId: string) => {
     const response = await Api.get(userRoutes.getUserDetails, {
       params: { userId: userId },
     });
-
+    console.log("ress in otherViewDetails ",response.data );
+    
     return response.data;
   } catch (error: any) {
     if (error.response) {

@@ -38,9 +38,11 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   const fetchUserDetails = async () => {
     try {
       const result = await getOtherUserDetails(userId);
+      setIsPrivate(result.user.accountPrivacy);
       setUserDetails(result.user);
       setFollowingList(result.user.following.includes(currentUser.id));
-      setIsPrivate(result.user.accountPrivacy);
+      console.log("isFollowis ??",isFollowingList);
+      setIsFollowing(isFollowingList)
     } catch (error: any) {
       showToastError(error.message);
     }
@@ -86,10 +88,13 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
     }
   };
 
+  console.log("isFollowingList ===>",isFollowingList);
+  
+
   return (
     <div className="w-full min-h-screen bg-gray-100">
       <NavBar />
-      <div className="border-3 rounded-lg border-zinc-800 shadow-lg w-full md:w-3/4 mx-auto bg-white overflow-hidden">
+      <div className="border-3 rounded-lg border-zinc-800 shadow-lg w-full md:w-3/4 mx-auto bg-white overflow-hidden mt-20">
         <div className="relative">
           {coverImageUrl ? (
             <div className="w-full md:h-72 bg-gray-300">
@@ -147,16 +152,21 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                 <h1 className="text-3xl font-poppins font-bold text-gray-800 mb-2 mr-4">
                   {userDetails?.name || "User Name"}
                 </h1>
-                <Link to={`/auth/chat/${userId}`}>
-                  <AiFillMessage
-                    className="message-icon"
-                    size={32}
-                    style={{
-                      cursor: "pointer",
-                      color: "rgba(74, 74, 74, 8)",
-                    }}
-                  />
-                </Link>
+                {isFollowingList && (
+                <Link
+                to="/auth/chat"
+                state={{ userId: userId }}
+              >
+                    <AiFillMessage
+                      className="message-icon"
+                      size={32}
+                      style={{
+                        cursor: "pointer",
+                        color: "rgba(74, 74, 74, 8)",
+                      }}
+                    />
+                  </Link>
+                )}
               </div>
               {!isPrivate || (isPrivate && isFollowingList) ? (
                 <>
@@ -169,7 +179,6 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                       | {userDetails?.following?.length} followings
                     </span>
                   </p>
-
                   <p className="text-gray-800 font-poppins text-center md:text-left px-4 md:px-0 mb-4">
                     {userDetails.bio}
                   </p>

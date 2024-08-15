@@ -167,7 +167,7 @@ const routers = createBrowserRouter([
         ),
       },
       {
-        path: "chat/:userId",
+        path: "chat",
         element: (
           <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50  "><DotLoader/></div>}>
             <ChatPage />

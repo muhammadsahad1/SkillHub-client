@@ -13,7 +13,7 @@ export const fetchChatUsers = async (
         userToChatId: userToChatId, 
       },
     });
-    console.log("res ===>",response.data);
+    console.log("res after the fetch the chat userss  ===>",response.data);
     
     return response.data;
   } catch (error: any) {
@@ -64,4 +64,20 @@ export const getConversationsUsers = async () => {
       return { success: false, message: error.message };
     }
   }
+}
+
+// marking the readed message
+export const markMessageAsRead = async (conversationId : string) => {
+  try {
+     await Api.post(userRoutes.markMessage,{conversationId})
+    
+    } catch (error: any) {
+      if (error.response) {
+        return error.response.data;
+      } else if (error.request) {
+        return { success: false, message: "No response from server" };
+      } else {
+        return { success: false, message: error.message };
+      }
+    }
 }
