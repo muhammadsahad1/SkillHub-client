@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { SocketProvider } from "./contexts/SocketContext";
+import NotificationHandler from "./components/notification/NotificationHandler";
 
 interface AppProps {
   children: ReactNode;
@@ -26,7 +27,10 @@ function App({ children }: AppProps) {
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <GoogleOAuthProvider clientId={clientId}>
-              <SocketProvider>{children}</SocketProvider>
+              <SocketProvider>
+                <NotificationHandler />
+                {children}
+              </SocketProvider>
               <Toaster />
             </GoogleOAuthProvider>
           </PersistGate>

@@ -15,6 +15,8 @@ import Button from "../common/Button";
 import useGetUser from "../../hook/getUser";
 import { AiFillMessage } from "react-icons/ai";
 import OthersProfilePostsActivity from "./profile/OthersProfilePostsActivity";
+import { useSocket } from "../../hook/useSocket";
+import { useNotifyUser } from "../../hook/useNotifyUser";
 
 interface OtherProfileViewProps {
   userId: string;
@@ -34,6 +36,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const currentUser = useGetUser();
+  const { socket } = useSocket();
 
   const fetchUserDetails = async () => {
     try {
@@ -41,8 +44,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       setIsPrivate(result.user.accountPrivacy);
       setUserDetails(result.user);
       setFollowingList(result.user.following.includes(currentUser.id));
-      console.log("isFollowis ??",isFollowingList);
-      setIsFollowing(isFollowingList)
+      setIsFollowing(isFollowingList);
     } catch (error: any) {
       showToastError(error.message);
     }
@@ -63,6 +65,23 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       });
       if (result.success) {
         setIsFollowing(true);
+        // here the follow event is emit for sent the notification
+        //with link to go that currentUser profile
+        socket?.emit("follow", {
+          senderId: currentUser.id,
+          receiverId: userId,
+          type: "follow",
+          message: `${userDetails?.name} has started following you.`,
+          link: `auth/OtherProfileView/${currentUser.id}`, //profile link
+        });
+        // calling and passing the fields to sendNotificaion && creating Notificaion 
+        await useNotifyUser(
+          currentUser.id,
+          userId,
+          "follow",
+          `${userDetails?.name} has started following you.`,
+          `auth/OtherProfileView/${currentUser.id}`
+        );
         showToastSuccess("Followed");
       } else {
         showToastError("Follow failed");
@@ -88,8 +107,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
     }
   };
 
-  console.log("isFollowingList ===>",isFollowingList);
-  
+  console.log("isFollowingList ===>", isFollowingList);
 
   return (
     <div className="w-full min-h-screen bg-gray-100">
@@ -153,10 +171,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                   {userDetails?.name || "User Name"}
                 </h1>
                 {isFollowingList && (
-                <Link
-                to="/auth/chat"
-                state={{ userId: userId }}
-              >
+                  <Link to="/auth/chat" state={{ userId: userId }}>
                     <AiFillMessage
                       className="message-icon"
                       size={32}

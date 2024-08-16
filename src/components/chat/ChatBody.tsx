@@ -1,6 +1,7 @@
 import SideBar from "./SideBar";
 import ChatComponent from "./ChatCompontent";
 
+
 const ChatBody = () => {
 
   return (
@@ -9,7 +10,7 @@ const ChatBody = () => {
         <SideBar />
       </div>
       <div className="hidden sm:block w-full sm:w-2/3 md:w-3/4 lg:w-4/5 xl:w-5/6">
-        <ChatComponent />
+      <ChatComponent />
       </div>  
     </div>
   );

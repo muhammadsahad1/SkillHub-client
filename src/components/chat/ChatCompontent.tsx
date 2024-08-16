@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Avatar,
@@ -16,33 +16,48 @@ import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import { BiPaperPlane } from "react-icons/bi";
 import EmojiPicker from "emoji-picker-react";
 import TimeLine from "./TimeLine";
-import { Socket } from "socket.io-client";
 import useGetUser from "../../hook/getUser";
 import { useLocation, useParams } from "react-router-dom";
 import { fetchChatUsers, sendChat } from "../../API/conversation";
 import { useSocket } from "../../hook/useSocket";
+
+const formatTime = (dateString : string) => {
+  const date = new Date(dateString);
+  let hours = date.getHours()
+  let minutes = String(date.getMinutes()).padStart(2,"0")
+  const ampm = hours >= 12 ? "PM" : "AM"
+  
+  return `${hours}:${minutes} ${ampm}`
+};
 
 const ChatComponent = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [chats, setChat] = useState<any>([]);
   const [user, setUser] = useState<any>({});
-  const { socket } = useSocket()
+  const { socket } = useSocket();
   const sender = useGetUser();
   const location = useLocation();
-  const { userId } = location.state as { userId: string };
+
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
+
+  const userId = location?.state?.userId; 
+ //access the userId from url in route 
 
   const fetchChat = async () => {
     try {
-      const userChat = await fetchChatUsers(
-        sender.id as string,
-        userId as string
-      );
+      if(userId){
 
-      setUser(userChat?.userWithProfileImage);
-
-      setChat(userChat?.messages || []);
-      socket?.emit("joinRoom", { senderId: sender.id, receiverId: userId });
+        const userChat = await fetchChatUsers(
+          sender.id as string,
+          userId as string
+        );
+        console.log("userChat details ===>",userChat);
+        setUser(userChat?.userWithProfileImage);
+        setChat(userChat?.messages || []);  
+        socket?.emit("joinRoom", { senderId: sender.id, receiverId: userId });
+      }
     } catch (error) {
       console.log("error", error);
     }
@@ -57,10 +72,7 @@ const ChatComponent = () => {
   useEffect(() => {
     if (socket) {
       const handleReieveData = (data: string) => {
-
-          setChat((prevChat: string) => [...prevChat, data]);
-     
-      };
+        setChat((prevChat: string) => [...prevChat, data]);};
       socket.on("receiveData", handleReieveData);
 
       return () => {
@@ -68,6 +80,13 @@ const ChatComponent = () => {
       };
     }
   }, [socket]);
+
+  // useEffect for scroll to last message
+  useEffect(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chats]);
 
   const sendMessage = async () => {
     try {
@@ -131,7 +150,7 @@ const ChatComponent = () => {
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Avatar
             src={user?.profileImageUrl}
-            alt="Anil"
+            alt="User"
             sx={{ width: 48, height: 48 }}
           />
           <Box sx={{ ml: 2 }}>
@@ -141,7 +160,7 @@ const ChatComponent = () => {
               fontFamily="Poppins"
               fontWeight="Bold"
             >
-              {user?.name}
+              {user?.name || "select a conversation"}
             </Typography>
             <Typography
               variant="body2"
@@ -176,6 +195,7 @@ const ChatComponent = () => {
 
       {/* Chat Messages */}
       <Box
+        ref={chatContainerRef}
         sx={{
           flexGrow: 1,
           overflowY: "auto",
@@ -185,10 +205,11 @@ const ChatComponent = () => {
           backgroundPosition: "end",
         }}
       >
+        
         {chats.length > 0 ? (
           <>
             <TimeLine />
-            {chats.map((message: any) => (
+            {chats.map((message: any, index: number) => (
               <Fade in={true} key={message._id}>
                 <Box
                   sx={{
@@ -199,6 +220,7 @@ const ChatComponent = () => {
                         : "flex-start",
                     mb: 2,
                   }}
+                  ref={index === chats.length - 1 ? lastMessageRef : null}
                 >
                   <Paper
                     elevation={3}
@@ -240,7 +262,7 @@ const ChatComponent = () => {
                         opacity: 0.7,
                       }}
                     >
-                      {message.time}
+                    {formatTime(message.createdAt)}
                     </Typography>
                   </Paper>
                 </Box>

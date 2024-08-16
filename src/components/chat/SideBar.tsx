@@ -23,12 +23,13 @@ import useGetUser from "../../hook/getUser";
 
 const SideBar = () => {
   const [chatUsers, setChatUsers] = useState<any[]>([]);
+  const [searchVal, setSearchVal] = useState<string>("");
+  const [filteredUser, setFilteredUser] = useState<any[]>([]);
   const { socket } = useSocket();
   const sender = useGetUser();
 
   const fetchChatUsers = async () => {
     try {
-      console.log("calleddddddsssssd");
       const result = await getConversationsUsers();
       setChatUsers(result);
     } catch (error) {}
@@ -36,8 +37,44 @@ const SideBar = () => {
 
   useEffect(() => {
     fetchChatUsers();
-
+  
     if (socket) {
+      // Listener for when a new message is received
+      socket.on("receiveData", (newMessage) => {
+        setChatUsers((prevChatUsers) => {
+          const userIndex = prevChatUsers.findIndex(
+            (user) => user.user._id === newMessage.senderId
+          );
+  
+          if (userIndex !== -1) {
+            // Update the existing user's lastMessage and isRead
+            const updatedUsers = [...prevChatUsers];
+            updatedUsers[userIndex] = {
+              ...updatedUsers[userIndex],
+              lastMessage: newMessage.message,
+              isRead: false,
+            };
+            return updatedUsers;
+          } else {
+            // Add a new user to the chat list if not already present
+            return [
+              ...prevChatUsers,
+              {
+                _id: newMessage._id,
+                isRead: false,
+                lastMessage: newMessage.message,
+                user: {
+                  _id: newMessage.senderId,
+                  name: newMessage.senderName,
+                  profileImageUrl: newMessage.senderProfileImageUrl,
+                },
+              },
+            ];
+          }
+        });
+      });
+  
+      // Listener for when a message is marked as read
       socket.on("messageRead", ({ conversationId }) => {
         setChatUsers((prevChatUsers) =>
           prevChatUsers.map((user) =>
@@ -46,28 +83,49 @@ const SideBar = () => {
         );
       });
     }
+  
     return () => {
       if (socket) {
+        socket.off("receiveData");
         socket.off("messageRead");
       }
     };
-  }, []);
-  console.log("chatUserss ==========>", chatUsers);
+  }, [socket]);
 
+  console.log("chatUserss ==========>", chatUsers);
   const handleClick = async (conversationId: string, receiverId: string) => {
     try {
-      await markMessageAsRead(conversationId);
-
       if (socket) {
         socket.emit("messageRead", {
           conversationId,
           senderId: sender.id,
           receiverId: receiverId,
         });
+        // Update the state immediately
+        setChatUsers((prev) =>
+          prev.map((user) =>
+            user._id === conversationId ? {...user, isRead: true } : user
+          )
+        );
       }
-
+      // function to mark message as read
+      await markMessageAsRead(conversationId);
       fetchChatUsers();
+      onConversationSelect(true)
     } catch (error) {}
+  };
+
+  // forSearch
+  const handleSearchPeople = (value: string) => {
+    setSearchVal(value);
+    if (value.trim() === "") {
+      setFilteredUser(chatUsers);
+    } else {
+      const filteredUser = chatUsers.filter((user) => {
+        return user.user.name.toLowerCase().includes(searchVal.toLowerCase());
+      });
+      setFilteredUser(filteredUser);
+    }
   };
 
   return (
@@ -103,6 +161,8 @@ const SideBar = () => {
           className="shadow-md p-2 rounded-full border-2"
           type="text"
           placeholder="Search people"
+          value={searchVal}
+          onChange={(e) => handleSearchPeople(e.target.value)}
         />
       </Stack>
       <Divider
@@ -143,65 +203,125 @@ const SideBar = () => {
               bgcolor: "background.paper",
             }}
           >
-            {chatUsers?.map((person: any) => (
-              <Link
-                to="/auth/chat"
-                state={{ userId: person.user._id }}
-                key={person.user._id}
-              >
-                <ListItem
-                  key={person.user._id}
-                  alignItems="flex-start"
-                  onClick={() => handleClick(person._id, person.user._id)}
-                >
-                  <Badge
-                    color="primary"
-                    variant="dot"
-                    invisible={person.isRead} // Hide badge if message is read
-                  ></Badge>
-                  <ListItemAvatar>
-                    <Avatar
-                      alt={person.user.name}
-                      src={person.user.profileImageUrl}
-                    />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={
-                      <Typography
-                        style={{
-                          fontFamily: "Poppins",
-                          fontWeight: "semiBold",
+            {filteredUser.length > 0
+              ? filteredUser?.map((person: any) => (
+                  <Link
+                    to="/auth/chat"
+                    state={{ userId: person.user._id }}
+                    key={person.user._id}
+                  >
+                    <ListItem
+                      key={person.user._id}
+                      alignItems="flex-start"
+                      onClick={() => handleClick(person._id, person.user._id)}
+                    >
+                      <Badge
+                        color="primary"
+                        variant="dot"
+                        invisible={person.isRead} // Hide badge if message is read
+                      ></Badge>
+                      <ListItemAvatar>
+                        <Avatar
+                          alt={person.user.name}
+                          src={person.user.profileImageUrl}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={
+                          <Typography
+                            style={{
+                              fontFamily: "Poppins",
+                              fontWeight: "semiBold",
+                            }}
+                          >
+                            {person.user.name}
+                          </Typography>
+                        }
+                        secondary={
+                          <React.Fragment>
+                            <Typography
+                              sx={{ display: "inline" }}
+                              component="span"
+                              variant="body2"
+                              color="text.primary"
+                              fontSize={12}
+                            >
+                              {person.lastMessage}
+                            </Typography>
+                          </React.Fragment>
+                        }
+                      />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "flex-end",
                         }}
                       >
-                        {person.user.name}
-                      </Typography>
-                    }
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          sx={{ display: "inline" }}
-                          component="span"
-                          variant="body2"
-                          color="text.primary"
-                          fontSize={12}
-                        >
-                          {person.lastMessage}
-                        </Typography>
-                      </React.Fragment>
-                    }
-                  />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-end",
-                    }}
+                        {/* Optional time and unread badge */}
+                      </Box>
+                    </ListItem>
+                  </Link>
+                ))
+              : chatUsers?.map((person: any) => (
+                  <Link
+                    to="/auth/chat"
+                    state={{ userId: person.user._id }}
+                    key={person.user._id}
                   >
-                    {/* Optional time and unread badge */}
-                  </Box>
-                </ListItem>
-              </Link>
-            ))}
+                    <ListItem
+                      key={person.user._id}
+                      alignItems="flex-start"
+                      onClick={() => handleClick(person._id, person.user._id)}
+                    >
+                      <Badge
+                        color="primary"
+                        variant="dot"
+                        invisible={person.isRead} // Hide badge if message is read
+                      ></Badge>
+                      <ListItemAvatar>
+                        <Avatar
+                          alt={person.user.name}
+                          src={person.user.profileImageUrl}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={
+                          <Typography
+                            style={{
+                              fontFamily: "Poppins",
+                              fontWeight: "semiBold",
+                            }}
+                          >
+                            {person.user.name}
+                          </Typography>
+                        }
+                        secondary={
+                          <React.Fragment>
+                            <Typography
+                              sx={{ display: "inline" }}
+                              component="span"
+                              variant="body2"
+                              color="text.primary"
+                              fontSize={12}
+                            >
+                              {person.lastMessage}
+                            </Typography>
+                          </React.Fragment>
+                        }
+                      />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        {/* Optional time and unread badge */}
+                      </Box>
+                    </ListItem>
+                  </Link>
+                ))}
           </List>
         </Box>
       </Stack>

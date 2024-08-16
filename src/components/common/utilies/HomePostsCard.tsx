@@ -17,10 +17,7 @@ import {
 import {
   Favorite as LikeIcon,
   Comment as CommentIcon,
-  Report as ReportIcon,
-  Send as SendIcon,
   MoreVert as MoreVertIcon,
-  Delete as DeleteIcon,
 } from "@mui/icons-material";
 import { HiDotsCircleHorizontal } from "react-icons/hi";
 import { styled } from "@mui/material/styles";
@@ -46,7 +43,6 @@ const ActionButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-// Function to format the date
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat("en-US", {
@@ -61,7 +57,7 @@ const formatDate = (dateString: string) => {
 
 const HomePostCard = ({ post }: any) => {
   const user = useGetUser();
-  const { mutate: deletPost } = useDeletePost();
+  const { mutate: deletePost } = useDeletePost();
   const { mutate: editPost } = useEditPost();
   const { mutate: postLike } = usePostLike();
   const { mutate: editComment } = useEditComment();
@@ -78,14 +74,10 @@ const HomePostCard = ({ post }: any) => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
   const [isCommentEditModalOpen, setCommentEditModalOpen] =
     useState<boolean>(false);
-  const [commentBeingEdited, setCommentBeingEdited] = useState<{
-    id: string;
-    text: string;
-  } | null>(null);
+    const [commentBeingEdited, setCommentBeingEdited] = useState<{ id: string; text: string } | null>(null);
 
   const isCommentMenuOpen = Boolean(commentAnchorEl);
 
-  // Ensure the like state
   useEffect(() => {
     const isUserLiked = post.likes.includes(user.id);
     setLiked(isUserLiked);
@@ -102,7 +94,7 @@ const HomePostCard = ({ post }: any) => {
 
   const handleDelete = async () => {
     try {
-      await deletPost(post._id);
+      await deletePost(post._id);
       handleMenuClose();
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -137,9 +129,6 @@ const HomePostCard = ({ post }: any) => {
     }
   };
 
-  console.log("posts ===>",post);
-  
-
   const handlePostLike = async () => {
     try {
       const wasLiked = !isLiked;
@@ -162,6 +151,7 @@ const HomePostCard = ({ post }: any) => {
   const deletingComment = async (commentId: string, postId: string) => {
     try {
       await deleteComment({ commentId, postId });
+      handleCommentMenuClose()
     } catch (error) {
       console.error("Failed to delete comment:", error);
     }
@@ -316,57 +306,81 @@ const HomePostCard = ({ post }: any) => {
             {likeCount} Likes
           </ActionButton>
           <ActionButton onClick={commentClose}>
-            <CommentIcon sx={{ mr: 0.5 }} />
-            {post?.comments?.length} Comments
+            <CommentIcon sx={{ mr: 0.5 , color : "black"}} />
+            <p className="text-zinc-800">{post?.comments?.length} Comments</p>
           </ActionButton>
         </Box>
-        <Box>
-        {/* {post?.comments ? (
-          {post.comments}
-        ) : (
-
-        )} */}
-        </Box>
-        <IconButton
-          aria-controls="comment-menu"
-          aria-haspopup="true"
-          onClick={openMiniModal}
-        >
-          <HiDotsCircleHorizontal size={20} />
-        </IconButton>
       </CardActions>
 
-      {/* Comment Box */}
+      {/* Comment Section */}
       {isCommentBoxOpen && (
         <Box
           sx={{
-            p: 2,
-            borderTop: "1px solid #ccc",
-            borderRadius: "0 0 8px 8px",
-            backgroundColor: "#f9f9f9",
+            padding: "8px 16px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
           }}
         >
-          <CommentBox postId={post._id} onClose={handleCommentMenuClose} />
+          {post?.comments?.map((comment: any) => (
+            <Box
+              key={comment._id}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Avatar
+                  alt={comment.userName}
+                  src={comment.userImageUrl}
+                  sx={{ width: 30, height: 30 }}
+                />
+                <Box>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: "bold", color: "#333" }}
+                  >
+                    {comment.userName}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "#555" }}>
+                    {comment.text}
+                  </Typography>
+                </Box>
+              </Box>
+              {comment.userId === user.id && (
+                <IconButton onClick={openMiniModal}>
+                  <HiDotsCircleHorizontal />
+                </IconButton>
+              )}
+              <Menu
+                anchorEl={commentAnchorEl}
+                open={isCommentMenuOpen}
+                onClose={handleCommentMenuClose}
+                PaperProps={{
+                  elevation: 1,
+                  sx: {
+                    width: "150px",
+                    bgcolor: "background.paper",
+                  },
+                }}
+              >
+                <MenuItem onClick={handleEditModal}>Edit</MenuItem>
+                <MenuItem
+                  onClick={() => deletingComment(comment._id, post._id)}
+                >
+                  Delete
+                </MenuItem>
+              </Menu>
+            </Box>
+          ))}
+          <CommentBox postId={post._id} />
         </Box>
       )}
 
-      {/* Menu for Post Actions */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleEdit}>Edit Post</MenuItem>
-        <MenuItem onClick={handleDeleteModalOpen}>Delete Post</MenuItem>
-      </Menu>
-
-      {/* Edit Modal */}
-      <Modal
-        open={isEditModalOpen}
-        onClose={handleModalClose}
-        aria-labelledby="edit-modal-title"
-        aria-describedby="edit-modal-description"
-      >
+      {/* Post Edit Modal */}
+      <Modal open={isEditModalOpen} onClose={handleModalClose}>
         <Box
           sx={{
             position: "absolute",
@@ -380,14 +394,13 @@ const HomePostCard = ({ post }: any) => {
             p: 4,
           }}
         >
-          <Typography id="edit-modal-title" variant="h6" component="h2">
+          <Typography id="modal-modal-title" variant="h6" component="h2">
             Edit Post
           </Typography>
           <TextField
-            label="Caption"
+            fullWidth
             multiline
             rows={4}
-            fullWidth
             value={editedCaption}
             onChange={(e) => setEditedCaption(e.target.value)}
             sx={{ mt: 2 }}
@@ -403,36 +416,8 @@ const HomePostCard = ({ post }: any) => {
         </Box>
       </Modal>
 
-      {/* Delete Modal */}
-      {isDeleteModalOpen && (
-        <PopUpModal
-          isOpen={isDeleteModalOpen}
-          isClose={closeDeleteModal}
-          onConfirm={handleDelete}
-          title={"Post Delete"}
-          content={"Are you sure you want to delete this post?"}
-        />
-      )}
-
-      {/* Comment Menu */}
-      <Menu
-        anchorEl={commentAnchorEl}
-        open={isCommentMenuOpen}
-        onClose={handleCommentMenuClose}
-      >
-        <MenuItem onClick={handleEditComment}>Edit Comment</MenuItem>
-        <MenuItem onClick={() => deletingComment(post._id, post._id)}>
-          Delete Comment
-        </MenuItem>
-      </Menu>
-
       {/* Comment Edit Modal */}
-      <Modal
-        open={isCommentEditModalOpen}
-        onClose={handleCommentEditModalClose}
-        aria-labelledby="comment-edit-modal-title"
-        aria-describedby="comment-edit-modal-description"
-      >
+      <Modal open={isCommentEditModalOpen} onClose={handleCommentEditModalClose}>
         <Box
           sx={{
             position: "absolute",
@@ -446,7 +431,7 @@ const HomePostCard = ({ post }: any) => {
             p: 4,
           }}
         >
-          <Typography id="comment-edit-modal-title" variant="h6">
+          <Typography id="comment-edit-modal-title" variant="h6" component="h2">
             Edit Comment
           </Typography>
           <TextField
@@ -455,10 +440,14 @@ const HomePostCard = ({ post }: any) => {
             rows={4}
             fullWidth
             value={commentBeingEdited?.text || ""}
-            onChange={(e) =>
-              setCommentBeingEdited((prev) =>
-                prev ? { ...prev, text: e.target.value } : null
-              )
+            onChange={(e) => {
+              if(commentBeingEdited){
+                setCommentBeingEdited({
+                  ...commentBeingEdited,
+                  text: e.target.value,
+                })
+              }
+            }
             }
             sx={{ mt: 2 }}
           />
@@ -466,16 +455,26 @@ const HomePostCard = ({ post }: any) => {
             <Button onClick={handleCommentEditModalClose} sx={{ mr: 1 }}>
               Cancel
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleEditComment}
-            >
+            <Button variant="contained" color="primary" onClick={handleEditComment}>
               Save
             </Button>
           </Box>
         </Box>
       </Modal>
+
+      {/* Post Options Menu */}
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+        <MenuItem onClick={handleEdit}>Edit</MenuItem>
+        <MenuItem onClick={handleDeleteModalOpen}>Delete</MenuItem>
+      </Menu>
+
+      {/* Post Delete Modal */}
+      <PopUpModal
+        isOpen={isDeleteModalOpen}
+        isClose={closeDeleteModal}
+        onConfirm={handleDelete}
+        title="Are you sure you want to delete this post?" content={""}        
+      />
     </Card>
   );
 };

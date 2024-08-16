@@ -78,7 +78,9 @@ const NavBar: React.FC = () => {
         <Link to="/explore" className="text-gray-800 font-bold hover:text-gray-600">
           Explore
         </Link>
+        <Link to="/auth/chat" >
         <TbMessageDots size={32} className="cursor-pointer" />
+        </Link>
         <MdNotifications size={32} className="cursor-pointer" />
         <div className="relative" ref={dropDownRef}>
           <button className="profileIcon" onClick={handleDropDown}>
@@ -96,7 +98,7 @@ const NavBar: React.FC = () => {
               <ul className="py-1">
                 {currentUser.profile || currentUser.email ? (
                   <>
-                    <li>
+                    <li>  
                       <Link
                         to="/auth/viewProfile"
                         className="cursor-pointer font-bold block px-4 py-2 text-gray-800 hover:bg-gray-100"
