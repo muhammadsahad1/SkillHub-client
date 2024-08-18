@@ -5,11 +5,13 @@ export const useNotifyUser = async (
   senderId: string | undefined,
   receiverId: string,
   type: string,
-  message : string,
+  message: string,
   link: string
 ) => {
   try {
-    await sendNotification(senderId, receiverId, type,message, link);
+    console.log("called");
+    
+    await sendNotification(senderId, receiverId, type, message, link);
   } catch (error: any) {
     showToastError(error.message);
   }

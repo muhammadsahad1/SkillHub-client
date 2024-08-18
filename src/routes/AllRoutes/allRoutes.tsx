@@ -1,6 +1,6 @@
-import { createBrowserRouter } from "react-router-dom";
 import React, { Suspense } from "react";
 import { DotLoader } from "react-spinners";
+import { RouteObject } from 'react-router-dom';
 
 // Wrapping with React.lazy for lazy loading
 const AdminLayout = React.lazy(() => import("../layouts/AdminLayout"));
@@ -27,7 +27,7 @@ const OthersFollowersPage = React.lazy(() => import("../../page/user/OthersFollo
 const ChatPage = React.lazy(() => import("../../page/chat/ChatPage"));
 
 // Define application routes
-const routers = createBrowserRouter([
+const routes: RouteObject[] = [
   {
     path: "/",
     element: (
@@ -211,6 +211,6 @@ const routers = createBrowserRouter([
       },
     ],
   },
-]);
+];
 
-export default routers;
+export default routes;

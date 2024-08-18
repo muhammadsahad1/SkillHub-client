@@ -81,13 +81,15 @@ const userSlice = createSlice({
       state.email = action.payload;
     },
     setUserImages: (state, action) => {
+      console.log("action ===>",action);
+      
       if (action.payload) {
-        const { coverImageUrl, imageUrl } = action.payload;
+        // const { coverImageUrl, imageUrl } = action.payload;
 
         state.picture = {
           ...state.picture,
-          coverImageUrl: coverImageUrl || state.picture?.coverImageUrl,
-          imageUrl: imageUrl || state.picture?.imageUrl,
+          // coverImageUrl: coverImageUrl || state.picture?.coverImageUrl,
+          imageUrl: action.payload || state.picture?.imageUrl,
         };
       }
     },

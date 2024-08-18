@@ -202,7 +202,7 @@ const HomePostCard = ({ post }: any) => {
     >
       <CardHeader
         avatar={
-          <Link to="auth/OtherProfileView" state={post?.userId}>
+          <Link to="auth/OtherProfileView/`${post?.userId}`">
             <Avatar src={post.userImageUrl} />
           </Link>
         }

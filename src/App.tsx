@@ -1,4 +1,10 @@
-import { ReactNode } from "react";
+import {
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+} from "react";
 import { store, persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
@@ -9,17 +15,17 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { SocketProvider } from "./contexts/SocketContext";
 import NotificationHandler from "./components/notification/NotificationHandler";
-
-interface AppProps {
-  children: ReactNode;
-}
+import { Routes, Route, useRoutes } from "react-router-dom";
+import routes from "./routes/AllRoutes/allRoutes.tsx";
+import useGetUser from "./hook/getUser.ts";
 
 const theme = createTheme();
-
 const clientId = import.meta.env.VITE_CLIENT_ID;
 const queryClient = new QueryClient();
 
-function App({ children }: AppProps) {
+function App() {
+  const routing = useRoutes(routes);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -29,9 +35,9 @@ function App({ children }: AppProps) {
             <GoogleOAuthProvider clientId={clientId}>
               <SocketProvider>
                 <NotificationHandler />
-                {children}
+                {routing}
+                <Toaster />
               </SocketProvider>
-              <Toaster />
             </GoogleOAuthProvider>
           </PersistGate>
         </Provider>
