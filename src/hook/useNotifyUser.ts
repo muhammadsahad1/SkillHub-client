@@ -8,9 +8,8 @@ export const useNotifyUser = async (
   message: string,
   link: string
 ) => {
+
   try {
-    console.log("called");
-    
     await sendNotification(senderId, receiverId, type, message, link);
   } catch (error: any) {
     showToastError(error.message);

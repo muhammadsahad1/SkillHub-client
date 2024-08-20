@@ -22,7 +22,7 @@ const ProfilePostsActivity = () => {
   console.log("res ====>",posts)
   return (
     <div className="flex justify-center mb-20">
-      <PostGrid posts={posts}/>
+      <PostGrid  posts={posts}/>
     </div>
   );
 };

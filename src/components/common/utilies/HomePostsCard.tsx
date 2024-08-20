@@ -15,7 +15,7 @@ import {
   TextField,
 } from "@mui/material";
 import {
-  Favorite as LikeIcon,
+  FavoriteBorder as LikeIcon,
   Comment as CommentIcon,
   MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
@@ -28,11 +28,15 @@ import {
   useEditComment,
   useEditPost,
   usePostLike,
+  useViewPost,
 } from "../../../hook/usePosts";
 import { showToastError } from "./toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CommentBox from "./CommentBox";
 import PopUpModal from "./Modal";
+import { useQueryClient } from "react-query";
+import { useSocket } from "../../../hook/useSocket";
+import { useNotifyUser } from "../../../hook/useNotifyUser";
 
 const ActionButton = styled(Button)(({ theme }) => ({
   color: theme.palette.grey[400],
@@ -57,6 +61,8 @@ const formatDate = (dateString: string) => {
 
 const HomePostCard = ({ post }: any) => {
   const user = useGetUser();
+  const navigate = useNavigate();
+  const { socket } = useSocket();
   const { mutate: deletePost } = useDeletePost();
   const { mutate: editPost } = useEditPost();
   const { mutate: postLike } = usePostLike();
@@ -74,9 +80,18 @@ const HomePostCard = ({ post }: any) => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
   const [isCommentEditModalOpen, setCommentEditModalOpen] =
     useState<boolean>(false);
-    const [commentBeingEdited, setCommentBeingEdited] = useState<{ id: string; text: string } | null>(null);
+  const [commentBeingEdited, setCommentBeingEdited] = useState<{
+    id: string;
+    text: string;
+  } | null>(null);
+
+  const [captionBeingEdit, setCaptionBeingEdit] = useState<{
+    id: string;
+    text: string;
+  } | null>(null);
 
   const isCommentMenuOpen = Boolean(commentAnchorEl);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const isUserLiked = post.likes.includes(user.id);
@@ -96,12 +111,17 @@ const HomePostCard = ({ post }: any) => {
     try {
       await deletePost(post._id);
       handleMenuClose();
+      queryClient.invalidateQueries(["posts"]);
     } catch (error) {
       console.error("Error deleting post:", error);
     }
   };
 
   const handleEdit = () => {
+    setCaptionBeingEdit({
+      id: post._id,
+      text: post.caption,
+    });
     setEditModalOpen(true);
     handleMenuClose();
   };
@@ -110,7 +130,11 @@ const HomePostCard = ({ post }: any) => {
     setEditModalOpen(false);
   };
 
-  const handleEditModal = () => {
+  const handleEditModal = (comment: any) => {
+    setCommentBeingEdited({
+      id: comment.id,
+      text: comment.comment,
+    });
     setCommentEditModalOpen(true);
     handleCommentMenuClose();
   };
@@ -121,8 +145,11 @@ const HomePostCard = ({ post }: any) => {
 
   const handleSave = async () => {
     try {
-      await editPost({ id: post._id, caption: editedCaption });
-      setEditModalOpen(false);
+      if (captionBeingEdit && captionBeingEdit.text.trim() !== "") {
+        await editPost({ id: post._id, caption: captionBeingEdit.text });
+        post.caption = captionBeingEdit?.text;
+        setEditModalOpen(false);
+      }
     } catch (error) {
       console.error("Error updating post:", error);
       showToastError("Error updating post");
@@ -134,6 +161,29 @@ const HomePostCard = ({ post }: any) => {
       const wasLiked = !isLiked;
       await postLike(post._id);
       setLiked(wasLiked);
+  
+      // Check if the current user is not the owner of the post
+      if (wasLiked && user.id !== post.userId) {
+        // Emit socket event for liking the post
+        socket?.emit("postLiked", {
+          senderId: user.id,
+          receiverId: post.userId,
+          type: "like",
+          message: `${user.name} liked your post`,
+          link: `/auth/post/${post._id}`,
+        });
+  
+        // Create a new notification for the post like
+        await useNotifyUser(
+          user.id,
+          post.userId,
+          "like",
+          `${user.name} liked your post`,
+          `/auth/post/${post._id}`
+        );
+      }
+  
+      // Update like count
       setLikeCount((prevCount) => {
         const newCount = wasLiked ? prevCount + 1 : prevCount - 1;
         return newCount;
@@ -151,7 +201,7 @@ const HomePostCard = ({ post }: any) => {
   const deletingComment = async (commentId: string, postId: string) => {
     try {
       await deleteComment({ commentId, postId });
-      handleCommentMenuClose()
+      handleCommentMenuClose();
     } catch (error) {
       console.error("Failed to delete comment:", error);
     }
@@ -190,6 +240,11 @@ const HomePostCard = ({ post }: any) => {
     handleMenuClose();
   };
 
+  // for view the one post
+  const handlePostDetaileView = async () => {
+    navigate(`/auth/post/${post._id}`);
+  };
+
   return (
     <Card
       sx={{
@@ -202,8 +257,8 @@ const HomePostCard = ({ post }: any) => {
     >
       <CardHeader
         avatar={
-          <Link to="auth/OtherProfileView/`${post?.userId}`">
-            <Avatar src={post.userImageUrl} />
+          <Link to={`auth/OtherProfileView/${post?.userId}`}>
+            <Avatar src={post?.userImageUrl} />
           </Link>
         }
         title={
@@ -250,7 +305,7 @@ const HomePostCard = ({ post }: any) => {
           >
             {post.type === "video" ? (
               <video
-                src={post.postImageUrl}
+                src={post?.postImageUrl}
                 controls
                 style={{
                   width: "100%",
@@ -265,7 +320,7 @@ const HomePostCard = ({ post }: any) => {
               />
             ) : (
               <img
-                src={post.postImageUrl}
+                src={post?.postImageUrl}
                 alt="Post content"
                 style={{
                   width: "100%",
@@ -306,7 +361,7 @@ const HomePostCard = ({ post }: any) => {
             {likeCount} Likes
           </ActionButton>
           <ActionButton onClick={commentClose}>
-            <CommentIcon sx={{ mr: 0.5 , color : "black"}} />
+            <CommentIcon sx={{ mr: 0.5, color: "black" }} />
             <p className="text-zinc-800">{post?.comments?.length} Comments</p>
           </ActionButton>
         </Box>
@@ -334,7 +389,7 @@ const HomePostCard = ({ post }: any) => {
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Avatar
                   alt={comment.userName}
-                  src={comment.userImageUrl}
+                  src={comment?.imageUrl}
                   sx={{ width: 30, height: 30 }}
                 />
                 <Box>
@@ -345,7 +400,7 @@ const HomePostCard = ({ post }: any) => {
                     {comment.userName}
                   </Typography>
                   <Typography variant="body2" sx={{ color: "#555" }}>
-                    {comment.text}
+                    {comment.comment}
                   </Typography>
                 </Box>
               </Box>
@@ -366,7 +421,9 @@ const HomePostCard = ({ post }: any) => {
                   },
                 }}
               >
-                <MenuItem onClick={handleEditModal}>Edit</MenuItem>
+                <MenuItem onClick={() => handleEditModal(comment)}>
+                  Edit
+                </MenuItem>
                 <MenuItem
                   onClick={() => deletingComment(comment._id, post._id)}
                 >
@@ -375,7 +432,7 @@ const HomePostCard = ({ post }: any) => {
               </Menu>
             </Box>
           ))}
-          <CommentBox postId={post._id} />
+          <CommentBox postId={post._id} onClose={commentClose} />
         </Box>
       )}
 
@@ -401,8 +458,15 @@ const HomePostCard = ({ post }: any) => {
             fullWidth
             multiline
             rows={4}
-            value={editedCaption}
-            onChange={(e) => setEditedCaption(e.target.value)}
+            value={captionBeingEdit?.text || ""}
+            onChange={(e) => {
+              if (captionBeingEdit) {
+                setCaptionBeingEdit({
+                  ...captionBeingEdit,
+                  text: e.target.value,
+                });
+              }
+            }}
             sx={{ mt: 2 }}
           />
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
@@ -417,7 +481,10 @@ const HomePostCard = ({ post }: any) => {
       </Modal>
 
       {/* Comment Edit Modal */}
-      <Modal open={isCommentEditModalOpen} onClose={handleCommentEditModalClose}>
+      <Modal
+        open={isCommentEditModalOpen}
+        onClose={handleCommentEditModalClose}
+      >
         <Box
           sx={{
             position: "absolute",
@@ -441,21 +508,24 @@ const HomePostCard = ({ post }: any) => {
             fullWidth
             value={commentBeingEdited?.text || ""}
             onChange={(e) => {
-              if(commentBeingEdited){
+              if (commentBeingEdited) {
                 setCommentBeingEdited({
                   ...commentBeingEdited,
                   text: e.target.value,
-                })
+                });
               }
-            }
-            }
+            }}
             sx={{ mt: 2 }}
           />
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
             <Button onClick={handleCommentEditModalClose} sx={{ mr: 1 }}>
               Cancel
             </Button>
-            <Button variant="contained" color="primary" onClick={handleEditComment}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleEditComment}
+            >
               Save
             </Button>
           </Box>
@@ -463,9 +533,14 @@ const HomePostCard = ({ post }: any) => {
       </Modal>
 
       {/* Post Options Menu */}
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
         <MenuItem onClick={handleEdit}>Edit</MenuItem>
         <MenuItem onClick={handleDeleteModalOpen}>Delete</MenuItem>
+        <MenuItem onClick={handlePostDetaileView}>view Post</MenuItem>
       </Menu>
 
       {/* Post Delete Modal */}
@@ -473,7 +548,8 @@ const HomePostCard = ({ post }: any) => {
         isOpen={isDeleteModalOpen}
         isClose={closeDeleteModal}
         onConfirm={handleDelete}
-        title="Are you sure you want to delete this post?" content={""}        
+        title="Are you sure you want to delete this post?"
+        content={""}
       />
     </Card>
   );

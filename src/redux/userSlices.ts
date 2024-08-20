@@ -81,8 +81,7 @@ const userSlice = createSlice({
       state.email = action.payload;
     },
     setUserImages: (state, action) => {
-      console.log("action ===>",action);
-      
+
       if (action.payload) {
         // const { coverImageUrl, imageUrl } = action.payload;
 
@@ -153,4 +152,5 @@ export const {
   setShowNotificationChange,
   setFollowingsFollowersCount,
 } = userSlice.actions;
+
 export default userSlice.reducer;

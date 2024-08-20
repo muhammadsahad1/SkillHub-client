@@ -6,23 +6,26 @@ import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import { useState } from "react";
-import { useAddComment } from "../../../hook/usePosts";
+import { useAddComment, useViewPost } from "../../../hook/usePosts";
 import { showToastError } from "./toast";
+import { useSocket } from "../../../hook/useSocket";
+import useGetUser from "../../../hook/getUser";
+import { useNotifyUser } from "../../../hook/useNotifyUser";
 
 interface CommentBoxProps {
   postId: string;
-  userId: string;
   onClose: () => void;
 }
 
 export default function CommentBox({ postId, onClose }: CommentBoxProps) {
-  
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [comment, setComment] = useState<string>("");
   const [isValid, setValid] = useState<boolean>(true);
   const addCommentMutation = useAddComment();
   const commentInputRef = React.useRef<HTMLInputElement>(null);
 
+  const { socket } = useSocket();
+  const user = useGetUser();
   React.useEffect(() => {
     if (commentInputRef.current) {
       commentInputRef.current.focus();
@@ -32,17 +35,41 @@ export default function CommentBox({ postId, onClose }: CommentBoxProps) {
   const handleAddComment = async () => {
     try {
       if (comment) {
-        console.log("comment ===>",comment , postId);
-        
-        await addCommentMutation.mutateAsync({ postId, comment });
-        onClose();
-        setComment("");
+        const result = await addCommentMutation.mutateAsync({
+          postId,
+          comment,
+        });
+        console.log("res =>", result.comment.postOwnerId, result);
+
+        if (result.success) {
+          socket?.emit("comment", {
+            senderId: user.id,
+            receiverId: result?.comment?.postOwnerId,
+            type : "comment",
+            message: `${user.name} comment on your post`,
+            link: `/auth/post/${postId}`,
+          });
+          // creating notification and sending to user in realTime
+          await useNotifyUser(
+            user.id,
+            result?.comment?.postOwnerId,
+            "comment",
+            `${user.name} comment on you post`,
+            `/auth/post/${postId}`
+          );
+
+          onClose();
+          setComment("");
+        } else {
+          showToastError("An error occurred while uploading the comment.");
+        }
       }
     } catch (error: any) {
       console.error("Error in handleAddComment:", error);
       showToastError("An error occurred while uploading the comment.");
     }
   };
+
   const handleSetComment = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {

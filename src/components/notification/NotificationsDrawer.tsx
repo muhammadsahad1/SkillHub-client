@@ -1,17 +1,19 @@
 import React from "react";
-import { MdComment, MdFavorite, MdPersonAdd } from "react-icons/md";
+import { MdComment, MdFavorite, MdPersonAdd, MdChat } from "react-icons/md";
 import { motion } from "framer-motion";
 import { FaAngleUp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { showToastError } from "../common/utilies/toast";
+import { readNotification } from "../../redux/features/notificationSlices";
+import { useDispatch } from "react-redux";
 
-interface Nofication {
+export interface Notification {
   _id: string;
   senderName: string;
   message: string;
   type: NotificationType;
-  reade: boolean;
-  timestamp: string;
+  read: boolean;
+  createdAt?: string;
   link: string;
 }
 
@@ -20,21 +22,20 @@ type NotificationType = "follow" | "like" | "comment" | "chat";
 interface NotificationsDrawerProps {
   notifications: Notification[];
   onClose: () => void;
-  markAsRead: (id: string) => void;
-  // onNotificationClick: (id: string) => void;
 }
 
 const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
   notifications,
   onClose,
-  markAsRead,
+  // markAsRead,
 }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleNotificationClick = async (notification: Nofication) => {
+  const handleNotificationClick = async (notification: Notification) => {
     try {
-      markAsRead(notification._id);
-      navigate(notification.link);
+      dispatch(readNotification(notification._id) as any).unwrap();
+      navigate(notification.link, { replace: true });
     } catch (error) {
       showToastError("something went wrong in markAsRead update");
     }
@@ -66,16 +67,18 @@ const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
           <li
             key={notification._id}
             className={`p-4 border-b cursor-pointer ${
-              notification.read ? "bg-gray-200" : "bg-gray-100"
+              notification?.read ? "bg-gray-200" : "bg-gray-100"
             }`}
             onClick={() => handleNotificationClick(notification)}
           >
-            {notification.type === "comment" && <MdComment />}
-            {notification.type === "like" && <MdFavorite />}
-            {notification.type === "follow" && <MdPersonAdd />}
-
+            {notification?.type === "comment" && <MdComment />}
+            {notification?.type === "like" && <MdFavorite />}
+            {notification?.type === "follow" && <MdPersonAdd />}
+            {notification?.type === "chat" && <MdChat />}
             <div className="ml-2">
-              <p className="text-zinc-black font-bold ">{ notification.message}</p>
+              <p className="text-zinc-black font-bold ">
+                {notification?.message}
+              </p>
             </div>
           </li>
         ))}

@@ -30,47 +30,42 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   profileImageUrl,
   coverImageUrl,
 }) => {
-  const [userDetails, setUserDetails] = useState<User>();
-  const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const [userDetails, setUserDetails] = useState<User | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isFollowBack, setIsFollowBack] = useState<boolean>(false);
   const [isMeOnlyFollowing, setIsMeOnlyFollowing] = useState<boolean>(false);
-
-  const [isFollowingList, setFollowingList] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
+
   const currentUser = useGetUser();
   const { socket } = useSocket();
 
   const fetchUserDetails = async () => {
     try {
       const result = await getOtherUserDetails(userId);
-      console.log("resss ===>>>>>>", result);
-      const isFollowBack = result?.user?.following.includes(currentUser.id);
+      const isFollowing = result?.user?.following.includes(currentUser.id);
       const meFollowing = result?.user?.followers.includes(currentUser.id);
-      // conditions for ensure the following and follow 
-      if (isFollowBack && meFollowing) {
+
+      if (isFollowing && meFollowing) {
         setIsConnected(true);
-      } else if (isFollowBack) {
+      } else if (isFollowing) {
         setIsFollowBack(true);
       } else if (meFollowing) {
         setIsMeOnlyFollowing(true);
       }
 
-      setFollowingList(isFollowBack);
-      setIsFollowing(meFollowing);
       setIsPrivate(result.user.accountPrivacy);
       setUserDetails(result.user);
     } catch (error: any) {
       showToastError(error.message);
     }
   };
+
   useEffect(() => {
     if (userId) {
       fetchUserDetails();
     }
 
-    // Cleanup function to remove socket listeners
     return () => {
       if (socket) {
         socket.off("follow");
@@ -80,64 +75,76 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
 
   const followThisUser = async () => {
     try {
-      if (!socket) return;
-
+      if (!socket || isLoading) return; // Prevent multiple clicks
       setLoading(true);
       const result = await followApi({
         toFollowingId: userId,
         fromFollowerId: currentUser.id,
       });
-      console.log("follow ress ===>", result);
 
       if (result.success === "successfully update the following") {
         fetchUserDetails();
-        setIsFollowing(true);
-        socket?.emit("joinRoom", {
-          senderId: currentUser.id,
-          receiverId: userId,
-        });
-        // here the follow event is emit for sent the notification
-        // with link to go that currentUser profile
-        socket?.emit("follow", {
+        socket.emit("follow", {
           senderId: currentUser.id,
           receiverId: userId,
           type: "follow",
           message: `${currentUser?.name} has started following you.`,
-          link: `auth/OtherProfileView/${currentUser.id}`, //profile link
+          link: `/auth/OtherProfileView/${currentUser.id}`,
         });
 
-        // calling and passing the fields to sendNotificaion && creating Notificaion
+        showToastSuccess("Followed");
+
         await useNotifyUser(
           currentUser.id,
           userId,
           "follow",
           `${currentUser?.name} has started following you.`,
-          `auth/OtherProfileView/${currentUser.id}`
+          `/auth/OtherProfileView/${currentUser.id}`
         );
-        showToastSuccess("Followed");
       } else {
         showToastError("Follow failed");
       }
-      setLoading(false);
     } catch (error: any) {
       showToastError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleUnfollow = async () => {
     try {
+      if (isLoading) return; // Prevent multiple clicks
       setLoading(true);
-      const fromFollowerId = currentUser.id;
-      const result = await unFollow(userId, fromFollowerId);
+      setIsConnected(false)
+      const result = await unFollow(userId, currentUser.id);
       if (result.success) {
-        setIsFollowing(false);
-        setIsMeOnlyFollowing(!isMeOnlyFollowing)
         fetchUserDetails();
         showToastSuccess("Unfollowed");
       }
-      setLoading(false);
     } catch (error: any) {
       showToastError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+// to get the correct follow btn based on follow system
+  const getFollowButtonText = () => {
+    if (isConnected) {
+      return "Connected";
+    } else if (isFollowBack) {
+      return "Follow Back";
+    } else if (isMeOnlyFollowing) {
+      return "Following";
+    } else {
+      return "Follow";
+    }
+  };
+
+  const handleFollowToggle = () => {
+    if (isMeOnlyFollowing  || isConnected) {
+      handleUnfollow();
+    } else {
+      followThisUser();
     }
   };
 
@@ -180,35 +187,12 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
         </div>
         <div className="relative p-8">
           <div className="flex justify-end items-center mb-6">
-            {isMeOnlyFollowing ? (
-              <Button
-                content={"Following"}
-                onClick={handleUnfollow}
-                isLoading={isLoading}
-                className="bg-red-500 text-white hover:bg-red-600"
-              />
-            ) : isFollowBack ? (
-              <Button
-                content={"Follow back"}
-                onClick={followThisUser}
-                isLoading={isLoading}
-                className="bg-blue-500 text-white hover:bg-blue-600"
-              />
-            ) : isConnected ? (
-              <Button
-                content={"Following"}
-                onClick={handleUnfollow}
-                isLoading={isLoading}
-                className="bg-red-500 text-white hover:bg-red-600"
-              />
-            ) : (
-              <Button
-                content={"Follow"}
-                onClick={followThisUser}
-                isLoading={isLoading}
-                className="bg-blue-500 text-white hover:bg-blue-600"
-              />
-            )}
+            <Button
+              content={getFollowButtonText()}
+              onClick={handleFollowToggle}
+              isLoading={isLoading}
+              className="bg-blue-500 text-white hover:bg-blue-600"
+            />
           </div>
           {userDetails ? (
             <div className="flex flex-col items-center md:items-start mt-6">
@@ -216,7 +200,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                 <h1 className="text-3xl font-poppins font-bold text-gray-800 mb-2 mr-4">
                   {userDetails?.name || "User Name"}
                 </h1>
-                {isFollowingList && (
+                {isConnected && (
                   <Link to="/auth/chat" state={{ userId: userId }}>
                     <AiFillMessage
                       className="message-icon"
@@ -229,7 +213,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                   </Link>
                 )}
               </div>
-              {!isPrivate || (isPrivate && isFollowingList) ? (
+              {!isPrivate || (isPrivate && isConnected) ? (
                 <>
                   <p className="text-zinc-900 font-semibold mb-3">
                     <span className="text-zinc-700">
@@ -245,7 +229,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                   </p>
                   <div className="flex flex-wrap justify-center md:justify-start space-x-4 md:space-x-6 mt-4">
                     <div className="flex items-center space-x-2">
-                      <p className="text-gray-800 font-poppins font-semibold font-poppins font-semibold">
+                      <p className="text-gray-800 font-poppins font-semibold">
                         Skill:
                       </p>
                       <p className="text-gray-800 font-poppins">
@@ -253,7 +237,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <p className="text-gray-800 font-poppins font-semibold font-poppins font-semibold">
+                      <p className="text-gray-800 font-poppins font-semibold">
                         Country:
                       </p>
                       <p className="text-gray-800 font-poppins">
@@ -261,42 +245,28 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <p className="text-gray-800 font-poppins font-semibold font-poppins font-semibold">
-                        State:
+                      <p className="text-gray-800 font-poppins font-semibold">
+                        City:
                       </p>
                       <p className="text-gray-800 font-poppins">
-                        {userDetails?.states}
+                        {userDetails.city}
                       </p>
                     </div>
                   </div>
-                  <div className="flex justify-center md:justify-start space-x-4 mt-6">
-                    <Link to={`/auth/OthersFollowers/${userId}`}>
-                      <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
-                        <h1 className="tracking-wide">Followers</h1>
-                      </button>
-                    </Link>
-                    <Link to={`/auth/OthersFollowings/${userId}`}>
-                      <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-zinc-950 text-zinc-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
-                        <h1 className="tracking-wide">Followings</h1>
-                      </button>
-                    </Link>
-                  </div>
                 </>
               ) : (
-                <p className="text-gray-800 font-semibold mt-4">
-                  This account is private. Follow to see their full profile.
-                </p>
+                <p className="text-center">This account is private.</p>
               )}
             </div>
           ) : (
-            <div className="mt-32 text-center">
-              <h2 className="text-gray-800 font-bold">No profile details</h2>
-            </div>
+            <p>Loading...</p>
           )}
-          <hr className="my-8 border-gray-300" />
-          <OthersProfilePostsActivity userId={userId} />
+          <div className="my-6">
+            <OthersProfilePostsActivity userId={userId} />
+          </div>
         </div>
       </div>
+      <NotificationHandler />
     </div>
   );
 };

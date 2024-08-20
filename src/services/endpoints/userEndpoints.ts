@@ -41,6 +41,7 @@ const userRoutes = {
   addComment : "/user/addComment",
   deleteComment : "/user/deleteComment",
   editComment : "/user/editComment",
+  viewPost : "/user/viewPost",
 
   // Conversations
   getChatUsers : '/user/getChat',
@@ -50,6 +51,7 @@ const userRoutes = {
 
   //Notifications
   notification : '/user/notification',
+  notificationMarkAsRead : '/user/markAsReadNotify',
 
   logout: "/user/logout",
 };

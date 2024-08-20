@@ -1,5 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { uploadPost, fetchFeed, deletPost, editPost, postLike, fetchMyPosts, addComment, commentDelete, editingComment } from "../API/post";
+import {
+  uploadPost,
+  fetchFeed,
+  deletPost,
+  editPost,
+  postLike,
+  fetchMyPosts,
+  addComment,
+  commentDelete,
+  editingComment,
+  viewPost,
+} from "../API/post";
 import useGetUser from "./getUser";
 import {
   showToastError,
@@ -11,8 +22,8 @@ const useUploadPost = () => {
   const queryClient = useQueryClient();
   return useMutation(uploadPost, {
     onSuccess: (data) => {
-      console.log("data ====>",data);
-      
+      console.log("data ====>", data);
+
       queryClient.invalidateQueries("feed");
       queryClient.invalidateQueries("posts");
       console.log("data after uploaded post ==>", data);
@@ -35,16 +46,12 @@ const useGetPosts = () => {
 
 // Hook to get posts
 const useGetMyPosts = () => {
-  const user = useGetUser(); 
-  return useQuery(
-    ['posts', user?.id], 
-    () => fetchMyPosts(), 
-    {
-      enabled: !!user?.id, 
-      staleTime: 5 * 60 * 1000, 
-      refetchOnWindowFocus: false, 
-    }
-  );
+  const user = useGetUser();
+  return useQuery(["posts", user?.id], () => fetchMyPosts(), {
+    enabled: !!user?.id,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 };
 // Hook to delete a post
 const useDeletePost = () => {
@@ -80,7 +87,6 @@ const useEditPost = () => {
   });
 };
 
-
 // Hook to like a post
 const usePostLike = () => {
   const queryClient = useQueryClient();
@@ -98,51 +104,74 @@ const usePostLike = () => {
 };
 
 const useAddComment = () => {
-  const queryClient = useQueryClient()
-  return useMutation(addComment,{
-    onSuccess : (data) => {
-      console.log("data after commented ===>",data);
-      
-      if(data.success){
-          // Invalidate the queries related to the specific post
-          queryClient.invalidateQueries(['posts']);
-          queryClient.invalidateQueries(['post', data.postId]);
-        } else {
-          
-          showToastError(data.message);
-        }
-    }
-  })
-}
+  const queryClient = useQueryClient();
+  return useMutation(addComment, {
+    onSuccess: (data) => {
+      console.log("Data after commenting ===>", data);
+
+      // Verify the actual structure of the data object
+      console.log("Success field:", data.success);
+
+      if (data.success) {
+        // Validating the queries related to the specific post
+        queryClient.invalidateQueries(["posts"]);
+        queryClient.invalidateQueries(["post", data.postId]);
+        return data;
+      } else {
+        showToastError(data.message);
+      }
+    },
+  });
+};
 
 const useDeleteComment = () => {
-  const queryClient = useQueryClient()
-  return useMutation(commentDelete,{
-    onSuccess : (data) => {
-      if(data.success) {
+  const queryClient = useQueryClient();
+  return useMutation(commentDelete, {
+    onSuccess: (data) => {
+      if (data.success) {
         showToastSuccess(data.message);
-        queryClient.invalidateQueries("posts")
-        queryClient.invalidateQueries(['post', data.postId]);
+        queryClient.invalidateQueries("posts");
+        queryClient.invalidateQueries(["post", data.postId]);
       } else {
         showToastError(data.message);
       }
-    }
-  })
-}
+    },
+  });
+};
 
 const useEditComment = () => {
-  const queryClient = useQueryClient()
-  return useMutation(editingComment ,{
-    onSuccess : ( data ) => {
-      if(data.success){
-        queryClient.invalidateQueries("posts")
-        queryClient.invalidateQueries(['post', data.postId]);
+  const queryClient = useQueryClient();
+  return useMutation(editingComment, {
+    onSuccess: (data) => {
+      if (data.success) {
+        queryClient.invalidateQueries("posts");
+        queryClient.invalidateQueries(["post", data.postId]);
       } else {
         showToastError(data.message);
       }
-    }
-  })
-}
+    },
+  });
+};
 
+  const useViewPost = (postId : string) => {
+    return useQuery(['post', postId], () => viewPost(postId), {
+      enabled: !!postId, // Fetch only if postId is available
+      onError: (error : any) => {
+        console.error('Fetch error:', error.message);
+        showToastError('Failed to fetch post');
+      },
+    });
+  };
 
-export { useUploadPost, useGetPosts, useDeletePost, useEditPost, usePostLike,useGetMyPosts, useAddComment , useDeleteComment ,useEditComment };
+export {
+  useUploadPost,
+  useGetPosts,
+  useDeletePost,
+  useEditPost,
+  usePostLike,
+  useGetMyPosts,
+  useAddComment,
+  useDeleteComment,
+  useEditComment,
+  useViewPost,
+};

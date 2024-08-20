@@ -20,14 +20,15 @@ import useGetUser from "../../hook/getUser";
 import { useLocation, useParams } from "react-router-dom";
 import { fetchChatUsers, sendChat } from "../../API/conversation";
 import { useSocket } from "../../hook/useSocket";
+import { useNotifyUser } from "../../hook/useNotifyUser";
 
-const formatTime = (dateString : string) => {
+const formatTime = (dateString: string) => {
   const date = new Date(dateString);
-  let hours = date.getHours()
-  let minutes = String(date.getMinutes()).padStart(2,"0")
-  const ampm = hours >= 12 ? "PM" : "AM"
-  
-  return `${hours}:${minutes} ${ampm}`
+  let hours = date.getHours();
+  let minutes = String(date.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  return `${hours}:${minutes} ${ampm}`;
 };
 
 const ChatComponent = () => {
@@ -42,20 +43,20 @@ const ChatComponent = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
 
-  const userId = location?.state?.userId; 
- //access the userId from url in route 
+  const userId = location?.state?.userId;
+  //access the userId from url in route
 
+// fetch the chat history 
   const fetchChat = async () => {
     try {
-      if(userId){
-
+      if (userId) {
         const userChat = await fetchChatUsers(
           sender.id as string,
           userId as string
         );
-        console.log("userChat details ===>",userChat);
+        
         setUser(userChat?.userWithProfileImage);
-        setChat(userChat?.messages || []);  
+        setChat(userChat?.messages || []);
         socket?.emit("joinRoom", { senderId: sender.id, receiverId: userId });
       }
     } catch (error) {
@@ -72,7 +73,8 @@ const ChatComponent = () => {
   useEffect(() => {
     if (socket) {
       const handleReieveData = (data: string) => {
-        setChat((prevChat: string) => [...prevChat, data]);};
+        setChat((prevChat: string) => [...prevChat, data]);
+      };
       socket.on("receiveData", handleReieveData);
 
       return () => {
@@ -88,6 +90,7 @@ const ChatComponent = () => {
     }
   }, [chats]);
 
+// sending message function
   const sendMessage = async () => {
     try {
       if (!socket) {
@@ -110,7 +113,23 @@ const ChatComponent = () => {
       };
       setMessage("");
       socket.emit("sendData", { ...newMessage });
+      socket.emit("chat", {
+        senderId: sender.id,
+        receiverId: userId,
+        type: "chat",
+        message: `${sender.name} has sent a message`,
+        link: `/auth/chat?userId=${userId}`,
+      });
       await sendChat(sender.id as string, userId as string, messages as string);
+
+      // creating noification for chat
+      await useNotifyUser(
+        sender.id,
+        userId,
+        "chat",
+        `${sender.name} has sent a message`,
+        `/auth/chat?userId=${userId}`
+      );
       // again fetch chat after the message send
       fetchChat();
     } catch (error) {}
@@ -205,7 +224,6 @@ const ChatComponent = () => {
           backgroundPosition: "end",
         }}
       >
-        
         {chats.length > 0 ? (
           <>
             <TimeLine />
@@ -262,7 +280,7 @@ const ChatComponent = () => {
                         opacity: 0.7,
                       }}
                     >
-                    {formatTime(message.createdAt)}
+                      {formatTime(message.createdAt)}
                     </Typography>
                   </Paper>
                 </Box>

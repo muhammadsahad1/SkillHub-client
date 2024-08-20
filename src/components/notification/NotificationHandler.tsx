@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { FaBell, FaComment, FaRocketchat } from "react-icons/fa";
 import useGetUser from "../../hook/getUser";
+import { AiFillLike } from "react-icons/ai";
 
 const NotificationHandler = () => {
   const { socket } = useSocket();
@@ -14,7 +15,8 @@ const NotificationHandler = () => {
   useEffect(() => {
     if (socket) {
       const handleNotification = (notification: any) => {
-        console.log("Received notification:", notification);
+
+        console.log("Received notification: ==>", notification.type);
         if (notification.type === "follow") {
           //for follow notification
           toast.custom((t) => (
@@ -66,7 +68,7 @@ const NotificationHandler = () => {
                 toast.dismiss(t.id);
               }}
             >
-              {/* <AiFillLike size={20} /> */}
+              <AiFillLike size={20} />
               <div>
                 <strong>{notification?.message}</strong>
               </div>
@@ -95,7 +97,8 @@ const NotificationHandler = () => {
       };
 
       socket.on("notification", handleNotification);
-
+      // console.log("handlNotificaio =========>",handleNotification);
+      
       // Cleanup listener on component unmount or socket change
       return () => {
         socket.off("notification", handleNotification);

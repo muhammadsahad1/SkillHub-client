@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { logoutUser } from "../../API/user";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteUser } from "../../redux/userSlices";
 import { setUserImages } from "../../redux/userSlices";
 import { CgProfile } from "react-icons/cg";
@@ -14,6 +14,8 @@ import { TbMessageDots } from "react-icons/tb";
 import { MdNotifications } from "react-icons/md";
 import SearchUsers from "./searchUsers";
 import NotificationEntry from "../notification/NotificationEntry";
+import { fetchNotifications } from "../../redux/features/notificationSlices";
+import { RootState } from "../../redux/store";
 
 const NavBar: React.FC = () => {
   const [isDropDown, openDropDown] = useState<boolean>(false);
@@ -21,6 +23,10 @@ const NavBar: React.FC = () => {
   const dropDownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  // taking the unread notification count here
+  const unreadCount = useSelector(
+    (state: RootState) => state?.notifications?.unreadCount
+  );
 
   const currentUser = useGetUser();
   // Handling the dropdown
@@ -42,9 +48,14 @@ const NavBar: React.FC = () => {
   };
 
   useEffect(() => {
+    console.log("Dispatching fetchNotifications");
+    dispatch(fetchNotifications() as any);
+  }, [dispatch]);
+
+  useEffect(() => {
+    console.log("Fetching profile image");
     fetchProfileImage();
   }, [currentUser.picture?.imageUrl]);
-
   // Logout handler
   const handleLogout = async () => {
     try {
@@ -89,14 +100,20 @@ const NavBar: React.FC = () => {
           <Link to="/auth/chat">
             <TbMessageDots size={32} className="cursor-pointer" />
           </Link>
-          <div onClick={toggleNotificaions} className="cursor-pointer">
+          <div onClick={toggleNotificaions} className="cursor-pointer relative">
+            {unreadCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-emerald-400 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {unreadCount}
+              </span>
+            )}
             <MdNotifications size={32} />
           </div>
           <div className="relative" ref={dropDownRef}>
             <button className="profileIcon" onClick={handleDropDown}>
-              {currentUser.picture?.imageUrl ? (
+              {currentUser?.picture?.imageUrl &&
+              currentUser.picture.imageUrl !== "" ? (
                 <img
-                  src={currentUser.picture?.imageUrl}
+                  src={currentUser.picture.imageUrl}
                   className="w-11 h-11 object-cover rounded-full"
                 />
               ) : (
@@ -161,7 +178,7 @@ const NavBar: React.FC = () => {
       </div>
       {isNotificationOpen && (
         <div className="absolute top-50 right-4 w-80 z-50 max-h-96">
-          <NotificationEntry onClose={toggleNotificaions}/>
+          <NotificationEntry onClose={toggleNotificaions} />
         </div>
       )}
     </nav>

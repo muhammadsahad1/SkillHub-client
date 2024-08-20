@@ -101,7 +101,6 @@ export const editPost = async ({
 export const postLike = async (postId: string) => {
   try {
     const response = await Api.post(userRoutes.postLike, { postId: postId });
-    console.log("res in first for post like", response.data);
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -198,4 +197,17 @@ export const editingComment = async ({
       return { success: false, message: error.message };
     }
   }
+};
+
+//view one post
+export const viewPost = async (postId: string) => {
+  try {
+  
+    const response = await Api.get(userRoutes.viewPost, {
+      params: {
+        postId,
+      },
+    });
+    return response.data;
+  } catch (error) {}
 };

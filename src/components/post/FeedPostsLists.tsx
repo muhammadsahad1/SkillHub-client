@@ -5,6 +5,7 @@ import HomePostCard from "../common/utilies/HomePostsCard";
 
 const FeedPostsLists = () => {
   const { data, isLoading, error } = useGetPosts();
+  console.log("data ===",data);
 
     // console.log("posts fetched ==+>" , posts)
 

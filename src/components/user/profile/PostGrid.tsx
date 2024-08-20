@@ -3,9 +3,8 @@ import { Grid } from "@mui/material";
 import PostCard from "./PostCard";
 
 const PostGrid = ({ posts }: { posts: any[] }) => {
-console.log("postsssssssssssssssss =====>",posts);
-
-
+  console.log("posts ===>",posts.length);
+  
   return (
     <Grid container spacing={2} justifyContent="center" padding={0}>
         {posts.map((post: any) => (

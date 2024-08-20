@@ -139,8 +139,8 @@ const ViewProfile: React.FC = () => {
           <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
             {currentUser?.picture?.imageUrl ? (
               <img
-                src={currentUser?.picture?.imageUrl}
-                alt={`${currentUser.name}'s profile`}
+                src={currentUser?.picture?.imageUrl }
+                alt={`${currentUser.name}'s profile`} 
                 className="w-36 h-36 md:w-44 md:h-44 object-cover rounded-full border-4 border-white shadow-lg"
               />
             ) : (
