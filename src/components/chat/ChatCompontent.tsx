@@ -21,6 +21,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { fetchChatUsers, sendChat } from "../../API/conversation";
 import { useSocket } from "../../hook/useSocket";
 import { useNotifyUser } from "../../hook/useNotifyUser";
+import { useVideoCall } from "../../contexts/VideoCallContext";
 
 const formatTime = (dateString: string) => {
   const date = new Date(dateString);
@@ -39,6 +40,7 @@ const ChatComponent = () => {
   const { socket } = useSocket();
   const sender = useGetUser();
   const location = useLocation();
+  const { requestCall } = useVideoCall()
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
@@ -54,7 +56,6 @@ const ChatComponent = () => {
           sender.id as string,
           userId as string
         );
-        
         setUser(userChat?.userWithProfileImage);
         setChat(userChat?.messages || []);
         socket?.emit("joinRoom", { senderId: sender.id, receiverId: userId });
@@ -140,6 +141,16 @@ const ChatComponent = () => {
     setShowEmojiPicker(false);
   };
 
+// handleCall
+const handleCall = (userId : string,userName : string) => {
+  try {
+    console.log("userNmae ==.",userName);
+    requestCall(userId)
+  } catch (error) {
+    
+  }
+}
+
   return (
     <Box
       sx={{
@@ -201,8 +212,10 @@ const ChatComponent = () => {
                 "100%": { transform: "scale(1)" },
               },
             }}
+            // here requesting to call the people
+            onClick={() => handleCall(userId,user?.name)}
           >
-            <VideocamIcon sx={{ color: "#151719" }} />
+            <VideocamIcon sx={{ color: "#151719" }}/>
           </IconButton>
           <IconButton
             sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}

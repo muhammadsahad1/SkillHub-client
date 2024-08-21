@@ -18,6 +18,8 @@ import NotificationHandler from "./components/notification/NotificationHandler";
 import { Routes, Route, useRoutes } from "react-router-dom";
 import routes from "./routes/AllRoutes/allRoutes.tsx";
 import useGetUser from "./hook/getUser.ts";
+import { useVideoCall, VideoCallProvider } from "./contexts/VideoCallContext.tsx";
+import VideoCallComponent from "./components/videoCall/VideoCallComponent.tsx";
 
 const theme = createTheme();
 const clientId = import.meta.env.VITE_CLIENT_ID;
@@ -33,11 +35,16 @@ function App() {
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <GoogleOAuthProvider clientId={clientId}>
-              <SocketProvider>
-                <NotificationHandler />
-                {routing}
-                <Toaster />
-              </SocketProvider>
+
+                <SocketProvider>
+                  <VideoCallProvider>
+                  <NotificationHandler />
+                  {routing}
+                  <Toaster />
+                  <ConditionalVideoCallComponent/>
+                  </VideoCallProvider>
+                </SocketProvider>
+            
             </GoogleOAuthProvider>
           </PersistGate>
         </Provider>
@@ -45,5 +52,14 @@ function App() {
     </ThemeProvider>
   );
 }
+
+const ConditionalVideoCallComponent = () => {
+  const { isCallRequested , isCallAccepted} = useVideoCall()
+  if(isCallRequested || isCallAccepted){
+    return <VideoCallComponent/>
+  }
+  return null
+} 
+
 
 export default App;
