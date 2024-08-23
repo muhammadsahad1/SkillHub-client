@@ -18,29 +18,55 @@ import EmojiPicker from "emoji-picker-react";
 import TimeLine from "./TimeLine";
 import useGetUser from "../../hook/getUser";
 import { useLocation, useParams } from "react-router-dom";
-import { fetchChatUsers, sendChat } from "../../API/conversation";
+import {
+  fetchChatUsers,
+  sendChat,
+  sendImageInChat,
+} from "../../API/conversation";
 import { useSocket } from "../../hook/useSocket";
 import { useNotifyUser } from "../../hook/useNotifyUser";
 import { useVideoCall } from "../../contexts/VideoCallContext";
+import { BiImageAdd } from "react-icons/bi";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import { Button } from "antd";
+import { showToastError } from "../common/utilies/toast";
 
 const formatTime = (dateString: string) => {
   const date = new Date(dateString);
-  let hours = date.getHours();
-  let minutes = String(date.getMinutes()).padStart(2, "0");
-  const ampm = hours >= 12 ? "PM" : "AM";
 
-  return `${hours}:${minutes} ${ampm}`;
+  // Check if the date is invalid
+  if (isNaN(date.getTime())) {
+    return "Invalid date";
+  }
+
+  let hours = date.getHours();
+  let minutes = String(date.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  const strTime = `${hours}:${minutes} ${ampm}`;
+
+  return strTime;
 };
+
 
 const ChatComponent = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [image, setImage] = useState<null | File>(null);
+  const [prevModal, setPrevModal] = useState<boolean>(false);
+  const [imagePreviev, setImagePrev] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
   const [chats, setChat] = useState<any>([]);
   const [user, setUser] = useState<any>({});
   const { socket } = useSocket();
   const sender = useGetUser();
   const location = useLocation();
-  const { requestCall } = useVideoCall()
+  const { requestCall } = useVideoCall();
+  const imageUseRef = useRef(null);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
@@ -48,7 +74,23 @@ const ChatComponent = () => {
   const userId = location?.state?.userId;
   //access the userId from url in route
 
-// fetch the chat history 
+  useEffect(() => {
+    if (socket) {
+      const handleReceiveMessage = (data: any) => {
+        if (data.receiverId === userId || data.senderId === userId) {
+          setChat((prevChat: any) => [...prevChat, data]);
+        }
+      };
+      socket.on("receiveData", handleReceiveMessage);
+
+      return () => {
+        socket.off("receiveData", handleReceiveMessage);
+      };
+    }
+  }, [socket,userId]);
+
+
+  // fetch the chat history
   const fetchChat = async () => {
     try {
       if (userId) {
@@ -56,6 +98,8 @@ const ChatComponent = () => {
           sender.id as string,
           userId as string
         );
+        console.log("userCHat ==>", userChat);
+
         setUser(userChat?.userWithProfileImage);
         setChat(userChat?.messages || []);
         socket?.emit("joinRoom", { senderId: sender.id, receiverId: userId });
@@ -70,40 +114,54 @@ const ChatComponent = () => {
       fetchChat();
     }
   }, [userId, sender.id]);
-
-  useEffect(() => {
-    if (socket) {
-      const handleReieveData = (data: string) => {
-        setChat((prevChat: string) => [...prevChat, data]);
-      };
-      socket.on("receiveData", handleReieveData);
-
-      return () => {
-        socket.off("receiveData", handleReieveData);
-      };
-    }
-  }, [socket]);
-
+  
   // useEffect for scroll to last message
   useEffect(() => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chats]);
+  // to handle the preve image
+  const handlePreviewImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const validImage = ["imgae/jpg", "image/jpeg", "image/png", "image/gif"];
+      if (!validImage.includes(file.type)) {
+        showToastError("its must be valid image");
+        return;
+      }
+      setImage(file);
+      const previewUrl = URL.createObjectURL(file);
 
-// sending message function
+      const tempMsbId = new Date().getTime().toString();
+
+      let newMessage = {
+        _id: tempMsbId,
+        senderId: sender.id,
+        receiverId: userId,
+        message: " ",
+        mediaUrl: previewUrl,
+        createAt: new Date().toISOString(),
+      };
+
+      setImagePrev(previewUrl);
+      setPrevModal(true);
+    }
+  };
+
+  // sending message function
   const sendMessage = async () => {
     try {
       if (!socket) {
         console.error("Socket is not initialized");
         return;
       }
-
+      
       const messages = message.trim();
       if (!message) {
         return;
       }
-
+      
       let newMessage = {
         _id: new Date().getTime().toString(),
         senderId: sender.id,
@@ -121,8 +179,10 @@ const ChatComponent = () => {
         message: `${sender.name} has sent a message`,
         link: `/auth/chat?userId=${userId}`,
       });
+      
       await sendChat(sender.id as string, userId as string, messages as string);
-
+      fetchChat();
+      
       // creating noification for chat
       await useNotifyUser(
         sender.id,
@@ -132,24 +192,71 @@ const ChatComponent = () => {
         `/auth/chat?userId=${userId}`
       );
       // again fetch chat after the message send
-      fetchChat();
+    } catch (error) {}
+  };
+  // handling the emoji click
+  const onEmojiClick = (emoji: any) => {
+    const emojiCharacter = emoji.emoji;
+    setMessage(message + emojiCharacter);
+    setShowEmojiPicker(false);
+  };
+  // handleCall
+  const handleCall = (userId: string, userName: string) => {
+    try {
+      requestCall(userId, userName as string);
     } catch (error) {}
   };
 
-  const onEmojiClick = (event, emojiObject) => {
-    setMessage(message + emojiObject.emoji);
-    setShowEmojiPicker(false);
+  const handleCloseModal = () => {
+    setPrevModal(false);
   };
 
-// handleCall
-const handleCall = (userId : string,userName : string) => {
-  try {
-    console.log("userNmae ==.",userName);
-    requestCall(userId)
-  } catch (error) {
-    
-  }
-}
+  // sending the imge
+  // here some issues like after sender sent the image that not
+  //showing the image in receiver side in realtime after refresh only
+  const sendImage = async () => {
+    try {
+      if (!image) {
+        return;
+      }
+
+      if (!socket) {
+        console.error("Socket is not initialized");
+        return;
+      }
+
+      const formdata = new FormData();
+      formdata.append("image", image);
+      formdata.append("senderId", sender.id as string);
+      formdata.append("receiverId", userId);
+      await sendImageInChat(formdata);
+      setImage(null);
+      setImagePrev(null);
+      setPrevModal(false);
+
+      fetchChat();
+
+      let newMessage = {
+        _id: new Date().getTime().toString(),
+        senderId: sender.id,
+        receiverId: userId,
+        message: message || "",
+        media: "",
+        createAt: new Date().toISOString(),
+      };
+
+      socket.emit("sendData", { ...newMessage });
+      socket.emit("chat", {
+        senderId: sender.id,
+        receiverId: userId,
+        type: "chat",
+        message: `${sender.name} has sent a message`,
+        link: `/auth/chat?userId=${userId}`,
+      });
+    } catch (error) {}
+  };
+
+  console.log("chatList -===>", chats);
 
   return (
     <Box
@@ -213,9 +320,9 @@ const handleCall = (userId : string,userName : string) => {
               },
             }}
             // here requesting to call the people
-            onClick={() => handleCall(userId,user?.name)}
+            onClick={() => handleCall(userId, user?.name)}
           >
-            <VideocamIcon sx={{ color: "#151719" }}/>
+            <VideocamIcon sx={{ color: "#151719" }} />
           </IconButton>
           <IconButton
             sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}
@@ -276,14 +383,18 @@ const handleCall = (userId : string,userName : string) => {
                     }}
                     className="font-poppins"
                   >
-                    <Typography
-                      variant="body1"
-                      className={
-                        message.senderId === sender.id ? "font-bold" : ""
-                      }
-                    >
-                      {message.message}
-                    </Typography>
+                    {message.message ? (
+                      <Typography
+                        variant="body1"
+                        className={
+                          message.senderId === sender.id ? "font-bold" : ""
+                        }
+                      >
+                        {message?.message}
+                      </Typography>
+                    ) : (
+                      <img className="w-64" src={message.mediaUrl} />
+                    )}
                     <Typography
                       variant="caption"
                       sx={{
@@ -336,44 +447,85 @@ const handleCall = (userId : string,userName : string) => {
           </Box>
         )}
       </Box>
-      {/* Message Input */}
-      <Paper
-        component="form"
-        sx={{
-          p: "2px 4px",
-          display: "flex",
-          alignItems: "center",
-          m: 1,
-          position: "relative",
-          borderRadius: 30,
-          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-        }}
-        className="font-poppins"
-      >
-        <InputBase
-          sx={{ ml: 2, flex: 1 }}
-          placeholder="Type your message here..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              sendMessage();
-            }
+      {userId && (
+        <Paper
+          component="form"
+          sx={{
+            p: "2px 4px",
+            display: "flex",
+            alignItems: "center",
+            m: 1,
+            position: "relative",
+            borderRadius: 30,
+            boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
           }}
-        />
-        <IconButton
-          color="primary"
-          sx={{ p: "10px" }}
-          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          className="font-poppins"
         >
-          <InsertEmoticonIcon />
-        </IconButton>
-        <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-        <IconButton color="primary" sx={{ p: "10px" }}>
-          <BiPaperPlane onClick={sendMessage} />
-        </IconButton>
-      </Paper>
+          <InputBase
+            sx={{ ml: 2, flex: 1 }}
+            placeholder="Type your message here..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
+          />
+          <input
+            hidden
+            ref={imageUseRef}
+            type="file"
+            id="imageAddInput"
+            onChange={handlePreviewImage}
+          />
+          <IconButton
+            onClick={() => imageUseRef.current?.click()}
+            color="primary"
+            sx={{ p: "10px" }}
+          >
+            <BiImageAdd />
+          </IconButton>
+          <IconButton
+            color="primary"
+            sx={{ p: "10px" }}
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          >
+            <InsertEmoticonIcon />
+          </IconButton>
+          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+          <IconButton color="primary" sx={{ p: "10px" }}>
+            <BiPaperPlane onClick={sendMessage} />
+          </IconButton>
+        </Paper>
+      )}
+
+      <Dialog open={prevModal} onClose={handleCloseModal}>
+        <DialogTitle>Image Preview</DialogTitle>
+        <DialogContent>
+          {imagePreviev && (
+            <img
+              src={imagePreviev}
+              alt="Preview"
+              id="imagePreview"
+              style={{ maxWidth: "100%", maxHeight: "400px" }}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal}>Cancel</Button>
+          <Button
+            onClick={() => {
+              handleCloseModal();
+              sendImage();
+              // Add logic here to send the image after confirming preview
+            }}
+          >
+            Send
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Emoji Picker */}
       {showEmojiPicker && (

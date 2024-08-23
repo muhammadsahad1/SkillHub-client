@@ -48,6 +48,7 @@ const userRoutes = {
   sendChat : '/user/sendChat',
   fetchUsers : '/user/chatUsers',
   markMessage : '/user/markAsRead',
+  sendImage : '/user/sendImage',
 
   //Notifications
   notification : '/user/notification',

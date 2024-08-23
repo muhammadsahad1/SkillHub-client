@@ -214,12 +214,12 @@ const ViewProfile: React.FC = () => {
               <div className="w-full flex justify-between items-center mt-6">
                 <div className="flex space-x-4">
                   <Link to="/auth/followings">
-                    <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-gray-950 text-gray-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                    <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-gray-950 text-gray-200 text-sm transform transition duration-200 hover:shadow-md">
                       <h1 className="tracking-wide">Following</h1>
                     </button>
                   </Link>
                   <Link to="/auth/followers">
-                    <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-gray-950 text-gray-200 text-sm hover:-translate-y-1 transform transition duration-200 hover:shadow-md">
+                    <button className="font-poppins mt-5 px-4 py-2 rounded-md border border-neutral-300 bg-gray-950 text-gray-200 text-sm  transform transition duration-200 hover:shadow-md">
                       <h1 className="tracking-wide">Followers</h1>
                     </button>
                   </Link>

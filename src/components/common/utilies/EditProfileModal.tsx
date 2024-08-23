@@ -76,7 +76,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       reader.readAsDataURL(file);
     }
   };
-
+// For country api
   const fetchCountriesApi = async () => {
     const url = import.meta.env.VITE_COUNTRIES_API_URL;
     if (!url) {
@@ -93,7 +93,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       console.log(error);
     }
   };
-
+// listing the cities corresponding to contry
   const fetchCitiesApi = (currentCountry: string) => {
     try {
       const selectedCountryData = countries.find(
@@ -108,7 +108,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       toast.error("Unable to fetch state. Using fallback data.");
     }
   };
-
+// fetching the countries api
   useEffect(() => {
     fetchCountriesApi();
   }, []);
@@ -120,7 +120,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   }, [selectedCountry, countries]);
 
   const onSubmit = async (data: User) => {
-    console.log(data);
     setIsLoading(true);
     const fileInput = document.getElementById(
       "profileImageInput"
@@ -144,7 +143,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
     try {
       const response = await createProfile(formData);
-      console.log("ressss ===> ", response);
       if (response.success === true) {
         dispatch(setUser(response.user));
         setIsLoading(false);

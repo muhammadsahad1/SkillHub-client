@@ -111,7 +111,7 @@ const SideBar = () => {
       // function to mark message as read
       await markMessageAsRead(conversationId);
       fetchChatUsers();
-      onConversationSelect(true)
+      // onConversationSelect(true)
     } catch (error) {}
   };
 
