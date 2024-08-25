@@ -17,7 +17,7 @@ import { BiPaperPlane } from "react-icons/bi";
 import EmojiPicker from "emoji-picker-react";
 import TimeLine from "./TimeLine";
 import useGetUser from "../../hook/getUser";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   fetchChatUsers,
   sendChat,
@@ -43,8 +43,8 @@ const formatTime = (dateString: string) => {
   }
 
   let hours = date.getHours();
-  let minutes = String(date.getMinutes()).padStart(2, '0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
+  let minutes = String(date.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
 
   hours = hours % 12;
   hours = hours ? hours : 12; // the hour '0' should be '12'
@@ -53,8 +53,11 @@ const formatTime = (dateString: string) => {
   return strTime;
 };
 
+type OnNewMessage = {
+  onNewMessage: () => Promise<void>;
+};
 
-const ChatComponent = () => {
+const ChatComponent = ({ onNewMessage }: OnNewMessage) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [image, setImage] = useState<null | File>(null);
   const [prevModal, setPrevModal] = useState<boolean>(false);
@@ -65,6 +68,7 @@ const ChatComponent = () => {
   const { socket } = useSocket();
   const sender = useGetUser();
   const location = useLocation();
+  const navigate = useNavigate();
   const { requestCall } = useVideoCall();
   const imageUseRef = useRef(null);
 
@@ -77,8 +81,11 @@ const ChatComponent = () => {
   useEffect(() => {
     if (socket) {
       const handleReceiveMessage = (data: any) => {
+        console.log();
+
         if (data.receiverId === userId || data.senderId === userId) {
           setChat((prevChat: any) => [...prevChat, data]);
+          onNewMessage();
         }
       };
       socket.on("receiveData", handleReceiveMessage);
@@ -87,8 +94,9 @@ const ChatComponent = () => {
         socket.off("receiveData", handleReceiveMessage);
       };
     }
-  }, [socket,userId]);
+  }, [socket, userId, onNewMessage]);
 
+  console.log("chat ==>", chats);
 
   // fetch the chat history
   const fetchChat = async () => {
@@ -114,7 +122,7 @@ const ChatComponent = () => {
       fetchChat();
     }
   }, [userId, sender.id]);
-  
+
   // useEffect for scroll to last message
   useEffect(() => {
     if (lastMessageRef.current) {
@@ -156,12 +164,12 @@ const ChatComponent = () => {
         console.error("Socket is not initialized");
         return;
       }
-      
+
       const messages = message.trim();
       if (!message) {
         return;
       }
-      
+
       let newMessage = {
         _id: new Date().getTime().toString(),
         senderId: sender.id,
@@ -172,6 +180,7 @@ const ChatComponent = () => {
       };
       setMessage("");
       socket.emit("sendData", { ...newMessage });
+
       socket.emit("chat", {
         senderId: sender.id,
         receiverId: userId,
@@ -179,10 +188,9 @@ const ChatComponent = () => {
         message: `${sender.name} has sent a message`,
         link: `/auth/chat?userId=${userId}`,
       });
-      
+
       await sendChat(sender.id as string, userId as string, messages as string);
-      fetchChat();
-      
+      onNewMessage();
       // creating noification for chat
       await useNotifyUser(
         sender.id,
@@ -191,6 +199,8 @@ const ChatComponent = () => {
         `${sender.name} has sent a message`,
         `/auth/chat?userId=${userId}`
       );
+      fetchChat();
+
       // again fetch chat after the message send
     } catch (error) {}
   };
@@ -234,8 +244,6 @@ const ChatComponent = () => {
       setImagePrev(null);
       setPrevModal(false);
 
-      fetchChat();
-
       let newMessage = {
         _id: new Date().getTime().toString(),
         senderId: sender.id,
@@ -253,6 +261,17 @@ const ChatComponent = () => {
         message: `${sender.name} has sent a message`,
         link: `/auth/chat?userId=${userId}`,
       });
+
+      await useNotifyUser(
+        sender.id,
+        userId,
+        "chat",
+        `${sender.name} has sent a message`,
+        `/auth/chat?userId=${userId}`
+      );
+
+      fetchChat();
+      onNewMessage();
     } catch (error) {}
   };
 
@@ -285,11 +304,21 @@ const ChatComponent = () => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Avatar
-            src={user?.profileImageUrl}
-            alt="User"
-            sx={{ width: 48, height: 48 }}
-          />
+          {user?.profileImageUrl ? (
+            <Avatar
+              src={user?.profileImageUrl}
+              alt="User"
+              sx={{ width: 48, height: 48, cursor: "pointer" }}
+              onClick={() => navigate(`/auth/OtherProfileView/${user._id}`)}
+            />
+          ) : (
+            <Avatar
+              src={user?.profileImageUrl}
+              alt="User"
+              sx={{ width: 48, height: 48, cursor: "pointer" }}
+            />
+          )}
+
           <Box sx={{ ml: 2 }}>
             <Typography
               variant="subtitle1"
@@ -306,30 +335,32 @@ const ChatComponent = () => {
             ></Typography>
           </Box>
         </Box>
-        <Box>
-          <IconButton
-            sx={{
-              "&:hover": {
-                animation: "pulse 0.5s ease-in-out",
-                backgroundColor: "rgba(0,0,0,0.05)",
-              },
-              "@keyframes pulse": {
-                "0%": { transform: "scale(1)" },
-                "50%": { transform: "scale(1.1)" },
-                "100%": { transform: "scale(1)" },
-              },
-            }}
-            // here requesting to call the people
-            onClick={() => handleCall(userId, user?.name)}
-          >
-            <VideocamIcon sx={{ color: "#151719" }} />
-          </IconButton>
-          <IconButton
-            sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}
-          >
-            <MoreVertIcon sx={{ color: "#151719" }} />
-          </IconButton>
-        </Box>
+        {user?.name ? (
+          <Box>
+            <IconButton
+              sx={{
+                "&:hover": {
+                  animation: "pulse 0.5s ease-in-out",
+                  backgroundColor: "rgba(0,0,0,0.05)",
+                },
+                "@keyframes pulse": {
+                  "0%": { transform: "scale(1)" },
+                  "50%": { transform: "scale(1.1)" },
+                  "100%": { transform: "scale(1)" },
+                },
+              }}
+              // here requesting to call the people
+              onClick={() => handleCall(userId, user?.name)}
+            >
+              <VideocamIcon sx={{ color: "#151719" }} />
+            </IconButton>
+            <IconButton
+              sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}
+            >
+              <MoreVertIcon sx={{ color: "#151719" }} />
+            </IconButton>
+          </Box>
+        ) : null}
       </Box>
 
       {/* Chat Messages */}

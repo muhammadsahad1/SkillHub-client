@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { DotLoader } from "react-spinners";
 import { RouteObject } from "react-router-dom";
+import VerificationRequestsPage from "../../page/admin/VerificationRequests";
 
 // Layouts
 const AdminLayout = React.lazy(() => import("../layouts/AdminLayout"));
@@ -179,6 +180,13 @@ const routes: RouteObject[] = [
           </Suspense>
         )
       },
+      {
+        path : 'verification-requests',element : (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+            <VerificationRequestsPage />
+          </Suspense>
+        )
+      }
     ]
   },
 ];

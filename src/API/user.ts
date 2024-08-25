@@ -3,6 +3,7 @@ import { IVerifyCreateUser } from "../@types/createUser";
 import Api from "../services/axios";
 import userRoutes from "../services/endpoints/userEndpoints";
 import { User } from "../@types/allTypes";
+import { verifyRequest } from "../components/user/profile/ProfessionalAccountModal";
 
 // HERE USER EACH API REQUEST
 export const userSignup = async (userData: userFormData) => {
@@ -173,6 +174,23 @@ export const createProfile = async (userProfile: User) => {
     }
   }
 };
+
+// verify requesing for proffesional account
+export const verifityRequesting = async (formData: verifyRequest) => {
+  try {
+    const response = await Api.post(userRoutes.verifyRequesting, { formData });
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
 // upload cover image
 export const coverImageUpload = async (formdata: FormData) => {
   try {
@@ -285,8 +303,8 @@ export const getOtherUserDetails = async (userId: string) => {
     const response = await Api.get(userRoutes.getUserDetails, {
       params: { userId: userId },
     });
-    console.log("ress in otherViewDetails ===>",response.data );
-    
+    console.log("ress in otherViewDetails ===>", response.data);
+
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -408,7 +426,7 @@ export const otherFollowers = async (userId: string) => {
         userId: userId,
       },
     });
-    console.log("res in frontend ===>", response.data); 
+    console.log("res in frontend ===>", response.data);
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -446,15 +464,13 @@ export const othersFollowings = async (userId: string) => {
 // getOthers posts
 export const getOthersPosts = async (userId: string) => {
   try {
-
-    const result = await Api.get(userRoutes.getOthersPosts,{
-      params : {
-        userId : userId
-      }
+    const result = await Api.get(userRoutes.getOthersPosts, {
+      params: {
+        userId: userId,
+      },
     });
-    console.log("result after the feth teh posts of onthers ==>",result.data);
-    return result.data
-    
+    console.log("result after the feth teh posts of onthers ==>", result.data);
+    return result.data;
   } catch (error: any) {
     if (error.response) {
       return error.response.data;
@@ -482,14 +498,13 @@ export const logoutUser = async () => {
   }
 };
 
-export const fetchSearchUsers = async ( query : string) => {
+export const fetchSearchUsers = async (query: string) => {
   try {
-    const response = await Api.get(userRoutes.searchUser,{
-      params : { query }
-    })
-    console.log("after users search ==>",response.data)
-    return response.data
-    
+    const response = await Api.get(userRoutes.searchUser, {
+      params: { query },
+    });
+    console.log("after users search ==>", response.data);
+    return response.data;
   } catch (error: any) {
     if (error.response) {
       return error.response.data;
@@ -499,4 +514,4 @@ export const fetchSearchUsers = async ( query : string) => {
       return { success: false, message: error.message };
     }
   }
-}
+};

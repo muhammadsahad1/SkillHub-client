@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { useVideoCall } from "../../contexts/VideoCallContext";
 import useGetUser from "../../hook/getUser";
-import { v4 as uuidv4 } from "uuid";
 import { useSocket } from "../../hook/useSocket";
 import { MdJoinInner } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const ZEGOCLOUD_APP_ID = import.meta.env.VITE_ZEGO_APP_ID;
 const ZEGOCLOUD_APP_SECRET = import.meta.env.VITE_ZEGO_SERVER_SECRET;
@@ -21,13 +21,13 @@ const VideoCallComponent = () => {
     acceptCall,
     declineCall,
   } = useVideoCall();
-  console.log("recName ==>",receiverName , "callerName ==>",callerName)
   const [isZegoOpen, setZegoOpen] = useState<boolean>(false);
   const [callInstance, setCallInstance] = useState<ZegoUIKitPrebuilt | null>(
     null
-  ); // Use `any` type for dynamic methods
+  );
   const user = useGetUser();
   const { socket } = useSocket();
+  const navigate = useNavigate();
 
   const initCall = useCallback(async () => {
     try {
@@ -41,7 +41,7 @@ const VideoCallComponent = () => {
         user.name
       );
       setZegoOpen(true);
-      const zc = ZegoUIKitPrebuilt.create(kitToken); // creating the prebuilt zegokit with appId and seceretId
+      const zc = ZegoUIKitPrebuilt.create(kitToken);
 
       zc.joinRoom({
         container: document.getElementById("video-call-container")!,
@@ -58,7 +58,6 @@ const VideoCallComponent = () => {
   }, [user.id, user.name, roomId]);
 
   useEffect(() => {
-    // if accepted tha we call the zc.cloud
     if (isCallAccepted && roomId) {
       initCall();
     }
@@ -71,32 +70,32 @@ const VideoCallComponent = () => {
     };
   }, [isCallAccepted, roomId]);
 
-  // for handle end call
   const handleCallEnd = () => {
     if (callInstance) {
-      callInstance.hangUp();
-      setCallInstance(null);
+      callInstance.hangUp(); 
+      callInstance.destroy();
+      setCallInstance(null);  
+      setZegoOpen(false);    
+      navigate(-1);         
     }
   };
 
-  console.log("isCallRequested",isCallRequested,
-    "isCallAccepted:",
-    isCallAccepted,
-    "roomId:",
-    roomId,
-    "initCall:",
-    initCall,
-    "callInstance:",
-    callInstance
-  );
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      handleCallEnd();
+    }
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900 bg-opacity-50">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900 bg-opacity-50"
+      onClick={handleBackdropClick}
+    >
       {isCallRequested && !isCallAccepted && (
         <div className="absolute z-50 p-4 bg-white rounded shadow-xl max-w-full w-96">
           <div className="flex justify-center items-center mb-10">
-            <h3 className="font-poppins font-bold text-lg"> 
-                { callerName && receiverName ? `you are connecting to ${receiverName}` : `${callerName} is calling ... ` }
+            <h3 className="font-poppins font-bold text-lg">
+              {callerName && receiverName ? `You are connecting to ${receiverName}` : `${callerName} is calling ...`}
             </h3>
             <span className="ps-4">
               <MdJoinInner size={32} />
@@ -106,7 +105,6 @@ const VideoCallComponent = () => {
             <button
               onClick={() => {
                 acceptCall();
-                handleCallEnd();
               }}
             >
               Join call
@@ -123,16 +121,20 @@ const VideoCallComponent = () => {
         </div>
       )}
 
-      <div
-        id="video-call-container"
-        style={{ width: "100%", height: "100vh", position: "relative" }}
-      >
-        {/* {isCallAccepted && receiverName && (
-          <div className="absolute top-4 left-4 text-white font-bold">
-            {`Connected with ${receiverName}`}
-          </div>
-        )} */}
-      </div>
+{isZegoOpen && (
+  <div className="relative w-full h-screen">
+    <div
+      id="video-call-container"
+      style={{ width: "100%", height: "100vh", position: "relative", backgroundColor: "whiteSmoke", zIndex: 0 }}
+    />
+    <button 
+      className="absolute top-4 right-4 z-50 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors"
+      onClick={handleCallEnd}
+    >
+      Close Call
+    </button>
+  </div>
+)}
     </div>
   );
 };

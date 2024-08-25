@@ -6,7 +6,7 @@ const ProfilePostsActivity = () => {
   const [postType, setPostType] = useState<string>("all");
   // const { posts, isLoading } = useProfilePosts<string>(postType);
   const { data: posts, isLoading, isError } = useGetMyPosts();
-  
+  console.log("data ==> in  viewProfile",posts)
 
   if (isLoading) {
     return <div>Loading...</div>;

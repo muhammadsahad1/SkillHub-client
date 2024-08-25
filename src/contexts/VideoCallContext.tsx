@@ -8,7 +8,6 @@ import React, {
 import { useSocket } from "../hook/useSocket";
 import { v4 as uuidv4 } from "uuid";
 import useGetUser from "../hook/getUser";
-import { message } from "antd";
 
 // interface for video callContextProps
 interface VideoCallContextProps {
@@ -85,7 +84,7 @@ export const VideoCallProvider: React.FC<{ children: ReactNode }> = ({
       socket.on(
         "callRequest",
         (data: { callerId: string; receiverName : string, roomId: string; callerName: string }) => {
-          
+
           setCallerId(data.callerId);
           setCallerName(data.callerName);
           setRoomId(data.roomId);

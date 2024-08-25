@@ -96,5 +96,29 @@ export const sendImageInChat = async (formData: FormData) => {
       },
     });
     return response.data;
-  } catch (error) {}
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
 };
+
+// posting the thoughts
+export const postingThoughts = async (thoughts : string | null) => {
+  try {
+    const response = await Api.post(userRoutes.thoughtPost,{ thoughts })
+    return response.data
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+}

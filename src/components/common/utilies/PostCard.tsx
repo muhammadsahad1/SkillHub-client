@@ -7,9 +7,13 @@ import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import PostSpringModal from "../../post/MediaPostModal";
 import useGetUser from "../../../hook/getUser";
+import { postingThoughts } from "../../../API/conversation";
+import { showToastError, showToastSuccess } from "./toast";
 
 const OutlinedCard: React.FC = () => {
   const [isOpen, setModalOpen] = useState<boolean>(false);
+  const [thoughts, setThoughts] = useState<string | null>(null);
+  const [isThoughts, setIsThoughts] = useState<boolean>(false);
   const currentUser = useGetUser();
 
   const openModal = () => {
@@ -18,6 +22,31 @@ const OutlinedCard: React.FC = () => {
 
   const closeModal = () => {
     setModalOpen(false);
+  };
+
+  // for thoughts post
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const thought = e.target.value;
+    setThoughts(thought);
+    if (thought.trim() === "") {
+      setIsThoughts(false);
+    } else {
+      setThoughts(thought);
+      setIsThoughts(true);
+    }
+  };
+
+  // post the thoughts
+  const postThougths = async (thoughts: string | null) => {
+    try {
+      const result = await postingThoughts(thoughts);
+      if (result.success) {
+        setThoughts("");
+        showToastSuccess("Thoughts posted successfully");
+      } else {
+        showToastError(result.message);
+      }
+    } catch (error) {}
   };
 
   return (
@@ -65,6 +94,8 @@ const OutlinedCard: React.FC = () => {
               className="w-12 h-12 rounded-full object-cover"
             />
             <input
+              onChange={handleInputChange}
+              value={(thoughts as string) || ""}
               type="text"
               placeholder="Share your thoughts..."
               className="mt-1 block w-full border text-sm border-gray-300 text-gray-800 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 tracking-wider"
@@ -72,12 +103,21 @@ const OutlinedCard: React.FC = () => {
           </Typography>
         </CardContent>
         <CardActions sx={{ justifyContent: "flex-end", padding: "16px" }}>
-          <button
-            className="shadow-md text-sm px-6 py-2 font-poppins bg-zinc-900 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 tracking-wider"
-            onClick={openModal}
-          >
-            Media
-          </button>
+          {!isThoughts ? (
+            <button
+              className="shadow-md text-sm  w-26  px-6 py-2 font-poppins bg-zinc-900 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 tracking-wider"
+              onClick={openModal}
+            >
+              Media
+            </button>
+          ) : (
+            <button
+              className="shadow-md text-sm px-6  w-26  py-2 font-poppins bg-zinc-900 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 tracking-wider"
+              onClick={() => postThougths(thoughts)}
+            >
+              Post
+            </button>
+          )}
         </CardActions>
       </Card>
       <PostSpringModal isOpen={isOpen} onClose={closeModal} />

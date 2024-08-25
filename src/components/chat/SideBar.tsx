@@ -10,7 +10,12 @@ import {
   Avatar,
   Badge,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import SimpleBarReact from "simplebar-react";
 import { TbMessages } from "react-icons/tb";
 import {
@@ -21,7 +26,11 @@ import { Link } from "react-router-dom";
 import { useSocket } from "../../hook/useSocket";
 import useGetUser from "../../hook/getUser";
 
-const SideBar = () => {
+type SideBarHandle = {
+  fetchChatUsers: () => Promise<void>;
+};
+
+const SideBar = forwardRef<SideBarHandle>((props, ref) => {
   const [chatUsers, setChatUsers] = useState<any[]>([]);
   const [searchVal, setSearchVal] = useState<string>("");
   const [filteredUser, setFilteredUser] = useState<any[]>([]);
@@ -31,13 +40,26 @@ const SideBar = () => {
   const fetchChatUsers = async () => {
     try {
       const result = await getConversationsUsers();
+      const sortedResultByRecentlyChat = result.sort((a: any, b: any) => {
+        const dateA = new Date(a.lastMessageTime).getTime();
+        const dateB = new Date(b.lastMessageTime).getTime();
+
+        return dateB - dateA;
+      });
+      console.log("result ==>", sortedResultByRecentlyChat);
       setChatUsers(result);
+      console.log("resx=>",result);
+      
     } catch (error) {}
   };
+  // using forward ref for sorting list call
+  useImperativeHandle(ref, () => ({
+    fetchChatUsers,
+  }));
 
   useEffect(() => {
     fetchChatUsers();
-  
+
     if (socket) {
       // Listener for when a new message is received
       socket.on("receiveData", (newMessage) => {
@@ -45,13 +67,14 @@ const SideBar = () => {
           const userIndex = prevChatUsers.findIndex(
             (user) => user.user._id === newMessage.senderId
           );
-  
+
           if (userIndex !== -1) {
             // Update the existing user's lastMessage and isRead
             const updatedUsers = [...prevChatUsers];
             updatedUsers[userIndex] = {
               ...updatedUsers[userIndex],
               lastMessage: newMessage.message,
+              lastMessageData: new Date(newMessage.createdAt),
               isRead: false,
             };
             return updatedUsers;
@@ -73,7 +96,7 @@ const SideBar = () => {
           }
         });
       });
-  
+
       // Listener for when a message is marked as read
       socket.on("messageRead", ({ conversationId }) => {
         setChatUsers((prevChatUsers) =>
@@ -83,7 +106,7 @@ const SideBar = () => {
         );
       });
     }
-  
+
     return () => {
       if (socket) {
         socket.off("receiveData");
@@ -92,7 +115,6 @@ const SideBar = () => {
     };
   }, [socket]);
 
-  console.log("chatUserss ==========>", chatUsers);
   const handleClick = async (conversationId: string, receiverId: string) => {
     try {
       if (socket) {
@@ -104,7 +126,7 @@ const SideBar = () => {
         // Update the state immediately
         setChatUsers((prev) =>
           prev.map((user) =>
-            user._id === conversationId ? {...user, isRead: true } : user
+            user._id === conversationId ? { ...user, isRead: true } : user
           )
         );
       }
@@ -138,8 +160,7 @@ const SideBar = () => {
         boxShadow: "0px 0px 1px rgba(0,0,0,0.05)",
         display: "flex",
         flexDirection: "column",
-      }}
-    >
+      }}>
       <Stack padding={3}>
         <Stack direction="row" alignItems="center" marginBottom={3}>
           <Typography
@@ -218,7 +239,9 @@ const SideBar = () => {
                       <Badge
                         color="primary"
                         variant="dot"
-                        invisible={person.isRead} // Hide badge if message is read
+                        invisible={
+                          person.isRead || sender.id === person.user._id
+                        } // Hide badge if message is read
                       ></Badge>
                       <ListItemAvatar>
                         <Avatar
@@ -277,7 +300,7 @@ const SideBar = () => {
                       <Badge
                         color="primary"
                         variant="dot"
-                        invisible={person.isRead} // Hide badge if message is read
+                        invisible={  person.isRead && sender.id !== person.user._id } // Hide badge if message is read
                       ></Badge>
                       <ListItemAvatar>
                         <Avatar
@@ -327,6 +350,6 @@ const SideBar = () => {
       </Stack>
     </Box>
   );
-};
+});
 
 export default SideBar;

@@ -60,6 +60,8 @@ const formatDate = (dateString: string) => {
 };
 
 const HomePostCard = ({ post }: any) => {
+  console.log("postInHome =>", post);
+
   const user = useGetUser();
   const navigate = useNavigate();
   const { socket } = useSocket();
@@ -148,7 +150,7 @@ const HomePostCard = ({ post }: any) => {
       if (captionBeingEdit && captionBeingEdit.text.trim() !== "") {
         await editPost({ id: post._id, caption: captionBeingEdit.text });
         post.caption = captionBeingEdit?.text;
-        setEditModalOpen(false);
+        setEditModalOpen(false)
       }
     } catch (error) {
       console.error("Error updating post:", error);
@@ -161,7 +163,7 @@ const HomePostCard = ({ post }: any) => {
       const wasLiked = !isLiked;
       await postLike(post._id);
       setLiked(wasLiked);
-  
+
       // Check if the current user is not the owner of the post
       if (wasLiked && user.id !== post.userId) {
         // Emit socket event for liking the post
@@ -172,7 +174,7 @@ const HomePostCard = ({ post }: any) => {
           message: `${user.name} liked your post`,
           link: `/auth/post/${post._id}`,
         });
-  
+
         // Create a new notification for the post like
         await useNotifyUser(
           user.id,
@@ -182,7 +184,7 @@ const HomePostCard = ({ post }: any) => {
           `/auth/post/${post._id}`
         );
       }
-  
+
       // Update like count
       setLikeCount((prevCount) => {
         const newCount = wasLiked ? prevCount + 1 : prevCount - 1;
@@ -253,6 +255,7 @@ const HomePostCard = ({ post }: any) => {
         marginTop: 3,
         boxShadow: 2,
         marginBottom: 2,
+        minHeight: post.type === "thoughts" ? 300 : 500,
       }}
     >
       <CardHeader
@@ -283,10 +286,20 @@ const HomePostCard = ({ post }: any) => {
       />
       <CardContent>
         {post?.caption && (
-          <Typography variant="body2" color="text.secondary" paragraph>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            paragraph
+            sx={{
+              fontSize: post.type === "thoughts" ? "1.5rem" : "1rem",
+              fontWeight: post.type === "thoughts" ? "bold" : "normal",
+              textAlign: post.type === "thoughts" ? "center" : "left",
+            }}
+          >
             {post.caption}
           </Typography>
         )}
+
         {post?.postImageUrl && (
           <Box
             sx={{

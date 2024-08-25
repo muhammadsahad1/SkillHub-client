@@ -13,6 +13,8 @@ import useGetUser from "../../hook/getUser";
 import { useNavigate } from "react-router-dom";
 
 const Adminlogin = () => {
+  console.log("admin login page");
+  
   const [isloading, setLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
   const navigate = useNavigate()

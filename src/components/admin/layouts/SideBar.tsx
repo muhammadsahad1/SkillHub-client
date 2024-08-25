@@ -31,6 +31,7 @@ const SideBar = () => {
       </div>
       <div className="">
         <ul className="font-bold text-zinc-100 cursor-pointer">
+          
           <NavLink to="/admin/dashboard">
             <li className="border-b border-zinc-100 py-2 hover:bg-zinc-700">
               <h2 className="ms-2">Dashboard</h2>
@@ -42,6 +43,13 @@ const SideBar = () => {
               <h2 className="ms-2">User management</h2>
             </li>
           </NavLink>
+
+          <NavLink to="/admin/verification-requests" className="ms-2 ">
+            <li className="border-b border-zinc-100 py-2 hover:bg-zinc-700">
+              <h2 className="ms-2">Verification Requests</h2>
+            </li>
+          </NavLink>
+
         </ul>
         <button className="mt-4 border-2 border-zinc-900 px-6 py-2   hover:bg-[#636363] hover:text-white dark:text-neutral-200 transition duration-200 rounded-lg font-bold transform hover:-translate-y-1 duration-400 bg-zinc-100 bottom-5 left-3"
         onClick={handleLogout}

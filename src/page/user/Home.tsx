@@ -4,11 +4,10 @@ import NavBar from "../../components/common/navBar";
 import UsersRelatedSkill from "../../components/user/UsersRelatedSkill";
 import useGetUser from "../../hook/getUser";
 import DisplayPostCard from "../post/DisplayPostCard";
-
 import FeedPostsLists from "../../components/post/FeedPostsLists";
 
-const Home: React.FC = () => {
 
+const Home: React.FC = () => {
   const currentUser = useGetUser();
   
   return (
