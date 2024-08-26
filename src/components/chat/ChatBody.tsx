@@ -9,8 +9,7 @@ export type SideBarHandle = {
 const ChatBody = () => {
 
   const sideBarRef = useRef<SideBarHandle>(null)
-
-
+  
   const handleNewMessage = async() => {
     if(sideBarRef.current){
       await sideBarRef.current?.fetchChatUsers()

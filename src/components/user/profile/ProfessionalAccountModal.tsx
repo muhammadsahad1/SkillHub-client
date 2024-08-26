@@ -12,6 +12,8 @@ import { verifityRequesting } from "../../../API/user";
 import useGetUser from "../../../hook/getUser";
 import { showToastSuccess } from "../../common/utilies/toast";
 import { BarLoader } from "react-spinners";
+import { setIsProfessional, setIsRequest } from "../../../redux/userSlices";
+import { useDispatch } from "react-redux";
 
 // Styles for the modal
 const style = {
@@ -43,8 +45,11 @@ const CustomPaper = styled(Paper)(({ theme }) => ({
 
 const ProfessionalAccountModal: React.FC = () => {
   const loggedInUser = useGetUser();
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isFirstModalOpen, setFirstModalOpen] = useState<boolean>(false);
+  const [isRquestedModalOpen, setRequestedModal] = useState<boolean>(false);
+  const [isProfessionalModal, setProfessionalModal] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<verifyRequest>({
     fullName: loggedInUser.name || "",
@@ -55,12 +60,17 @@ const ProfessionalAccountModal: React.FC = () => {
   });
 
   const handleOpen = () => {
-    setIsOpen(true);
-    setFirstModalOpen(!isFirstModalOpen);
+    if (loggedInUser?.isRequested) {
+      setRequestedModal(true);
+      setFirstModalOpen(false);
+    } else {
+      setIsOpen(true);
+      setFirstModalOpen(false);
+    }
   };
   const handleClose = () => {
     setIsOpen(false);
-    setFirstModalOpen(!isFirstModalOpen);
+    setFirstModalOpen(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,11 +84,13 @@ const ProfessionalAccountModal: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setFirstModalOpen(!isFirstModalOpen);
+    setFirstModalOpen(false);
     // Implement form submission logic here
     console.log("Form Data Submitted: ", formData);
     const result = await verifityRequesting(formData);
+
     if (result.success) {
+      dispatch(setIsRequest(true));
       setLoading(false);
       showToastSuccess("Verification request submitted successfully.");
     }
@@ -88,13 +100,96 @@ const ProfessionalAccountModal: React.FC = () => {
   };
 
   React.useEffect(() => {
-    setFirstModalOpen(!isFirstModalOpen);
+    if (loggedInUser?.isProfessional) {
+      setProfessionalModal(true);
+    } else {
+      setFirstModalOpen(true);
+    }
   }, []);
 
-  const handleCloseFirstModal = () => setFirstModalOpen(!isFirstModalOpen);
+  const handleCloseFirstModal = () => setFirstModalOpen(false);
+  const handleCloseRequestedModal = () => setRequestedModal(false);
+  const handleCloseIsProfessionalModal = () => setProfessionalModal(false);
 
   return (
     <div>
+      {/*for if the user is already professional account*/}
+      <Modal
+        open={isProfessionalModal}
+        onClose={handleCloseIsProfessionalModal}
+        aria-labelledby="professional-account-modal-title"
+        aria-describedby="professional-account-modal-description"
+      >
+        <Box sx={style}>
+          <Typography
+            id="professional-account-modal-title"
+            sx={{
+              mt: 2,
+              fontFamily: "Poppins",
+              fontWeight: "bold",
+              fontSize: 30,
+            }}
+          >
+            Already a Professional
+          </Typography>
+          <Typography
+            id="professional-account-modal-description"
+            sx={{ mt: 2, fontFamily: "Poppins" }}
+          >
+            Your account has already been upgraded to a professional status. You
+            have access to all the features available to professionals.
+          </Typography>
+          <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              variant="contained"
+              onClick={handleCloseIsProfessionalModal}
+              color="primary"
+            >
+              Ok
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+      {/* modal for already request info */}
+      <Modal
+        open={isRquestedModalOpen}
+        onClose={handleCloseRequestedModal}
+        aria-labelledby="already-requested-modal-title"
+        aria-describedby="already-requested-modal-description"
+      >
+        <Box sx={style}>
+          <Typography
+            id="already-requested-modal-title"
+            sx={{
+              mt: 2,
+              fontFamily: "Poppins",
+              fontWeight: "bold",
+              fontSize: 30,
+            }}
+          >
+            Request Already Submitted
+          </Typography>
+          <Typography
+            id="already-requested-modal-description"
+            sx={{ mt: 2, fontFamily: "Poppins" }}
+          >
+            You have already requested professional account verification. Please
+            wait for the review process to complete. We will notify you once
+            your account has been verified.
+          </Typography>
+          <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              variant="contained"
+              onClick={handleCloseRequestedModal}
+              color="primary"
+            >
+              Ok
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      {/* modal for asking the process */}
       <Modal
         open={isFirstModalOpen}
         onClose={handleCloseFirstModal}
@@ -140,6 +235,7 @@ const ProfessionalAccountModal: React.FC = () => {
               <BarLoader color="black" />
             </div>
           )}
+
           <Typography
             id="modal-modal-title"
             variant="h6"

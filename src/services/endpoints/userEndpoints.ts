@@ -58,6 +58,9 @@ const userRoutes = {
   notification: "/user/notification",
   notificationMarkAsRead: "/user/markAsReadNotify",
 
+  //Events
+  createEvent : "/user/event",
+
   logout: "/user/logout",
 };
 

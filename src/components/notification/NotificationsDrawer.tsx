@@ -1,7 +1,7 @@
 import React from "react";
 import { MdComment, MdFavorite, MdPersonAdd, MdChat } from "react-icons/md";
 import { motion } from "framer-motion";
-import { FaAngleUp } from "react-icons/fa";
+import { FaAngleUp, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { showToastError } from "../common/utilies/toast";
 import { readNotification } from "../../redux/features/notificationSlices";
@@ -17,7 +17,7 @@ export interface Notification {
   link: string;
 }
 
-type NotificationType = "follow" | "like" | "comment" | "chat";
+type NotificationType = "follow" | "like" | "comment" | "chat" | "verifyRequestAccepted" | "verifyRequestRejected";
 
 interface NotificationsDrawerProps {
   notifications: Notification[];
@@ -27,7 +27,6 @@ interface NotificationsDrawerProps {
 const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
   notifications,
   onClose,
-  // markAsRead,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -75,8 +74,10 @@ const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
             {notification?.type === "like" && <MdFavorite />}
             {notification?.type === "follow" && <MdPersonAdd />}
             {notification?.type === "chat" && <MdChat />}
+            {notification?.type === "verifyRequestAccepted" && <FaCheckCircle />}
+            {notification?.type === "verifyRequestRejected" && <FaTimesCircle />}
             <div className="ml-2">
-              <p className="text-zinc-black font-bold ">
+              <p className="text-zinc-black font-bold ">  
                 {notification?.message}
               </p>
             </div>

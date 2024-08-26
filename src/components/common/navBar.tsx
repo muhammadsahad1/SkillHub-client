@@ -40,15 +40,13 @@ const NavBar: React.FC = () => {
       try {
         const response = await profileImage();
         dispatch(setUserImages(response.imageUrls.imageUrl));
-        console.log("res image URLS ===>", response.imageUrls.imageUrl);
       } catch (error: any) {
         toast.success(error.message);
       }
     }
   };
-  
+  // updating the notification with redux thunk
   useEffect(() => {
-    console.log("Dispatching loadNotifications");
     dispatch(fetchNotifications() as any);
   }, [dispatch]);
 
@@ -56,7 +54,7 @@ const NavBar: React.FC = () => {
     console.log("Fetching profile image");
     getProfileImage();
   }, [loggedInUser.picture?.imageUrl]);
-
+// handling the logout
   const logoutHandler = async () => {
     try {
       const response = await logoutUser();
@@ -113,10 +111,10 @@ const NavBar: React.FC = () => {
           </div>
           <div className="relative" ref={profileDropdownRef}>
             <button className="profile-icon-btn" onClick={toggleProfileDropdown}>
-              {loggedInUser?.picture?.imageUrl &&
-              loggedInUser.picture.imageUrl !== "" ? (
+              {loggedInUser &&
+              loggedInUser?.picture?.imageUrl ? (
                 <img
-                  src={loggedInUser.picture.imageUrl}
+                  src={loggedInUser?.picture?.imageUrl}
                   className="w-11 h-11 object-cover rounded-full"
                 />
               ) : (

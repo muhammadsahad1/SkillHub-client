@@ -66,8 +66,6 @@ const formatDate = (dateString: string) => {
 };
 
 const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
-  console.log("post in othersview ++.", post);
-  
   const user = useGetUser();
   const navigate = useNavigate()
   const { socket } = useSocket()

@@ -16,6 +16,7 @@ const initialState = {
   picture: {
     imageUrl: "",
     coverImageUrl: "",
+    
   },
   imageKey: "",
   coverImage: "",
@@ -24,8 +25,12 @@ const initialState = {
   accountPrivacy: false,
   blocked: false,
   approved: false,
-  followingsCount : 0,
-  followersCount : 0,
+  followingsCount: 0,
+  followersCount: 0,
+  isRequested: false,
+  verificationStatus: "",
+  isProfessional: false,
+  professionalBadge: false,
 };
 
 const userSlice = createSlice({
@@ -53,7 +58,10 @@ const userSlice = createSlice({
         approved,
         showNotification,
         accountPrivacy,
-        
+        isRequested,
+        verificationStatus,
+        isProfessional,
+        professionalBadge,
       } = action.payload;
       state.id = _id;
       state.name = name;
@@ -76,18 +84,30 @@ const userSlice = createSlice({
       state.accountPrivacy = accountPrivacy;
       state.followersCount = action.payload.followersCount;
       state.followingsCount = action.payload.followingsCount;
-    },  
+      state.isRequested = isRequested;
+      state.verificationStatus = verificationStatus;
+      state.isProfessional = isProfessional;
+      state.professionalBadge = professionalBadge;
+    },
+    setIsRequest: (state, action) => {
+      state.isRequested = action.payload;
+    },
+    setVerificationStatus: (state, action) => {
+      state.verificationStatus = action.payload;
+    },
+    setIsProfessional: (state, action) => {
+      state.isProfessional = action.payload;
+    },
+    setProfessionalBedge: (state, action) => {
+      state.professionalBadge = action.payload;
+    },
     setEmail: (state, action) => {
       state.email = action.payload;
     },
     setUserImages: (state, action) => {
-
       if (action.payload) {
-        // const { coverImageUrl, imageUrl } = action.payload;
-
         state.picture = {
           ...state.picture,
-          // coverImageUrl: coverImageUrl || state.picture?.coverImageUrl,
           imageUrl: action.payload || state.picture?.imageUrl,
         };
       }
@@ -97,13 +117,10 @@ const userSlice = createSlice({
       state.coverImage = coverImage;
       state.coverImageKey = coverImageKey;
     },
-    setFollowingsFollowersCount : (state,action) => {
-      console.log("action ===>",action.payload);
-      
-      const { followersCount , followingsCount } = action.payload
-      
-      state.followersCount = followersCount
-      state.followingsCount = followingsCount
+    setFollowingsFollowersCount: (state, action) => {
+      const { followersCount, followingsCount } = action.payload;
+      state.followersCount = followersCount;
+      state.followingsCount = followingsCount;
     },
     setShowNotificationChange: (state, action) => {
       state.showNotification = action.payload;
@@ -114,7 +131,6 @@ const userSlice = createSlice({
     setRole: (state, action) => {
       state.role = action.payload;
     },
-    
     deleteUser: (state) => {
       state.id = "";
       state.name = "";
@@ -134,9 +150,14 @@ const userSlice = createSlice({
       state.imageKey = "";
       state.coverImage = "";
       state.coverImageKey = "";
-      state.accountPrivacy = false,
+      state.accountPrivacy = false;
       state.blocked = false;
       state.approved = false;
+      state.isProfessional = false;
+      state.verificationStatus = "";
+      state.isRequested = false;
+      state.professionalBadge = false;
+      
     },
   },
 });
@@ -151,6 +172,10 @@ export const {
   deleteUser,
   setShowNotificationChange,
   setFollowingsFollowersCount,
+  setIsRequest,
+  setVerificationStatus,
+  setIsProfessional,
+  setProfessionalBedge,
 } = userSlice.actions;
 
 export default userSlice.reducer;

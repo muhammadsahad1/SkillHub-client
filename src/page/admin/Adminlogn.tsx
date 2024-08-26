@@ -35,8 +35,10 @@ const Adminlogin = () => {
   const onSubmit = async (data: userData) => {
     setLoading(true);
     try {
-      console.log("data ====>",data)
+    
       const response = await adminLogin(data.email, data.password);
+      console.log("ress after ==>",response);
+      
       if (response.success) {
         toast.success(response.message);
         dispatch(setUser(response.admin));

@@ -3,6 +3,7 @@ import {
   getNotifications,
   markNotificationAsRead,
 } from "../../API/notification";
+import { Notifications } from "@mui/icons-material";
 
 interface NotificationState {
   unreadCount: number;
@@ -24,7 +25,7 @@ export const fetchNotifications = createAsyncThunk(
 // for readint the notification
 export const readNotification = createAsyncThunk(
   "notification/readNotificaion",
-  async (notificationId: string ) => {
+  async (notificationId: string ) => {  
     await markNotificationAsRead(notificationId);
     return notificationId;
   }
@@ -33,11 +34,15 @@ export const readNotification = createAsyncThunk(
 const notificationSlice = createSlice({
   name: "notifications",
   initialState,
-  reducers: {},
+  reducers: {
+    addNotification :(state , action) => {
+      state.notifications = [action.payload,...state.notifications]
+      state.unreadCount += 1
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchNotifications.fulfilled, (state, action) => {
       const notifications = action.payload;
-      console.log("notifi==> ==>",notifications);
       state.notifications = notifications;
       state.unreadCount = notifications.filter(
         (notify: any) => !notify.read

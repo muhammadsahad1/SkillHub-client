@@ -1,4 +1,5 @@
 export interface User {
+  isProfessional: any;
   followers: any;
   following: any;
   states?: string;

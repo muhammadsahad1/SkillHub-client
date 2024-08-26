@@ -7,7 +7,7 @@ export const sendNotification = async (
   receiverId: string,
   type: string,
   message: string,
-  link: string
+  link: string | undefined
 ) => {
   try {
     const response = await Api.post(userRoutes.notification, {
@@ -17,7 +17,7 @@ export const sendNotification = async (
       message,
       link,
     });
-    console.log("res from backend for notification list ===>", response.data);
+
     return response.data;
   } catch (error: any) {
     if (error.response) {

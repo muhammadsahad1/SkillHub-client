@@ -46,10 +46,7 @@ const SideBar = forwardRef<SideBarHandle>((props, ref) => {
 
         return dateB - dateA;
       });
-      console.log("result ==>", sortedResultByRecentlyChat);
       setChatUsers(result);
-      console.log("resx=>",result);
-      
     } catch (error) {}
   };
   // using forward ref for sorting list call

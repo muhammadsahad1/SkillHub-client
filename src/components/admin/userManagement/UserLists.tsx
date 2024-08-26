@@ -70,55 +70,61 @@ const UserList: React.FC = () => {
   };
 
   return (
-    <div className="w-full flex justify-center items-center py-8">
-      <div className="w-full bg-white shadow-md rounded-lg p-6">
-        <h3 className="font-bold font-poppins text-3xl text-neutral-900 mb-6 text-center">
-          User List
-        </h3>
-        <div className="w-full flex justify-center items-center">
-          <table className="w-full table-auto border-collapse">
-            <thead className="bg-zinc-950">
-              <tr className="text-zinc-200">
-                <th className="py-2 px-4 border-b">Name</th>
-                <th className="py-2 px-4 border-b">Email</th>
-                <th className="py-2 px-4 border-b">Role</th>
-                <th className="py-2 px-4 border-b">Skills</th>
-                <th className="py-2 px-4 border-b">Country</th>
-                <th className="py-2 px-4 border-b">Join Date</th>
-                <th className="py-2 px-4 border-b">Status</th>
-                <th className="py-2 px-4 border-b">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user?._id} className="text-center font-semibold">
-                  <td className="py-2 px-4 border-b">{user.name}</td>
-                  <td className="py-2 px-4 border-b">{user.email}</td>
-                  <td className="py-2 px-4 border-b">{user.role}</td>
-                  <td className="py-2 px-4 border-b">{user.skill}</td>
-                  <td className="py-2 px-4 border-b">{user.country}</td>
-                  <td className="py-2 px-4 border-b">
-                    {formatDate(user?.created_at)}
-                  </td>
-                  <td className="py-2 px-4 border-b">
+    <div className="p-4 bg-gray-100">
+      <h1 className="text-2xl font-bold mb-4">User List</h1>
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-zinc-950">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Email</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Role</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Skills</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Country</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Join Date</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-200 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {users.map((user) => (
+              <tr key={user?._id}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-500">{user.email}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">{user.role}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">{user.skill}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">{user.country}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {formatDate(user?.created_at)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-500 text-white">
                     {user?.status ? "Active" : "Inactive"}
-                  </td>
-                  <td className="py-2 px-4 border-b">
-                    <button className="text-blue-500 hover:text-blue-700 mr-2">
-                      Edit
-                    </button>
-                    <button
-                      className={user.blocked ? "text-green-500" : "text-red-500"}
-                      onClick={() => handleUserBlock(user._id,user?.blocked)}
-                    >
-                      {user.blocked ? "Unblock" : "Block"}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                  <button className="text-indigo-600 hover:text-indigo-900 mr-2">
+                    Edit
+                  </button>
+                  <button
+                    className={user.blocked ? "text-green-500" : "text-red-500"}
+                    onClick={() => handleUserBlock(user._id,user?.blocked)}
+                  >
+                    {user.blocked ? "Unblock" : "Block"}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

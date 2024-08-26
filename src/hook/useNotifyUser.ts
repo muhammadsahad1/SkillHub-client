@@ -6,7 +6,7 @@ export const useNotifyUser = async (
   receiverId: string,
   type: string,
   message: string,
-  link: string
+  link?: string | undefined 
 ) => {
 
   try {

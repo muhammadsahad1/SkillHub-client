@@ -12,6 +12,7 @@ import { setUser } from "../../../redux/userSlices";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { DotLoader } from "react-spinners";
+import { CgProfile } from "react-icons/cg";
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -62,7 +63,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
   useEffect(() => {
     if (currentUser?.picture?.imageUrl) {
-      setimagePreview(currentUser.picture.imageUrl);
+      setimagePreview(currentUser?.picture?.imageUrl);
     }
   }, [currentUser]);
 
@@ -194,8 +195,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 document.getElementById("profileImageInput")?.click()
               }
             >
-              <span className="text-gray-400">Add Image</span>
+              <CgProfile size={32} className="object-cover rounded-full" />
             </div>
+
           )}
           <input
             id="profileImageInput"

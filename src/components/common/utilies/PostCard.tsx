@@ -9,10 +9,12 @@ import PostSpringModal from "../../post/MediaPostModal";
 import useGetUser from "../../../hook/getUser";
 import { postingThoughts } from "../../../API/conversation";
 import { showToastError, showToastSuccess } from "./toast";
+import EventModal from "../../event/EventModal";
 
 const OutlinedCard: React.FC = () => {
   const [isOpen, setModalOpen] = useState<boolean>(false);
   const [thoughts, setThoughts] = useState<string | null>(null);
+  const [isEventModalOpen, setEventModalOpen] = useState<boolean>(false);
   const [isThoughts, setIsThoughts] = useState<boolean>(false);
   const currentUser = useGetUser();
 
@@ -48,6 +50,9 @@ const OutlinedCard: React.FC = () => {
       }
     } catch (error) {}
   };
+
+  // for handle the event modal
+  const handleEventModal = () => setEventModalOpen(true);
 
   return (
     <Box
@@ -103,6 +108,14 @@ const OutlinedCard: React.FC = () => {
           </Typography>
         </CardContent>
         <CardActions sx={{ justifyContent: "flex-end", padding: "16px" }}>
+          {currentUser?.isProfessional && (
+            <button
+              className="shadow-md text-sm  w-26  px-6 py-2 font-poppins bg-zinc-900 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 tracking-wider"
+              onClick={handleEventModal}
+            >
+              Create Events
+            </button>
+          )}
           {!isThoughts ? (
             <button
               className="shadow-md text-sm  w-26  px-6 py-2 font-poppins bg-zinc-900 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 tracking-wider"
@@ -121,6 +134,7 @@ const OutlinedCard: React.FC = () => {
         </CardActions>
       </Card>
       <PostSpringModal isOpen={isOpen} onClose={closeModal} />
+      {isEventModalOpen && <EventModal />}
     </Box>
   );
 };
