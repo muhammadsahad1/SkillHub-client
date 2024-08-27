@@ -12,6 +12,7 @@ const ProtectLayout = React.lazy(() => import("../protectLayout"));
 const Adminlogin = React.lazy(() => import("../../page/admin/Adminlogn"));
 const AdminDashboard = React.lazy(() => import("../../page/admin/AdminDashboard"));
 const UserManagement = React.lazy(() => import("../../page/admin/UserManagement"));
+const EventsRequests = React.lazy(() => import('../../page/admin/EventsRequests'))
 
 // Pages - User
 const UserLogin = React.lazy(() => import("../../page/user/UserLogin"));
@@ -185,6 +186,13 @@ const routes: RouteObject[] = [
           <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
             <VerificationRequestsPage />
           </Suspense>
+        )
+      },
+      {
+        path : 'events',element : (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <EventsRequests />
+        </Suspense>
         )
       }
     ]

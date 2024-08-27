@@ -469,7 +469,6 @@ export const getOthersPosts = async (userId: string) => {
         userId: userId,
       },
     });
-    console.log("result after the feth teh posts of onthers ==>", result.data);
     return result.data;
   } catch (error: any) {
     if (error.response) {

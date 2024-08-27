@@ -1,5 +1,4 @@
 import Api from "../services/axios";
-import { User } from "../@types/allTypes";
 import adminRoutes from "../services/endpoints/adminEndpoints";
 
 export const adminLogin = async (email: string, password: string) => {
@@ -69,6 +68,41 @@ export const updateRequestStatus = async (reqId: string, status: string) => {
     const response = await Api.post(adminRoutes.updateRequestStatus, {
       reqId,
       status,
+    });
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+//getEvents
+export const getEvents = async () => {
+  try {
+    const response = await Api.get(adminRoutes.getEvents);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+// change event verify
+export const changeEventStatus = async (requestId: string, action: string) => {
+  try {
+    const response = await Api.post(adminRoutes.updateEventStatus, {
+      requestId,
+      action,
     });
     return response.data
   } catch (error: any) {

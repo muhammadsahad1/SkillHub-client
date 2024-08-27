@@ -60,8 +60,6 @@ const formatDate = (dateString: string) => {
 };
 
 const HomePostCard = ({ post }: any) => {
-  console.log("postInHome =>", post);
-
   const user = useGetUser();
   const navigate = useNavigate();
   const { socket } = useSocket();
@@ -150,7 +148,7 @@ const HomePostCard = ({ post }: any) => {
       if (captionBeingEdit && captionBeingEdit.text.trim() !== "") {
         await editPost({ id: post._id, caption: captionBeingEdit.text });
         post.caption = captionBeingEdit?.text;
-        setEditModalOpen(false)
+        setEditModalOpen(false);
       }
     } catch (error) {
       console.error("Error updating post:", error);

@@ -5,14 +5,10 @@ import HomePostCard from "../common/utilies/HomePostsCard";
 
 const FeedPostsLists = () => {
   const { data, isLoading, error } = useGetPosts();
-  console.log("data ===>",data);
-
-    // console.log("posts fetched ==+>" , posts)
 
   if (!data || !data?.posts?.length) {
     return <Typography>No posts found</Typography>;
   }
-
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>

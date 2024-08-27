@@ -10,7 +10,8 @@ import { useSocket } from "../../../hook/useSocket";
 const VerificationRequests = () => {
   const admin = useGetUser();
   const { socket } = useSocket();
-  const [requests, setRequests] = useState([]);
+  const [requests, setRequests] = useState<Request[]>([]);
+  console.log("requestsss ==>",requests);
 
   const loadVerificationRequests = async () => {
     try {
@@ -76,9 +77,7 @@ const VerificationRequests = () => {
         return "bg-gray-500 text-white";
     }
   };
-
-  console.log("requests =>", requests);
-
+  
   return (
     <div className="p-4 bg-gray-100">
       <h1 className="text-2xl font-bold mb-4">Verification Requests</h1>
@@ -110,7 +109,7 @@ const VerificationRequests = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {requests.map((request: any, index) => (
+            {requests?.map((request: any, index) => (
               <tr key={request._id}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   #{index + 1}

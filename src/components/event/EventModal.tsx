@@ -4,6 +4,8 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import React, { useEffect, useState } from "react";
 import CreateEventModal from "./CreateEventModal";
+import { createEvent } from "../../API/event";
+import { showToastSuccess } from "../common/utilies/toast";
 
 const style = {
   position: "absolute" as "absolute",
@@ -17,25 +19,45 @@ const style = {
   p: 4,
 };
 
-const EventModal = () => {
+interface eventModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const EventModal: React.FC<eventModalProps> = ({ isOpen, onClose }) => {
   const [isCreateEventInfoOpen, setCreateEventInfoOpen] =
     useState<boolean>(false);
   const [isCreateEventOpen, setCreateEventOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setCreateEventInfoOpen(true);
-  }, []);
+  }, [isOpen]);
 
-  const handleClose = () => setCreateEventInfoOpen(false);
+  const handleClose = () => {
+    setCreateEventInfoOpen(false);
+    setCreateEventOpen(false);
+    onClose();
+  };
+
   const handleOpenCreateModal = () => {
     setCreateEventInfoOpen(false);
     setCreateEventOpen(true);
   };
-  const handleCloseModal = () => setCreateEventOpen(false)
+  const handleCloseModal = () => {
+    setCreateEventInfoOpen(false);
+    setCreateEventOpen(false);
+    onClose();
+  };
 
-  const handleSubmit = async () => {
-    const result = await 
-  }
+  const handleSubmit = async (eventData: FormData) => {
+    onClose();
+    const result = await createEvent(eventData);
+    if (result.success) {
+      showToastSuccess(result.message);
+    } else {
+      showToastSuccess(result.message);
+    }
+  };
 
   return (
     <div>
@@ -68,7 +90,9 @@ const EventModal = () => {
             }}
           >
             <span style={{ fontWeight: "bold" }}>
-              Hosting an event is your opportunity to make meaningful connections, share knowledge, and inspire growth within your community.
+              Hosting an event is your opportunity to make meaningful
+              connections, share knowledge, and inspire growth within your
+              community.
             </span>{" "}
             Here’s how you can craft an event that truly resonates:
             <ul
@@ -80,23 +104,38 @@ const EventModal = () => {
               }}
             >
               <li>
-                <strong>Identify Your Impact:</strong> Think about the value your event will bring to others and how it can help them enhance their skills or discover new passions.
+                <strong>Identify Your Impact:</strong> Think about the value
+                your event will bring to others and how it can help them enhance
+                their skills or discover new passions.
               </li>
               <li>
-                <strong>Choose the Perfect Time:</strong> Select a date and time that works best for you and your audience to maximize engagement.
+                <strong>Choose the Perfect Time:</strong> Select a date and time
+                that works best for you and your audience to maximize
+                engagement.
               </li>
               <li>
-                <strong>Create an Eye-Catching Banner:</strong> Design a banner that not only represents your event but also grabs attention and excites potential participants.
+                <strong>Create an Eye-Catching Banner:</strong> Design a banner
+                that not only represents your event but also grabs attention and
+                excites potential participants.
               </li>
               <li>
-                <strong>Select a Relevant Category:</strong> Pick a category that aligns with your event’s theme to reach the right audience.
+                <strong>Select a Relevant Category:</strong> Pick a category
+                that aligns with your event’s theme to reach the right audience.
               </li>
               <li>
-                <strong>Fill in the Details:</strong> Complete the upcoming form with all the essential details to make your event a success.
+                <strong>Fill in the Details:</strong> Complete the upcoming form
+                with all the essential details to make your event a success.
               </li>
             </ul>
-            <span style={{ fontWeight: "bold", display: "block", marginTop: "16px" }}>
-              Ready to make a difference? Click the "Proceed" button below to start creating your event and watch your network grow!
+            <span
+              style={{
+                fontWeight: "bold",
+                display: "block",
+                marginTop: "16px",
+              }}
+            >
+              Ready to make a difference? Click the "Proceed" button below to
+              start creating your event and watch your network grow!
             </span>
           </Typography>
 
@@ -105,11 +144,8 @@ const EventModal = () => {
               variant="contained"
               onClick={handleOpenCreateModal}
               sx={{
-                backgroundColor: "#18181b", // zinc-950 color
-                '&:hover': {
-                  backgroundColor: "#0f0f10", // Darken the color for hover state
-                },
-                letterSpacing : 3
+                bgcolor: "primary.main",
+                "&:hover": { bgcolor: "primary.dark" },
               }}
             >
               Proceed
@@ -119,7 +155,11 @@ const EventModal = () => {
       </Modal>
 
       {/* Modal for creating event goes here */}
-      <CreateEventModal isOpen={isCreateEventOpen} onClose={handleCloseModal} onSubmit={handleSubmit}/>
+      <CreateEventModal
+        isOpen={isCreateEventOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 };

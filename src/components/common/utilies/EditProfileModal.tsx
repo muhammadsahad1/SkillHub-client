@@ -131,9 +131,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     formData.append("name", data.name);
     formData.append("email", currentUser.email);
     formData.append("bio", data.bio);
-
     formData.append("profileImage", file);
-
     formData.append("country", data.country);
     formData.append("city", data.city);
     formData.append("skill", data.skill);

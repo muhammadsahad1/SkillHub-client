@@ -11,7 +11,6 @@ const SideBar = () => {
   const handleLogout = async () => {
     try {
       const result = await adminLogout();
-
       if (result.message) {
         navigate("/admin/login");
         toast.success(result.message);
@@ -62,11 +61,18 @@ const SideBar = () => {
               Verification Requests
             </li>
           </NavLink>
+          <NavLink
+            to="/admin/events"
+            onClick={() => setIsOpen(false)}
+          >
+            <li className="border-b border-zinc-100 py-2 hover:bg-zinc-700">
+              Verification Events
+            </li>
+          </NavLink>
         </ul>
         <button
           className="mt-4 block w-full border-2 border-zinc-900 px-6 py-2 hover:bg-[#636363] hover:text-white transition duration-200 rounded-lg font-bold"
-          onClick={handleLogout}
-        >
+          onClick={handleLogout}>
           Logout
         </button>
       </div>

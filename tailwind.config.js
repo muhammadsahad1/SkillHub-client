@@ -32,6 +32,7 @@ module.exports = {
       },
 
       colors: {
+        'background-dark': '#333333',
         whitesmoke: "#f5f5f5",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

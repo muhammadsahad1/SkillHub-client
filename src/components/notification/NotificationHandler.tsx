@@ -11,12 +11,16 @@ import {
 } from "react-icons/fa";
 import { AiFillLike } from "react-icons/ai";
 import { useDispatch } from "react-redux";
-import { setIsProfessional, setProfessionalBedge, setVerificationStatus } from "../../redux/userSlices";
+import {
+  setIsProfessional,
+  setProfessionalBedge,
+  setVerificationStatus,
+} from "../../redux/userSlices";
 import useGetUser from "../../hook/getUser";
 
 const NotificationHandler = () => {
-  const dispatch = useDispatch()
-  const user = useGetUser()
+  const dispatch = useDispatch();
+  const user = useGetUser();
   const { socket } = useSocket();
   console.log("socket ->", socket?.id);
 
@@ -26,8 +30,9 @@ const NotificationHandler = () => {
     if (socket) {
       const handleNotification = (notification: any) => {
         console.log("Received notification: ==>", notification.type);
+        
         if (notification.type === "follow") {
-          //for follow notification
+          // for follow notification
           toast.custom((t) => (
             <div
               className={`flex items-center p-3 space-x-3 bg-zinc-800 text-white rounded-md shadow-md cursor-pointer ${
@@ -103,9 +108,9 @@ const NotificationHandler = () => {
             </div>
           ));
         } else if (notification.type === "verifyRequestAccepted") {
-          dispatch(setVerificationStatus("Approved"))
-          dispatch(setIsProfessional(true))
-          dispatch(setProfessionalBedge(true))
+          dispatch(setVerificationStatus("Approved"));
+          dispatch(setIsProfessional(true));
+          dispatch(setProfessionalBedge(true));
 
           // For comment notifications
           toast.custom((t) => (
@@ -126,11 +131,11 @@ const NotificationHandler = () => {
             </div>
           ));
         } else if (notification.type === "verifyRequestRejected") {
-          dispatch(setVerificationStatus("Rejected"))
-          dispatch(setIsProfessional(false))
-          dispatch(setProfessionalBedge(false))
-          console.log("currentUser =>",);
-          
+          dispatch(setVerificationStatus("Rejected"));
+          dispatch(setIsProfessional(false));
+          dispatch(setProfessionalBedge(false));
+          console.log("currentUser =>");
+
           // For comment notifications
           toast.custom((t) => (
             <div
@@ -151,7 +156,7 @@ const NotificationHandler = () => {
           ));
         }
       };
-      console.log("user ===>",user)
+      console.log("user ===>", user);
       // here the event is listerning
       socket.on("notification", handleNotification);
       // Cleanup listener on component unmount or socket change

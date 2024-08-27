@@ -6,6 +6,7 @@ body {
   background-color: whitesmoke;
 }
 
+
 @layer base {
   :root {
     --background: 0 0% 100%; /* Default light background (whitesmoke) */

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";;
+import React, { useEffect, useState } from "react";
 import { getOthersPosts } from "../../../API/user";
 import OthersPostGrid from "./OthersPostGrid";
 
 const OthersProfilePostsActivity = ({ userId }: { userId: string }) => {
-
   const [posts, setPosts] = useState();
   const fetchProfilePosts = async () => {
     try {
@@ -11,19 +10,17 @@ const OthersProfilePostsActivity = ({ userId }: { userId: string }) => {
       if (result.success) {
         setPosts(result.posts);
       }
-    } catch (error) {
-
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
     fetchProfilePosts();
   }, []);
 
-
   if (!posts) {
     return <div>No posts available</div>;
   }
+
   console.log("res ====>", posts);
   return (
     <div className="flex justify-center mb-20">

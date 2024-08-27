@@ -1,10 +1,3 @@
-import {
-  JSXElementConstructor,
-  Key,
-  ReactElement,
-  ReactNode,
-  ReactPortal,
-} from "react";
 import { store, persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
@@ -17,7 +10,6 @@ import { SocketProvider } from "./contexts/SocketContext";
 import NotificationHandler from "./components/notification/NotificationHandler";
 import { Routes, Route, useRoutes } from "react-router-dom";
 import routes from "./routes/AllRoutes/allRoutes.tsx";
-import useGetUser from "./hook/getUser.ts";
 import { useVideoCall, VideoCallProvider } from "./contexts/VideoCallContext.tsx";
 import VideoCallComponent from "./components/videoCall/VideoCallComponent.tsx";
 
