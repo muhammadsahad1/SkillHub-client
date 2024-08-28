@@ -55,7 +55,7 @@ const EventModal: React.FC<eventModalProps> = ({ isOpen, onClose }) => {
     if (result.success) {
       showToastSuccess(result.message);
     } else {
-      showToastSuccess(result.message);
+      showToastError(result.message);
     }
   };
 

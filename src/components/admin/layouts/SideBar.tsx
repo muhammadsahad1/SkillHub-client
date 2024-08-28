@@ -3,15 +3,19 @@ import logo from "../../../assets/admin Logomain.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { adminLogout } from "../../../API/admin";
+import { useDispatch } from "react-redux";
+import { deleteUser } from "../../../redux/userSlices";
 
 const SideBar = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch()
 
   const handleLogout = async () => {
     try {
       const result = await adminLogout();
       if (result.message) {
+        dispatch(deleteUser())
         navigate("/admin/login");
         toast.success(result.message);
       } else {
@@ -61,10 +65,7 @@ const SideBar = () => {
               Verification Requests
             </li>
           </NavLink>
-          <NavLink
-            to="/admin/events"
-            onClick={() => setIsOpen(false)}
-          >
+          <NavLink to="/admin/events" onClick={() => setIsOpen(false)}>
             <li className="border-b border-zinc-100 py-2 hover:bg-zinc-700">
               Verification Events
             </li>
@@ -72,7 +73,8 @@ const SideBar = () => {
         </ul>
         <button
           className="mt-4 block w-full border-2 border-zinc-900 px-6 py-2 hover:bg-[#636363] hover:text-white transition duration-200 rounded-lg font-bold"
-          onClick={handleLogout}>
+          onClick={handleLogout}
+        >
           Logout
         </button>
       </div>

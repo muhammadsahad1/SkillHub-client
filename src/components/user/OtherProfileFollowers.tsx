@@ -30,34 +30,6 @@ const OtherProfileFollowers = ({ userId }: { userId: string }) => {
 
   console.log(followers);
 
-  //To Remove the follower
-  // const handleRemove = async (toRemoveId: string) => {
-  //   try {
-  //     setOpenModal(false)
-  //     const result = await removeFollower(toRemoveId);
-  //     if (result.success) {
-  //       setFollowers((prevFollowers) =>
-  //         prevFollowers.filter((follower) => follower._id != toRemoveId)
-  //       );
-  //       showToastSuccess("Removed follower");
-  //     }
-  //   } catch (error: any) {
-  //     showToastError(error.message);
-  //   }
-  // };
-
-  // Following back
-  // const handleFollowBack = async (toFollowId: string) => {
-  //   try {
-  //     const result = await followBack(toFollowId);
-  //     if (result.success) {
-  //       showToastSuccess("Followed back");
-  //       fetchFollowers();
-  //     }
-  //   } catch (error: any) {
-  //     showToastError(error.message);
-  //   }
-  // };
 
   // for modal
   const openModal = async () => {

@@ -2,6 +2,8 @@ import React, { Suspense } from "react";
 import { DotLoader } from "react-spinners";
 import { RouteObject } from "react-router-dom";
 import VerificationRequestsPage from "../../page/admin/VerificationRequests";
+import EventsPage from "../../page/event/EventsPage";
+import EventRegisterPage from "../../page/event/EventRegisterPage";
 
 // Layouts
 const AdminLayout = React.lazy(() => import("../layouts/AdminLayout"));
@@ -33,7 +35,6 @@ const OthersFollowersPage = React.lazy(() => import("../../page/user/OthersFollo
 
 // Pages - Chat
 const ChatPage = React.lazy(() => import("../../page/chat/ChatPage"));
-
 // Pages - Post
 const PostViewPage = React.lazy(() => import("../../page/post/PostViewPage"));
 
@@ -155,20 +156,36 @@ const routes: RouteObject[] = [
           </Suspense>
         )
       },
+      {
+        path : "events" , element : (
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <EventsPage />
+        </Suspense>
+        )
+      },
+      {
+        path : "event/:eventId",element :(
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <EventRegisterPage />
+        </Suspense>
+        )
+      }
     ]
   },
+  // ============================= Admin Routes ========================= \\
+  { path: "admin/login", element: (
+    <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+      <Adminlogin />
+    </Suspense>
+  )
+},
   { path: "admin", element: (
       <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
         <AdminLayout />
       </Suspense>
     ),
     children: [
-      { path: "login", element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
-            <Adminlogin />
-          </Suspense>
-        )
-      },
+      
       { path: "dashboard", element: (
           <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
             <AdminDashboard />
@@ -189,7 +206,7 @@ const routes: RouteObject[] = [
         )
       },
       {
-        path : 'events',element : (
+        path :'events',element : (
           <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
           <EventsRequests />
         </Suspense>

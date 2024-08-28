@@ -1,3 +1,4 @@
+import { IEventRegister } from "../@types/eventRegister";
 import Api from "../services/axios";
 import userRoutes from "../services/endpoints/userEndpoints";
 
@@ -32,10 +33,43 @@ export const createEvent = async (eventData: FormData) => {
 
 export const getEventsList = async () => {
   try {
-    const response = await Api.get(userRoutes.listEvents)
-    console.log("res after the fethc Events ==>",response.data)
-    return response.data
-  } catch (error) {
-    
+    const response = await Api.get(userRoutes.listEvents);
+    console.log("res ==>", response.data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
   }
-}
+};
+
+export const fetchEventDetails = async (eventId: string | undefined) => {
+  try {
+    const response = await Api.get(userRoutes.event, {
+      params: {
+        eventId: eventId,
+      },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+export const registerEvent = async ({registerData} : {registerData : IEventRegister}) => {
+  try {
+    const result = await Api.post(userRoutes.eventRegister,{registerData});
+    return result.data
+  } catch (error) {}
+};

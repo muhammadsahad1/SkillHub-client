@@ -21,7 +21,7 @@ const userRoutes = {
   getOthersPosts: "/user/OthersPosts",
 
   //verifiy request for proffessional account
-  verifyRequesting : '/user/verification-request',
+  verifyRequesting: "/user/verification-request",
 
   // followings $ followers
   getMyFollowings: "/user/getMyFollowings",
@@ -58,9 +58,11 @@ const userRoutes = {
   notification: "/user/notification",
   notificationMarkAsRead: "/user/markAsReadNotify",
 
-  //Events
-  createEvent : "/user/createEvent",
-  listEvents : "/user/events",
+  // Events
+  createEvent: "/user/createEvent",
+  listEvents: "/user/getEvents",
+  event: "/user/eventDetails",
+  eventRegister : "/user/eventRegister",
 
   logout: "/user/logout",
 };

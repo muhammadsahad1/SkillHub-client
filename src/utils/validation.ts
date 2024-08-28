@@ -58,7 +58,7 @@ export const validatePassword = (password: string) => {
   return failedValidation ? failedValidation.message : true;
 };
 
-//  =============================================>       Event validation ]
+//  =============================================>  Event validation ]
 export const eventValidation = (
   title: string,
   description: string,
@@ -68,7 +68,9 @@ export const eventValidation = (
   speaker: string,
   registrationLink: string,
   accessLink: string,
-  bannerFile: File | null
+  bannerFile: File | null,
+  price: number,
+  currency: string,
 ): { [key: string]: string } => {
   const errors: { [key: string]: string } = {};
   const today = new Date().toISOString().split("T")[0];
@@ -76,8 +78,9 @@ export const eventValidation = (
   const nameRegex = /^[A-Za-z\s\-']+$/;
   const urlRegex = /^(ftp|http|https):\/\/[^\s/$.?#].[^\s]*$/i;
   const wordCountRegex = /\b\w+\b/g;
+  const currencyRegex = /^[A-Z]{3}$/; // Basic check for currency code format (e.g., USD, EUR)
 
-  // title validation
+  // Title validation
   if (
     !title ||
     !nameRegex.test(title) ||
@@ -88,14 +91,14 @@ export const eventValidation = (
       "Title must be 3-100 characters long and contain only letters, spaces, hyphens, or apostrophes.";
   }
 
-  // description validation
+  // Description validation
   const wordCount = (description.match(wordCountRegex) || []).length;
   if (!description || wordCount < 20) {
     errors.description =
       "Description must contain at least 20 words and should not include HTML or script tags.";
   }
 
-  //speaker validation
+  // Speaker validation
   if (
     !speaker ||
     !nameRegex.test(speaker) ||
@@ -106,7 +109,7 @@ export const eventValidation = (
       "Speaker name must be 3-100 characters long and contain only letters, spaces, hyphens, or apostrophes.";
   }
 
-  // date validation
+  // Date validation
   if (!date || new Date(date).toISOString().split("T")[0] < today) {
     errors.date = "Date must be today or in the future.";
   }
@@ -128,15 +131,14 @@ export const eventValidation = (
       "Duration must be a positive number and should not exceed 1440 minutes.";
   }
 
-  //duration validation
-  if (
-    !duration ||
-    isNaN(Number(duration)) ||
-    Number(duration) <= 0 ||
-    Number(duration) > 1440
-  ) {
-    errors.duration =
-      "Duration must be a positive number and should not exceed 1440 minutes.";
+  // Price validation
+  if (price === undefined || price === null || isNaN(Number(price)) || Number(price) < 0 || Number(price) > 10000) {
+    errors.price = "Price must be a number between 0 and 10,000.";
+  }
+
+  // Currency validation
+  if (!currency || !currencyRegex.test(currency)) {
+    errors.currency = "Currency must be a valid 3-letter currency code (e.g., USD, EUR).";
   }
 
   // URL Validation
@@ -144,18 +146,19 @@ export const eventValidation = (
     errors.registrationLink = "Registration Link must be a valid URL.";
   }
 
-  //access link validation
-  if (!accessLink && !urlRegex.test(accessLink)) {
+  // Access link validation
+  if (!accessLink || !urlRegex.test(accessLink)) {
     errors.accessLink = "Access Link must be a valid URL.";
   }
 
+  // Banner file validation
   if (bannerFile) {
     const allowTypes = ["image/jpeg", "image/png", "image/gif"];
     if (!allowTypes.includes(bannerFile.type)) {
-      errors.bannerFile = "Banner file must be an image (JPEG, PNG, GIF).";
+      errors.banner = "Banner file must be an image (JPEG, PNG, GIF).";
     }
   } else {
-    errors.bannerFile = "Banner file is required.";
+    errors.banner = "Banner file is required.";
   }
 
   return errors;

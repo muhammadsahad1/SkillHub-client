@@ -48,7 +48,10 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
   const [registrationLink, setRegistrationLink] = useState("");
   const [accessLink, setAccessLink] = useState("");
   const [category, setCategory] = useState("");
+  const [price, setPrice] = useState<number>(0); // Add price state
+  const [currency, setCurrency] = useState<string>("USD"); // Add currency state
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -61,6 +64,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
       setBannerFile(file);
     }
   };
+
   const logFormData = (formData: FormData) => {
     const data = {};
     formData.forEach((value, key) => {
@@ -69,7 +73,6 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
     console.log("FormData:", data);
   };
 
-  // for handling the sumbit and passing the formdata to parent component
   const handleSubmit = () => {
     const validationErrors = eventValidation(
       title,
@@ -80,11 +83,13 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
       speaker,
       registrationLink,
       accessLink,
-      bannerFile
+      bannerFile,
+      price,
+      currency
     );
-    console.log(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
+  
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
@@ -95,6 +100,8 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
       formData.append("registrationLink", registrationLink);
       formData.append("accessLink", accessLink);
       formData.append("category", category);
+      formData.append("price", price.toString());
+      formData.append("currency", currency);
       if (bannerFile) {
         formData.append("bannerFile", bannerFile);
       }
@@ -109,9 +116,9 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box sx={style}>
-        {/* {isLoading && (
-          <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
-            <BarLoader color="black" />
+        {/* {loading && (
+          <div className="inset-0 z-50 absolute bg-white bg-opacity-75 flex items-center justify-center ">
+            <BarLoader />
           </div>
         )} */}
         <Typography variant="h6" component="h2" sx={{ fontWeight: "bold" }}>
@@ -191,6 +198,29 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
               required
             />
           </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              type="number"
+              label="Price (0 for Free)"
+              value={price}
+              onChange={(e) => setPrice(parseFloat(e.target.value))}
+              error={!!errors.price}
+              helperText={errors.price}
+              required
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              label="Currency"
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              error={!!errors.currency}
+              helperText={errors.currency}
+              required
+            />
+          </Grid>
           <Grid item xs={12}>
             <Button
               variant="outlined"
@@ -208,25 +238,24 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
               />
             </Button>
             {bannerPreview && (
-              <Box sx={{ mt: 2 }}>
-                <Typography variant="body2" color="textSecondary">
-                  Selected file preview:
-                </Typography>
-                <img
-                  src={bannerPreview as string}
-                  alt="Banner Preview"
-                  style={{ width: "100%", height: "auto", borderRadius: 4 }}
-                />
-              </Box>
+              <Box
+                component="img"
+                src={bannerPreview as string}
+                alt="Banner Preview"
+                sx={{
+                  width: "100%",
+                  height: "auto",
+                  borderRadius: 2,
+                  objectFit: "contain",
+                  mt: 1,
+                }}
+              />
             )}
-            <Typography variant="body2" color="textSecondary">
-              {bannerFile ? `Selected file: ${bannerFile.name}` : null}
-            </Typography>
-            {errors.bannerFile && (
-              <FormHelperText error>{errors.bannerFile}</FormHelperText>
+            {errors.banner && (
+              <FormHelperText error>{errors.banner}</FormHelperText>
             )}
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <TextField
               fullWidth
               label="Registration Link"
@@ -248,7 +277,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
               required
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <TextField
               fullWidth
               label="Category"
@@ -256,20 +285,15 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
               onChange={(e) => setCategory(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12}>
-            <Button
-              fullWidth
-              variant="contained"
-              onClick={handleSubmit}
-              sx={{
-                bgcolor: "primary.main",
-                "&:hover": { bgcolor: "primary.dark" },
-              }}
-            >
-              Create Event
-            </Button>
-          </Grid>
         </Grid>
+        <Button
+          variant="contained"
+          sx={{ mt: 3 }}
+          fullWidth
+          onClick={handleSubmit}
+        >
+          Create Event
+        </Button>
       </Box>
     </Modal>
   );

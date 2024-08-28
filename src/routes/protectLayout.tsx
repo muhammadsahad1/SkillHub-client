@@ -5,7 +5,7 @@ import { User } from "../@types/allTypes";
 
 const ProtectLayout: React.FC = () => {
   const currentUser: User = useGetUser();
-  
+
   if (currentUser && currentUser.blocked) {
     return <Navigate to="/blockedUser" />;
   } else if (currentUser && currentUser.email) {

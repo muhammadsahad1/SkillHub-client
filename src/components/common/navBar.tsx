@@ -93,7 +93,7 @@ const NavBar: React.FC = () => {
             Home
           </Link>
           <Link
-            to="/explore"
+            to="/auth/events"
             className="text-gray-800 font-bold hover:text-gray-600"
           >
             Explore
@@ -103,7 +103,7 @@ const NavBar: React.FC = () => {
           </Link>
           <div onClick={toggleNotificationsDropdown} className="cursor-pointer relative">
             {unreadNotificationsCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-emerald-400 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+              <span className="absolute -top  -2 -right-2 bg-emerald-400 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                 {unreadNotificationsCount}
               </span>
             )}

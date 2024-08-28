@@ -10,8 +10,8 @@ import { FaUserAlt } from "react-icons/fa";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { TbMessageDots } from "react-icons/tb";
 
-const OtherProfileFollowings = ({ userId }:{ userId: string }) => {
-  const [followings, setFollowing] = useState<any>();
+const OtherProfileFollowings = ({ userId }:{ userId: string | undefined}) => {
+  const [followings, setFollowing] = useState<any>(); 
   const navigate = useNavigate();
   const currentUser = useGetUser();
 
