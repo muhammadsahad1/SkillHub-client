@@ -44,13 +44,13 @@ const EventRegisteration = () => {
   return (
     <div className="flex justify-evenly">
       <div className="flex items-stretch bg-zinc-100 rounded-lg shadow-sm overflow-hidden mb-4 font-poppins mt-32  w-full md:w-3/4 lg:w-1/2 xl:w-1/3">
-        <div className="w-28 bg-zinc-300 p-2 flex flex-col items-center justify-center text-center">
+        <div className="w-28 bg-zinc-200 p-2 flex flex-col items-center justify-center text-center">
           <div className="text-sm font-semibold">{formattedDate}</div>
           <div className="text-lg font-bold">
             {eventDetails?.time || "UNKNOWN TIME"}
           </div>
         </div>
-        <div className="flex-1 p-4 bg-zinc-200">
+        <div className="flex-1 p-4 bg-zinc-100">
           {eventDetails?.bannerImageUrl ? (
             <img
               src={eventDetails?.bannerImageUrl}

@@ -62,7 +62,10 @@ const userRoutes = {
   createEvent: "/user/createEvent",
   listEvents: "/user/getEvents",
   event: "/user/eventDetails",
-  eventRegister : "/user/eventRegister",
+  joinLink : "/user/joinLink",
+  eventRegister :"/user/eventRegister",
+  getToken : "/user/generateToken",
+  joinMeeting :'/user/joinMeeting',
 
   logout: "/user/logout",
 };

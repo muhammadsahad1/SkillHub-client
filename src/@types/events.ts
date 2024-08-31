@@ -1,11 +1,13 @@
 export interface IEvent {
-  _id: string,
+  _id: string;
   title: string;
   description: string;
   date: Date;
   time: string;
   duration: number;
   speaker: string;
+  price: string;
+  currency : string;
   category: string;
   bannerName?: string;
   registrationLink: string;
@@ -15,7 +17,7 @@ export interface IEvent {
   eventStatus: string;
   approvalStatus: string;
   createdBy: string[];
-  bannerImageUrl? :string,  
+  bannerImageUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }

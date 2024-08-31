@@ -17,18 +17,18 @@ import {
   setVerificationStatus,
 } from "../../redux/userSlices";
 import useGetUser from "../../hook/getUser";
-import { Howl } from 'howler'
-import soundNotify from '../../assets/notiSound.mp3'
+import { Howl } from "howler";
+import soundNotify from "../../assets/notiSound.mp3";
 
 const playNotificationSound = () => {
   const sound = new Howl({
-    src:[soundNotify],
-    volume: 1.0 ,
+    src: [soundNotify],
+    volume: 1.0,
     onplay: () => console.log("Sound is playing"),
-    onend: () => console.log("Sound finished playing")
-  })
-  sound.play()
-}
+    onend: () => console.log("Sound finished playing"),
+  });
+  sound.play();
+};
 
 const NotificationHandler = () => {
   const dispatch = useDispatch();
@@ -42,7 +42,7 @@ const NotificationHandler = () => {
     if (socket) {
       const handleNotification = (notification: any) => {
         console.log("Received notification: ==>", notification.type);
-        
+
         if (notification.type === "follow") {
           // for follow notification
           toast.custom((t) => (
@@ -63,7 +63,7 @@ const NotificationHandler = () => {
             </div>
           ));
         } else if (notification.type === "chat") {
-          playNotificationSound()
+          playNotificationSound();
           //For chat notification
           toast.custom((t) => (
             <div
@@ -173,7 +173,6 @@ const NotificationHandler = () => {
       // here the event is listerning
       socket.on("notification", handleNotification);
       // Cleanup listener on component unmount or socket change
-      
 
       return () => {
         socket.off("notification", handleNotification);

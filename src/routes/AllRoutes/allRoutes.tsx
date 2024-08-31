@@ -4,6 +4,8 @@ import { RouteObject } from "react-router-dom";
 import VerificationRequestsPage from "../../page/admin/VerificationRequests";
 import EventsPage from "../../page/event/EventsPage";
 import EventRegisterPage from "../../page/event/EventRegisterPage";
+import VideoCallMetting from "../../page/video/VideoCallMetting";
+import EventMeeting from "../../page/eventMeeting/EventMeeting";
 
 // Layouts
 const AdminLayout = React.lazy(() => import("../layouts/AdminLayout"));
@@ -169,6 +171,14 @@ const routes: RouteObject[] = [
           <EventRegisterPage />
         </Suspense>
         )
+      },
+      {
+        path : 'meeting/',element :(
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <EventMeeting />
+        </Suspense>
+        )
+
       }
     ]
   },

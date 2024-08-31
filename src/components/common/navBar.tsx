@@ -60,7 +60,7 @@ const NavBar: React.FC = () => {
       const response = await logoutUser();
       if (response.success) {
         dispatch(deleteUser());
-
+        // dispatch()
         navigate("/");
         toast.success(response.message);
       }

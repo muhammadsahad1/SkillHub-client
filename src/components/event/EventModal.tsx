@@ -5,7 +5,7 @@ import Modal from "@mui/material/Modal";
 import React, { useEffect, useState } from "react";
 import CreateEventModal from "./CreateEventModal";
 import { createEvent } from "../../API/event";
-import { showToastSuccess } from "../common/utilies/toast";
+import { showToastError, showToastSuccess } from "../common/utilies/toast";
 
 const style = {
   position: "absolute" as "absolute",

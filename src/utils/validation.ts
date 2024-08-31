@@ -66,8 +66,8 @@ export const eventValidation = (
   time: string,
   duration: string,
   speaker: string,
-  registrationLink: string,
-  accessLink: string,
+  // registrationLink: string,
+  // accessLink: string,
   bannerFile: File | null,
   price: number,
   currency: string,
@@ -142,14 +142,14 @@ export const eventValidation = (
   }
 
   // URL Validation
-  if (registrationLink && !urlRegex.test(registrationLink)) {
-    errors.registrationLink = "Registration Link must be a valid URL.";
-  }
+  // if (registrationLink && !urlRegex.test(registrationLink)) {
+  //   errors.registrationLink = "Registration Link must be a valid URL.";
+  // }
 
-  // Access link validation
-  if (!accessLink || !urlRegex.test(accessLink)) {
-    errors.accessLink = "Access Link must be a valid URL.";
-  }
+  // // Access link validation
+  // if (!accessLink || !urlRegex.test(accessLink)) {
+  //   errors.accessLink = "Access Link must be a valid URL.";
+  // }
 
   // Banner file validation
   if (bannerFile) {

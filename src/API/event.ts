@@ -13,6 +13,8 @@ const logFormData = (formData: FormData) => {
 export const createEvent = async (eventData: FormData) => {
   try {
     logFormData(eventData);
+    console.log("called");
+    
     const response = await Api.post(userRoutes.createEvent, eventData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -34,7 +36,6 @@ export const createEvent = async (eventData: FormData) => {
 export const getEventsList = async () => {
   try {
     const response = await Api.get(userRoutes.listEvents);
-    console.log("res ==>", response.data);
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -67,9 +68,48 @@ export const fetchEventDetails = async (eventId: string | undefined) => {
   }
 };
 
-export const registerEvent = async ({registerData} : {registerData : IEventRegister}) => {
+// export const getToken = async () => {
+//   try {
+//     const response = await Api.get(userRoutes.)
+//   } catch (error) {
+    
+//   }
+// }
+
+// export const getJoinLink = async (date :string,time: string) => {
+//   try {
+//     const response = await Api.get(userRoutes.joinLink, {});
+//     console.log("response llink ==>",response.data);
+    
+//     return response.data.joinLink;
+//   } catch (error) {}
+// };
+
+export const registerEvent = async (registerData: IEventRegister) => {
   try {
-    const result = await Api.post(userRoutes.eventRegister,{registerData});
-    return result.data
-  } catch (error) {}
+    console.log('Register Data Sent:', registerData);
+
+    const result = await Api.post(userRoutes.eventRegister, {registerData});
+    console.log('Response from API:', result);
+
+    return result.data;
+  } catch (error) {
+    console.log(error)
+  }
+
+
 };
+
+  // for event meeting
+  export const getMettingEvent = async (eventId : string) => {
+    try {
+      console.log("called eventGet");
+      
+      const response = await Api.get(userRoutes.joinMeeting,{
+        params : { eventId }
+      })
+      return response.data
+    } catch (error : any) {
+      console.log("errro",error.message)
+    }
+  } 

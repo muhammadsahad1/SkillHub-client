@@ -11,6 +11,8 @@ import {
 import { UploadFile } from "@mui/icons-material"; // Optional, for file upload icon
 import { eventValidation } from "../../utils/validation";
 import { BarLoader } from "react-spinners";
+import { getJoinLink } from "../../API/event";
+import { showToastError } from "../common/utilies/toast";
 
 const style = {
   position: "absolute" as "absolute",
@@ -44,8 +46,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
   const [duration, setDuration] = useState("");
   const [speaker, setSpeaker] = useState("");
   const [bannerFile, setBannerFile] = useState<File | null>(null);
-  const [bannerPreview, setBannerPreview] = useState<string | ArrayBuffer>(""); // Store image preview URL
-  const [registrationLink, setRegistrationLink] = useState("");
+  const [bannerPreview, setBannerPreview] = useState<string | ArrayBuffer>(""); // Store image preview URL;
   const [accessLink, setAccessLink] = useState("");
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState<number>(0); // Add price state
@@ -80,16 +81,13 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
       date,
       time,
       duration,
-      speaker,
-      registrationLink,
-      accessLink,
+      speaker,  
       bannerFile,
       price,
       currency
     );
 
     if (Object.keys(validationErrors).length === 0) {
-  
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
@@ -97,8 +95,6 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
       formData.append("time", time);
       formData.append("duration", duration.toString());
       formData.append("speaker", speaker);
-      formData.append("registrationLink", registrationLink);
-      formData.append("accessLink", accessLink);
       formData.append("category", category);
       formData.append("price", price.toString());
       formData.append("currency", currency);
@@ -112,6 +108,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
       setErrors(validationErrors);
     }
   };
+
 
   return (
     <Modal open={isOpen} onClose={onClose}>
@@ -254,28 +251,6 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
             {errors.banner && (
               <FormHelperText error>{errors.banner}</FormHelperText>
             )}
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Registration Link"
-              value={registrationLink}
-              onChange={(e) => setRegistrationLink(e.target.value)}
-              error={!!errors.registrationLink}
-              helperText={errors.registrationLink}
-              required
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Access Link"
-              value={accessLink}
-              onChange={(e) => setAccessLink(e.target.value)}
-              error={!!errors.accessLink}
-              helperText={errors.accessLink}
-              required
-            />
           </Grid>
           <Grid item xs={12}>
             <TextField

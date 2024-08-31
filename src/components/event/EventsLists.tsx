@@ -11,6 +11,8 @@ const EventsLists = () => {
   const fetchEvents = async () => {
     try {
       const result = await getEventsList();
+      console.log("called0000");
+      
       setEvents(result);
     } catch (error) {
       console.error("Error fetching events:", error);
