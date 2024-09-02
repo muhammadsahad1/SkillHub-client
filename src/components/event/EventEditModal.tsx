@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Box,
@@ -8,11 +8,10 @@ import {
   Grid,
   FormHelperText,
 } from "@mui/material";
-import { UploadFile } from "@mui/icons-material"; // Optional, for file upload icon
+import { UploadFile } from "@mui/icons-material";
 import { eventValidation } from "../../utils/validation";
-import { BarLoader } from "react-spinners";
-import { getJoinLink } from "../../API/event";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
+import { createEvent } from "../../API/event"; // Add your updateEvent API function here
 
 const style = {
   position: "absolute" as "absolute",
@@ -20,7 +19,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 800,
-  maxHeight: "80vh", // Ensure the modal does not exceed 80% of the viewport height
+  maxHeight: "80vh",
   bgcolor: "background.paper",
   borderRadius: 2,
   boxShadow: 24,
@@ -28,16 +27,19 @@ const style = {
   overflowY: "auto",
 };
 
-interface CreateEventModalProps {
+interface EventEditModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (eventData: FormData) => void; // Function to handle form submission
+  eventData?: any;
+  onUpdated: () => void; // Callback function to trigger refetch in parent component
 }
 
-const CreateEventModal: React.FC<CreateEventModalProps> = ({
+
+const EventEditModal: React.FC<EventEditModalProps> = ({
   isOpen,
   onClose,
-  onSubmit,
+  eventData,
+  onUpdated
 }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -46,13 +48,30 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
   const [duration, setDuration] = useState("");
   const [speaker, setSpeaker] = useState("");
   const [bannerFile, setBannerFile] = useState<File | null>(null);
-  const [bannerPreview, setBannerPreview] = useState<string | ArrayBuffer>(""); // Store image preview URL;
+  const [bannerPreview, setBannerPreview] = useState<string | ArrayBuffer>("");
   const [accessLink, setAccessLink] = useState("");
   const [category, setCategory] = useState("");
-  const [price, setPrice] = useState<number>(0); // Add price state
-  const [currency, setCurrency] = useState<string>("USD"); // Add currency state
+  const [price, setPrice] = useState<number>(0);
+  const [currency, setCurrency] = useState<string>("USD");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (eventData) {
+      setTitle(eventData.title || "");
+      setDescription(eventData.description || "");
+      setDate(eventData.date || "");
+      setTime(eventData.time || "");
+      setDuration(eventData.duration || "");
+      setSpeaker(eventData.speaker || "");
+      setCategory(eventData.category || "");
+      setPrice(eventData.price || 0);
+      setCurrency(eventData.currency || "USD");
+      if (eventData.bannerImageUrl) {
+        setBannerPreview(eventData.bannerImageUrl);
+      }
+    }
+  }, [eventData]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -66,22 +85,14 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
     }
   };
 
-  const logFormData = (formData: FormData) => {
-    const data = {};
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
-    console.log("FormData:", data);
-  };
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validationErrors = eventValidation(
       title,
       description,
       date,
       time,
       duration,
-      speaker,  
+      speaker,
       bannerFile,
       price,
       currency
@@ -89,40 +100,49 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
 
     if (Object.keys(validationErrors).length === 0) {
       const formData = new FormData();
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("date", date);
-      formData.append("time", time);
-      formData.append("duration", duration.toString());
-      formData.append("speaker", speaker);
-      formData.append("category", category);
-      formData.append("price", price.toString());
-      formData.append("currency", currency);
+      formData.append("eventId", eventData._id);
+      formData.append("title", title || "");
+      formData.append("description", description || "");
+      formData.append("date", date || "");
+      formData.append("time", time || "");
+      formData.append("duration", duration.toString() || "");
+      formData.append("speaker", speaker || "");
+      formData.append("category", category || "");
+      formData.append("price", price.toString() || "");
+      formData.append("currency", currency || "");
       if (bannerFile) {
-        formData.append("bannerFile", bannerFile);
+        formData.append("bannerFile", eventData.bannerImageUrl || bannerFile);
       }
-      logFormData(formData);
-      onSubmit(formData);
-
+      setLoading(true);
+      try {
+        // Call the API to create or update the event
+        const result = await createEvent(formData);
+        if (result.success) {
+          showToastSuccess(result.message);
+          onUpdated()
+        } else {
+          showToastError(result.message);
+        }
+        onClose()
+      } catch (error) {
+        showToastError("An error occurred while saving the event.");
+      }
+      setLoading(false);
       onClose();
     } else {
       setErrors(validationErrors);
     }
   };
 
-
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box sx={style}>
-        {/* {loading && (
-          <div className="inset-0 z-50 absolute bg-white bg-opacity-75 flex items-center justify-center ">
-            <BarLoader />
-          </div>
-        )} */}
+        {/* Optional: Add loading spinner */}
         <Typography variant="h6" component="h2" sx={{ fontWeight: "bold" }}>
-          Create a New Event
+          {eventData ? "Edit Event" : "Create a New Event"}
         </Typography>
         <Grid container spacing={2} sx={{ mt: 2 }}>
+          {/* Form Fields */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -267,12 +287,13 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
           sx={{ mt: 3 }}
           fullWidth
           onClick={handleSubmit}
+          disabled={loading}
         >
-          Create Event
+          {eventData ? "Update Event" : "Create Event"}
         </Button>
       </Box>
     </Modal>
   );
 };
 
-export default CreateEventModal;
+export default EventEditModal;

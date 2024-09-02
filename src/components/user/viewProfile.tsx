@@ -170,16 +170,19 @@ const ViewProfile: React.FC = () => {
             {currentUser.profile ? (
               <div className="flex flex-col items-center md:items-start mt-6">
                 <div className="flex ">
-                <h1 className="text-3xl font-poppins font-bold text-gray-800 mb-2 me-2">
-                  {currentUser?.name || "User Name"}
-                </h1>
-                  <HiCheckBadge className="text-zinc-800" size={28}/>
-
+                  <h1 className="text-3xl font-poppins font-bold text-gray-800 mb-2 me-2">
+                    {currentUser?.name || "User Name"}
+                  </h1>
+                  {currentUser.isProfessional && (
+                    <HiCheckBadge className="text-zinc-800" size={28} />
+                  )}
                 </div>
-                { currentUser?.isProfessional && (
-                  <span className="text-sm text-zinc-800 font-poppins font-bold" >professional account </span>
+                {currentUser?.isProfessional && (
+                  <span className="text-sm text-zinc-800 font-poppins font-bold">
+                    professional account{" "}
+                  </span>
                 )}
-              
+
                 <p className="text-zinc-900 font-semibold mb-3">
                   <span className="text-zinc-700">
                     {currentUser?.followersCount} followers

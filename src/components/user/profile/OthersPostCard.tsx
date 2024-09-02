@@ -15,6 +15,7 @@ import {
   Button,
 } from "@mui/material";
 import { Avatar } from "antd";
+import PopUpModal from "../../common/utilies/Modal";
 import {
   MoreVert as MoreVertIcon,
   Favorite as LikeIcon,
@@ -26,9 +27,10 @@ import { HiDotsCircleHorizontal } from "react-icons/hi";
 import CommentBox from "../../common/utilies/CommentBox"; // Ensure this path is correct
 import useGetUser from "../../../hook/getUser";
 import { Link, useNavigate } from "react-router-dom";
-import { useDeleteComment, useEditComment, usePostLike } from "../../../hook/usePosts";
+import { useDeleteComment, useDeletePost, useEditComment, useEditPost, usePostLike } from "../../../hook/usePosts";
 import { useNotifyUser } from "../../../hook/useNotifyUser";
 import { useSocket } from "../../../hook/useSocket";
+import { showToastError } from "../../common/utilies/toast";
 
 interface Comment {
   _id: string;
@@ -70,9 +72,12 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
   const user = useGetUser();
   const navigate = useNavigate()
   const { socket } = useSocket()
+  const { mutate: editPost } = useEditPost();
   const { mutate: deleteComment } = useDeleteComment();
+  const { mutate: deletePost } = useDeletePost();
   const { mutate: postLike } = usePostLike();
   const { mutate: editComment } = useEditComment();
+  const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [isLiked, setLiked] = useState<boolean>(false);
   const [likeCount, setLikeCount] = useState(post.likes.length);
   const [isCommentBoxOpen, setCommentBoxOpen] = useState(false);
@@ -80,11 +85,19 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
   const [commentAnchorEl, setCommentAnchorEl] = useState<null | HTMLElement>(
     null
   );
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
   const [isCommentEditModalOpen, setCommentEditModalOpen] = useState(false);
   const [commentBeingEdited, setCommentBeingEdited] = useState<{
     id: string;
     text: string;
   } | null>(null);
+
+  const [captionBeingEdit, setCaptionBeingEdit] = useState<{
+    id: string;
+    text: string;
+  } | null>(null);
+
+
 
   const isMenuOpen = Boolean(anchorEl);
   const isCommentMenuOpen = Boolean(commentAnchorEl);
@@ -144,9 +157,34 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
 
 
   const handleEditComment = () => {
-    // Implement edit comment functionality
+    if (commentBeingEdited) {
+      console.log("id ==>", commentBeingEdited.id);
+
+      try {
+        editComment({
+          commentId: commentBeingEdited.id,
+          postId: post._id,
+          updatedText: commentBeingEdited.text,
+        });
+        setCommentEditModalOpen(false);
+      } catch (error) {
+        console.error("Error updating comment:", error);
+        showToastError("Error updating comment");
+      }
+    }
     handleCommentEditModalClose();
   };
+
+  const handleDelete = async () => {
+    try {
+      await deletePost(post._id);
+      handleMenuClose();
+      queryClient.invalidateQueries(["posts"]);
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
 
   const deletingComment = async (commentId: string, postId: string) => {
     try {
@@ -157,18 +195,63 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
     }
   };
 
+  
+  const handleModalClose = () => {
+    setEditModalOpen(false);
+  };
+
+
   const commentClose = () => {
     setCommentBoxOpen(!isCommentBoxOpen);
   };
 
   const handleEditModal = (comment: any) => {
     setCommentBeingEdited({
-      id: comment.id,
+      id: comment._id,
       text: comment.comment,
     });
+
     setCommentEditModalOpen(true);
     handleCommentMenuClose();
   };
+
+  const handleEdit = () => {
+    setCaptionBeingEdit({
+      id: post._id,
+      text: post.caption,
+    });
+    setEditModalOpen(true);
+    handleMenuClose();
+  };
+
+  const handleDeleteModalOpen = () => {
+    setDeleteModalOpen(true);
+    handleMenuClose();
+  };
+
+    // for view the one post
+    const handlePostDetaileView = async () => {
+      navigate(`/auth/post/${post._id}`);
+    };
+  
+    const closeDeleteModal = () => {
+      setDeleteModalOpen(false);
+    };
+
+    
+
+    const handleSave = async () => {
+      try {
+        if (captionBeingEdit && captionBeingEdit.text.trim() !== "") {
+          await editPost({ id: post._id, caption: captionBeingEdit.text });
+          post.caption = captionBeingEdit?.text;
+          setEditModalOpen(false);
+        }
+      } catch (error) {
+        console.error("Error updating post:", error);
+        showToastError("Error updating post");
+      }
+    };
 
 
   return (
@@ -354,7 +437,121 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
         <CommentBox postId={post._id} onClose={commentClose}/>
       </Box>
     )}
-  </Card>
+  <Modal open={isEditModalOpen} onClose={handleModalClose}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            borderRadius: 2,
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Edit Post
+          </Typography>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            value={captionBeingEdit?.text || ""}
+            onChange={(e) => {
+              if (captionBeingEdit) {
+                setCaptionBeingEdit({
+                  ...captionBeingEdit,
+                  text: e.target.value,
+                });
+              }
+            }}
+            sx={{ mt: 2 }}
+          />
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Button onClick={handleModalClose} sx={{ mr: 1 }}>
+              Cancel
+            </Button>
+            <Button variant="contained" color="primary" onClick={handleSave}>
+              Save
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      {/* Comment Edit Modal */}
+      <Modal
+        open={isCommentEditModalOpen}
+        onClose={handleCommentEditModalClose}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            borderRadius: 2,
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography id="comment-edit-modal-title" variant="h6" component="h2">
+            Edit Comment
+          </Typography>
+          <TextField
+            label="Comment"
+            multiline
+            rows={4}
+            fullWidth
+            value={commentBeingEdited?.text || ""}
+            onChange={(e) => {
+              if (commentBeingEdited) {
+                setCommentBeingEdited({
+                  ...commentBeingEdited,
+                  text: e.target.value,
+                });
+              }
+            }}
+            sx={{ mt: 2 }}
+          />
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Button onClick={handleCommentEditModalClose} sx={{ mr: 1 }}>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleEditComment}
+            >
+              Save
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      {/* Post Options Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleEdit}>Edit</MenuItem>
+        <MenuItem onClick={handleDeleteModalOpen}>Delete</MenuItem>
+        <MenuItem onClick={handlePostDetaileView}>view Post</MenuItem>
+      </Menu>
+
+      {/* Post Delete Modal */}
+      <PopUpModal
+        isOpen={isDeleteModalOpen}
+        isClose={closeDeleteModal}
+        onConfirm={handleDelete}
+        title="Are you sure you want to delete this post?"
+        content={""}
+      />
+    </Card>
   );
 };
 

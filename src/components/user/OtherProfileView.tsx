@@ -120,6 +120,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       if (result.success) {
         fetchUserDetails();
         showToastSuccess("Unfollowed");
+        setIsMeOnlyFollowing(false)
       }
     } catch (error: any) {
       showToastError(error.message);

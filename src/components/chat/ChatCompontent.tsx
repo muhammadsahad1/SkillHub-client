@@ -17,7 +17,7 @@ import { BiPaperPlane } from "react-icons/bi";
 import EmojiPicker from "emoji-picker-react";
 import TimeLine from "./TimeLine";
 import useGetUser from "../../hook/getUser";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   fetchChatUsers,
   sendChat,
@@ -96,7 +96,6 @@ const ChatComponent = ({ onNewMessage }: OnNewMessage) => {
     }
   }, [socket, userId, onNewMessage]);
 
-  console.log("chat ==>", chats);
 
   // fetch the chat history
   const fetchChat = async () => {
@@ -275,7 +274,6 @@ const ChatComponent = ({ onNewMessage }: OnNewMessage) => {
     } catch (error) {}
   };
 
-  console.log("chatList -===>", chats);
 
   return (
     <Box

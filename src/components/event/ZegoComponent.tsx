@@ -7,11 +7,11 @@ interface User {
   name: string;
 }
 
-const ZegoVideoCall: React.FC<{ event: IEvent; currentUser: User }> = ({ event, currentUser }) => {
+const ZegoVideoCall: React.FC<{ event: IEvent | null; currentUser: User }> = ({ event, currentUser }) => {
   useEffect(() => {
     const initZegoUIKit = async () => {
       try {
-        // Retrieve app ID and server secret from environment variables
+
         const appID = Number(import.meta.env.VITE_ZEGO_APP_ID);
         const serverSecret = import.meta.env.VITE_ZEGO_SERVER_SECRET;
 
@@ -19,9 +19,9 @@ const ZegoVideoCall: React.FC<{ event: IEvent; currentUser: User }> = ({ event, 
         const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
           appID,
           serverSecret,
-          event._id,               // roomId
-          currentUser.id,           // userID
-          currentUser.name          // userName
+          event._id,               
+          currentUser.id,           
+          currentUser.name          
         );
 
         // Initialize ZegoUIKitPrebuilt with the generated token
@@ -43,7 +43,6 @@ const ZegoVideoCall: React.FC<{ event: IEvent; currentUser: User }> = ({ event, 
         console.error("Failed to initialize ZEGOCLOUD UI Kit:", error);
       }
     };
-
     initZegoUIKit();
   }, [event, currentUser]);
 

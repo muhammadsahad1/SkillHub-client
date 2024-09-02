@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { fetchEventDetails } from "../../API/event";
 import { IEvent } from "../../@types/events";
-import { format, isToday } from "date-fns";
-import { useParams } from "react-router-dom";
+import { BarLoader } from "react-spinners";
 import EventRegisterForm from "./EventRegisterForm";
+import OnlineEventDetails from "./OnlineEventDetails.";
+import { motion } from "framer-motion";
 
-const EventRegisteration = () => {
+const EventRegistration = () => {
   const [eventDetails, setEventDetails] = useState<IEvent | undefined>();
+  const [loading, setLoading] = useState(false);
   const { eventId } = useParams();
 
   const fetchDetails = async () => {
@@ -15,10 +18,13 @@ const EventRegisteration = () => {
       return;
     }
     try {
+      setLoading(true);
       const event = await fetchEventDetails(eventId);
       setEventDetails(event);
     } catch (error) {
       console.error("Error fetching event details:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,72 +34,31 @@ const EventRegisteration = () => {
     }
   }, [eventId]);
 
-  const eventDate = new Date(eventDetails?.date || "");
-  const formattedDate = isNaN(eventDate.getTime())
-    ? "INVALID DATE"
-    : isToday(eventDate)
-    ? "TODAY"
-    : format(eventDate, "dd MMM").toUpperCase();
-
-  const formatDuration = (durationInMinutes: number) => {
-    const hours = Math.floor(durationInMinutes / 60);
-    const minutes = durationInMinutes % 60;
-    return `${hours > 0 ? `${hours}h ` : ""}${minutes}m`;
-  };
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <BarLoader color="#4F46E5" />
+      </div>
+    );
+  }
 
   return (
-    <div className="flex justify-evenly">
-      <div className="flex items-stretch bg-zinc-100 rounded-lg shadow-sm overflow-hidden mb-4 font-poppins mt-32  w-full md:w-3/4 lg:w-1/2 xl:w-1/3">
-        <div className="w-28 bg-zinc-200 p-2 flex flex-col items-center justify-center text-center">
-          <div className="text-sm font-semibold">{formattedDate}</div>
-          <div className="text-lg font-bold">
-            {eventDetails?.time || "UNKNOWN TIME"}
-          </div>
+    <motion.div className="container mx-auto px-4 py-8 mt-28"
+    initial = {{ opacity : 0,y : 20}}
+    animate ={{ opacity : 8 , y : 0}}
+    transition={{duration : 0.5}}
+    >
+      <div className="flex flex-col lg:flex-row justify-center gap-8">
+        <div className="flex-1 mb-8 lg:mb-0 lg:max-w-2xl">
+          {/* Event Details - takes more space */}
+          <OnlineEventDetails eventDetails={eventDetails} />
         </div>
-        <div className="flex-1 p-4 bg-zinc-100">
-          {eventDetails?.bannerImageUrl ? (
-            <img
-              src={eventDetails?.bannerImageUrl}
-              alt="bannerImage"
-              className="w-full h-32 object-cover mb-4 rounded-lg"
-            />
-          ) : (
-            <div className="w-full h-32 bg-gray-200 mb-4 rounded-lg flex items-center justify-center">
-              No Image
-            </div>
-          )}
-          <h3 className="text-xl font-semibold mb-2">{eventDetails?.title}</h3>
-          <p className="text-sm text-gray-600 mb-4">
-            {eventDetails?.description}
-          </p>
-          <div>
-            <h3 className="text-md font-semibold mb-2">
-              Speaker:{" "}
-              <span className="text-gray-600 font-bold">
-                {eventDetails?.speaker || "UNKNOWN"}
-              </span>
-            </h3>
-            <h3 className="text-md font-semibold mb-2">
-              Category:{" "}
-              <span className="text-gray-600 font-bold">
-                {eventDetails?.category || "UNKNOWN"}
-              </span>
-            </h3>
-            <h3 className="text-md font-semibold mb-2">
-              Duration:{" "}
-              <span className="text-gray-600 font-bold">
-                {formatDuration(eventDetails?.duration || 0)}
-              </span>
-            </h3>
-          </div>
+        <div className="w-full lg:w-96">
+          <EventRegisterForm event={eventDetails} />
         </div>
       </div>
-      <div className="mt-32">
-      
-        <EventRegisterForm event={eventDetails} />
-      </div>
-    </div>
+    </motion.div>
   );
 };
 
-export default EventRegisteration;
+export default EventRegistration;

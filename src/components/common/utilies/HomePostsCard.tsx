@@ -37,6 +37,7 @@ import PopUpModal from "./Modal";
 import { useQueryClient } from "react-query";
 import { useSocket } from "../../../hook/useSocket";
 import { useNotifyUser } from "../../../hook/useNotifyUser";
+import { LuBadgeCheck } from "react-icons/lu";
 
 const ActionButton = styled(Button)(({ theme }) => ({
   color: theme.palette.grey[400],
@@ -60,6 +61,7 @@ const formatDate = (dateString: string) => {
 };
 
 const HomePostCard = ({ post }: any) => {
+  console.log("post ==>", post);
   const user = useGetUser();
   const navigate = useNavigate();
   const { socket } = useSocket();
@@ -132,7 +134,7 @@ const HomePostCard = ({ post }: any) => {
 
   const handleEditModal = (comment: any) => {
     setCommentBeingEdited({
-      id: comment.id,
+      id: comment._id,
       text: comment.comment,
     });
     setCommentEditModalOpen(true);
@@ -209,8 +211,10 @@ const HomePostCard = ({ post }: any) => {
 
   const handleEditComment = async () => {
     if (commentBeingEdited) {
+      console.log("id ==>", commentBeingEdited.id);
+
       try {
-        await editComment({
+        editComment({
           commentId: commentBeingEdited.id,
           postId: post._id,
           updatedText: commentBeingEdited.text,
@@ -248,17 +252,23 @@ const HomePostCard = ({ post }: any) => {
   return (
     <Card
       sx={{
-        maxWidth: 800,
+        width: "100%",
+        maxWidth: "800px",
         margin: "auto",
         marginTop: 3,
         boxShadow: 2,
         marginBottom: 2,
-        minHeight: post.type === "thoughts" ? 300 : 500,
+        borderRadius: 4,
+        height: 600, // Fixed height for all cards
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
       }}
     >
       <CardHeader
         avatar={
           <Link to={`auth/OtherProfileView/${post?.userId}`}>
+            {post.isProfessional && <LuBadgeCheck />}
             <Avatar src={post?.userImageUrl} />
           </Link>
         }
@@ -282,7 +292,12 @@ const HomePostCard = ({ post }: any) => {
           ) : null
         }
       />
-      <CardContent>
+      <CardContent
+        sx={{
+          flex: 1,
+          overflow: "hidden",
+        }}
+      >
         {post?.caption && (
           <Typography
             variant="body2"
@@ -307,8 +322,8 @@ const HomePostCard = ({ post }: any) => {
               p: 0,
               m: 0,
               overflow: "hidden",
-              height: 400,
-              width: "100%",
+              flex: 1,
+              height: "100%",
               "@media (max-width: 600px)": {
                 maxWidth: "100%",
               },
@@ -321,12 +336,7 @@ const HomePostCard = ({ post }: any) => {
                 style={{
                   width: "100%",
                   objectFit: "cover",
-                  "@media (max-width: 600px)": {
-                    height: 250,
-                  },
-                  "@media (min-width: 600px)": {
-                    height: 400,
-                  },
+                  height: "100%", // Ensure video fills the box height
                 }}
               />
             ) : (
@@ -336,12 +346,7 @@ const HomePostCard = ({ post }: any) => {
                 style={{
                   width: "100%",
                   objectFit: "cover",
-                  "@media (max-width: 600px)": {
-                    height: 250,
-                  },
-                  "@media (min-width: 600px)": {
-                    height: 400,
-                  },
+                  height: "100%", // Ensure image fills the box height
                 }}
               />
             )}

@@ -5,18 +5,23 @@ import UsersRelatedSkill from "../../components/user/UsersRelatedSkill";
 import useGetUser from "../../hook/getUser";
 import DisplayPostCard from "../post/DisplayPostCard";
 import FeedPostsLists from "../../components/post/FeedPostsLists";
-
+import { motion } from "framer-motion";
 
 const Home: React.FC = () => {
   const currentUser = useGetUser();
-  
+
   return (
     <div className="flex min-h-screen justify-center">
       <NavBar />
-      <div className="flex flex-col justify-center mt-16 sm:mt-24 w-2/3">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-col justify-center mt-16 sm:mt-24 w-2/3">
+      
         {currentUser?.skill ? (
           <>
-            <h1 className="text-zinc-950 text-4xl sm:text-5xl font-bold text-center mb-4 mt-0">
+            <h1 className="text-zinc-950 text-4xl sm:text-5xl font-bold text-center mb-4">
               Empower Your Skills, Connect with Experts
             </h1>
             <div className="w-full">
@@ -24,7 +29,7 @@ const Home: React.FC = () => {
               <hr className="mt-8 border-zinc-400" />
               <UsersRelatedSkill />
               <hr className="mt-8 border-zinc-400" />
-              <FeedPostsLists/>
+              <FeedPostsLists />
             </div>
           </>
         ) : (
@@ -34,8 +39,8 @@ const Home: React.FC = () => {
             </h2>
           </div>
         )}
-      </div>
-    </div>
+      </motion.div>
+</div>
   );
 };
 

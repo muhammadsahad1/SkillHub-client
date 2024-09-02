@@ -59,6 +59,38 @@ const ProfessionalAccountModal: React.FC = () => {
     proofLink: "",
   });
 
+  const [errors, setErrors] = useState({
+    fullName: "",
+    profession: "",
+    proofLink: "",
+  });
+
+  const validate = () => {
+    let tempErrors = { fullName: "", profession: "", proofLink: "" };
+    let isValid = true;
+
+    if (!formData.fullName) {
+      tempErrors.fullName = "Full Name is required.";
+      isValid = false;
+    }
+
+    if (!formData.profession) {
+      tempErrors.profession = "Profession is required.";
+      isValid = false;
+    }
+
+    if (!formData.proofLink) {
+      tempErrors.proofLink = "Proof Link is required.";
+      isValid = false;
+    } else if (!/^https?:\/\/.+\..+/.test(formData.proofLink)) {
+      tempErrors.proofLink = "Enter a valid URL.";
+      isValid = false;
+    }
+
+    setErrors(tempErrors);
+    return isValid;
+  };
+
   const handleOpen = () => {
     if (loggedInUser?.isRequested) {
       setRequestedModal(true);
@@ -68,6 +100,7 @@ const ProfessionalAccountModal: React.FC = () => {
       setFirstModalOpen(false);
     }
   };
+
   const handleClose = () => {
     setIsOpen(false);
     setFirstModalOpen(false);
@@ -83,19 +116,18 @@ const ProfessionalAccountModal: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
+
     setLoading(true);
     setFirstModalOpen(false);
     // Implement form submission logic here
-    console.log("Form Data Submitted: ", formData);
     const result = await verifityRequesting(formData);
 
     if (result.success) {
       dispatch(setIsRequest(true));
-      setLoading(false);
       showToastSuccess("Verification request submitted successfully.");
     }
     setLoading(false);
-    // Optionally close the modal after submission
     handleClose();
   };
 
@@ -113,7 +145,7 @@ const ProfessionalAccountModal: React.FC = () => {
 
   return (
     <div>
-      {/*for if the user is already professional account*/}
+      {/* Modal for already professional account */}
       <Modal
         open={isProfessionalModal}
         onClose={handleCloseIsProfessionalModal}
@@ -150,7 +182,8 @@ const ProfessionalAccountModal: React.FC = () => {
           </Box>
         </Box>
       </Modal>
-      {/* modal for already request info */}
+
+      {/* Modal for already requested verification */}
       <Modal
         open={isRquestedModalOpen}
         onClose={handleCloseRequestedModal}
@@ -189,7 +222,7 @@ const ProfessionalAccountModal: React.FC = () => {
         </Box>
       </Modal>
 
-      {/* modal for asking the process */}
+      {/* Modal for starting the verification process */}
       <Modal
         open={isFirstModalOpen}
         onClose={handleCloseFirstModal}
@@ -201,7 +234,7 @@ const ProfessionalAccountModal: React.FC = () => {
             id="first-modal-title"
             sx={{
               mt: 2,
-              fontFamily: "poppins",
+              fontFamily: "Poppins",
               fontWeight: "bold",
               fontSize: 30,
             }}
@@ -210,7 +243,7 @@ const ProfessionalAccountModal: React.FC = () => {
           </Typography>
           <Typography
             id="first-modal-description"
-            sx={{ mt: 2, fontFamily: "poppins" }}
+            sx={{ mt: 2, fontFamily: "Poppins" }}
           >
             To request a professional account verification, please confirm that
             you wish to proceed.
@@ -223,6 +256,7 @@ const ProfessionalAccountModal: React.FC = () => {
         </Box>
       </Modal>
 
+      {/* Form for requesting professional account verification */}
       <Modal
         open={isOpen}
         onClose={handleClose}
@@ -260,6 +294,8 @@ const ProfessionalAccountModal: React.FC = () => {
                     value={formData.fullName}
                     onChange={handleChange}
                     fullWidth
+                    error={!!errors.fullName}
+                    helperText={errors.fullName}
                   />
                 </CustomPaper>
               </Grid>
@@ -272,13 +308,26 @@ const ProfessionalAccountModal: React.FC = () => {
                     value={formData.profession}
                     onChange={handleChange}
                     fullWidth
+                    error={!!errors.profession}
+                    helperText={errors.profession}
                   />
                 </CustomPaper>
               </Grid>
               <Grid item xs={6}>
                 <CustomPaper>
                   <TextField
-                    label="Website"
+                    label="Company (Optional)"
+                    name="company"
+                    value={formData.company}
+                    onChange={handleChange}
+                    fullWidth
+                  />
+                </CustomPaper>
+              </Grid>
+              <Grid item xs={12}>
+                <CustomPaper>
+                  <TextField
+                    label="Website (Optional)"
                     name="website"
                     value={formData.website}
                     onChange={handleChange}
@@ -289,29 +338,25 @@ const ProfessionalAccountModal: React.FC = () => {
               <Grid item xs={12}>
                 <CustomPaper>
                   <TextField
-                    label="Company"
-                    name="company"
-                    value={formData.company}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </CustomPaper>
-              </Grid>
-
-              <Grid item xs={12}>
-                <CustomPaper>
-                  <TextField
+                    required
                     label="Proof Link"
                     name="proofLink"
                     value={formData.proofLink}
                     onChange={handleChange}
                     fullWidth
+                    error={!!errors.proofLink}
+                    helperText={errors.proofLink}
                   />
                 </CustomPaper>
               </Grid>
             </Grid>
             <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
-              <Button variant="contained" type="submit" color="primary">
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={isLoading}
+              >
                 Submit
               </Button>
             </Box>

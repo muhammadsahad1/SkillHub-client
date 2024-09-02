@@ -70,7 +70,7 @@ const OutlinedCard: React.FC = () => {
           backgroundColor: "white",
           color: "black",
           borderRadius: "16px",
-          boxShadow: 5,
+          boxShadow: 2,
           width: "100%",
           maxWidth: 600,
           mx: "auto",

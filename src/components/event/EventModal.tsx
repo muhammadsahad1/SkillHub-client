@@ -53,7 +53,7 @@ const EventModal: React.FC<eventModalProps> = ({ isOpen, onClose }) => {
     onClose();
     const result = await createEvent(eventData);
     if (result.success) {
-      showToastSuccess(result.message);
+      showToastSuccess("Your request for the event has been successfully submitted. Please wait for approval. ")
     } else {
       showToastError(result.message);
     }

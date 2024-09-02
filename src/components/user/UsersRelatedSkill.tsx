@@ -18,7 +18,7 @@ const UsersRelatedSkill = () => {
   const currentUser = useGetUser();
   const currentUserSkill = currentUser.skill;
   const [skillRelatedUsers, setSkillRelatedUsers] = useState<
-    IuserSkillCardProps[]
+    any
   >([]);
 
   const [isLoading, setLoading] = useState<boolean>(false);

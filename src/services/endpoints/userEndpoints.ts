@@ -64,8 +64,14 @@ const userRoutes = {
   event: "/user/eventDetails",
   joinLink : "/user/joinLink",
   eventRegister :"/user/eventRegister",
+  makePayment : "/user/create-checkout-session",
   getToken : "/user/generateToken",
   joinMeeting :'/user/joinMeeting',
+  updateEvent : '/user/updateEvent',
+  changeStatus : "/user/changeStatus",
+
+  //groups
+  createGroup : "/user/createGroup",
 
   logout: "/user/logout",
 };

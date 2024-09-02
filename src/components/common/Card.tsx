@@ -7,43 +7,54 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { IuserSkillCardProps } from "../user/UsersRelatedSkill";
 import noProfile from "../../assets/nonProfile.jpg";
-import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { IconButton } from "@mui/material";
 
-const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }) => {
-  const [currentPage, setCurrentPage] = React.useState(0);
-  const usersPerPage = 5;
-  const totalPages = Math.ceil(users.length / usersPerPage);
+const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }: any) => {
   const navigate = useNavigate();
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
-  const handleNextPage = () => {
-    setCurrentPage((prevPage) => (prevPage + 1) % totalPages);
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const scrollPosition = scrollRef.current.scrollLeft;
+      const pageWidth = scrollRef.current.clientWidth;
+      const currentPage = Math.round(scrollPosition / pageWidth);
+      // Update current page or any other logic based on scroll position
+    }
   };
 
-  const handlePrevPage = () => {
-    setCurrentPage((prevPage) => (prevPage - 1 + totalPages) % totalPages);
-  };
-
-  const displayedUsers = users.slice(
-    currentPage * usersPerPage,
-    (currentPage + 1) * usersPerPage
-  );
+  React.useEffect(() => {
+    const container = scrollRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
 
   return (
-    <Box sx={{ position: "relative", width: "100%", mt: 2 }}>
-      <Box
+    <Box sx={{ position: "relative", width: "100%", mt: 2, cursor: "pointer" }} >
+      <Box 
+        ref={scrollRef}
         sx={{
           display: "flex",
           justifyContent: "center",
           flexDirection: "row",
           gap: { xs: 1, sm: 2 },
           p: { xs: 1, sm: 2 },
+          pl: { xs: 49, sm: 9 },
           overflowX: "auto",
           whiteSpace: "nowrap",
+          scrollbarWidth: "none", // For Firefox
+          "&::-webkit-scrollbar": {
+            display: "none", // For Chrome, Safari, and Opera
+          },
+          scrollBehavior: "smooth", // Ensures smooth scrolling
         }}
       >
-        {displayedUsers.map((user) => (
+        {users.map((user: any) => (
           <Card
             key={user._id}
             variant="outlined"
@@ -59,12 +70,20 @@ const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }) => {
               },
               flex: "0 0 auto",
             }}
+            onClick={() =>
+              navigate(`/auth/OtherProfileView/${user._id}`, {
+                state: {
+                  profileImageUrl: user?.imageUrl,
+                  coverImageurl: user?.coverImageUrl,
+                },
+              })
+            }
           >
             <CardContent sx={{ padding: "0" }}>
               <img
                 src={user?.imageUrl || noProfile}
                 alt=""
-                className="w-full h-20 object-cover rounded-t-md"
+                className="w-full h-32 object-cover rounded-t-md"
               />
               <Typography sx={{ mb: 1, p: 1 }} color="text.secondary">
                 <span className="font-semibold">{user.name}</span>
@@ -79,50 +98,9 @@ const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }) => {
                 </b>
               </Typography>
             </CardContent>
-            <CardActions sx={{ justifyContent: "flex-end", p: 1 }}>
-              <Button
-                size="small"
-                color="primary"
-                
-                onClick={() =>
-                  navigate(`/auth/OtherProfileView/${user._id}`, {
-                    state: {
-                      profileImageUrl: user?.imageUrl,
-                      coverImageurl: user?.coverImageUrl,
-                    },
-                  })
-                }
-              >
-                <h2 className="px-10 text-xs font-semibold">View profile</h2>
-              </Button>
-            </CardActions>
           </Card>
         ))}
       </Box>
-      {totalPages > 1 && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            position: "absolute",
-            top: "50%",
-            left: -60,
-            right: -60,
-            transform: "translateY(-50%)",
-            px: 2,
-          }}
-        >
-          <IconButton onClick={handlePrevPage} disabled={currentPage === 0}>
-            <IoMdArrowDropleft size={32} />
-          </IconButton>
-          <IconButton
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages - 1}
-          >
-            <IoMdArrowDropright size={32} />
-          </IconButton>
-        </Box>
-      )}
     </Box>
   );
 };

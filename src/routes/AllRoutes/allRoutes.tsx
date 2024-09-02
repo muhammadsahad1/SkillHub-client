@@ -6,6 +6,7 @@ import EventsPage from "../../page/event/EventsPage";
 import EventRegisterPage from "../../page/event/EventRegisterPage";
 import VideoCallMetting from "../../page/video/VideoCallMetting";
 import EventMeeting from "../../page/eventMeeting/EventMeeting";
+import EventSuccessPage from "../../page/event/EventResterdSuccess";
 
 // Layouts
 const AdminLayout = React.lazy(() => import("../layouts/AdminLayout"));
@@ -179,7 +180,14 @@ const routes: RouteObject[] = [
         </Suspense>
         )
 
-      }
+      },
+      {
+        path : 'event/registered/success',element :(
+          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <EventSuccessPage />
+        </Suspense>
+        )
+      },
     ]
   },
   // ============================= Admin Routes ========================= \\

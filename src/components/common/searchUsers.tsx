@@ -5,7 +5,6 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
 import { fetchSearchUsers } from "../../API/user";
 import { debounce } from "lodash";
 import { useNavigate } from "react-router-dom";
@@ -42,7 +41,6 @@ const SearchUsers = () => {
 
   // navigate to view profile
   const handleNavigation = (option: string[]) => {
-    console.log("option ===>", option);
 
     navigate(`/auth/OtherProfileView/${option._id}`, {
       state: {

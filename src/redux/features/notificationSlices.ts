@@ -39,8 +39,9 @@ const notificationSlice = createSlice({
       state.notifications = [action.payload,...state.notifications]
       state.unreadCount += 1
     },
-    removeAllNotifications : (state,action) => {
+    removeAllNotifications : (state) => {
       state.notifications = []
+      state.unreadCount = 0
     }
   },
   extraReducers: (builder) => {
@@ -65,4 +66,5 @@ const notificationSlice = createSlice({
   },
 });
 
+export const { removeAllNotifications } = notificationSlice.actions
 export default notificationSlice.reducer;

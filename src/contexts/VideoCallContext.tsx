@@ -84,7 +84,6 @@ export const VideoCallProvider: React.FC<{ children: ReactNode }> = ({
       socket.on(
         "callRequest",
         (data: { callerId: string; receiverName : string, roomId: string; callerName: string }) => {
-
           setCallerId(data.callerId);
           setCallerName(data.callerName);
           setRoomId(data.roomId);

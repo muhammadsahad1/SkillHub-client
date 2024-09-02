@@ -7,12 +7,11 @@ export interface UserData {
 }
 
 
-export interface 
-IEventRegister {
-  userId: string | undefined;
-  eventId: string | undefined;
-  name: string;
-  email: string;
+export interface IEventRegister {
+  userId?: string | undefined;
+  eventId?: string | undefined;
+  name?: string;
+  email?: string;
   phone?: string;
   paymentId?: string;
 }

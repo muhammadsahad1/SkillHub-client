@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -39,8 +40,7 @@ export default function CommentBox({ postId, onClose }: CommentBoxProps) {
           postId,
           comment,
         });
-        console.log("res =>", result.comment.postOwnerId, result);
-
+        
         if (result.success) {
           socket?.emit("comment", {
             senderId: user.id,

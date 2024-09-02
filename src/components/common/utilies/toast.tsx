@@ -13,7 +13,7 @@ const showToastSuccess = (message: string) => {
   });
 };
 
-const showToastError = (message: string) => {
+const showToastError = (message: string ) => {
   toast.error(message, {
     duration: 4000, // Duration in milliseconds
     style: {

@@ -66,8 +66,6 @@ export const eventValidation = (
   time: string,
   duration: string,
   speaker: string,
-  // registrationLink: string,
-  // accessLink: string,
   bannerFile: File | null,
   price: number,
   currency: string,
@@ -76,7 +74,6 @@ export const eventValidation = (
   const today = new Date().toISOString().split("T")[0];
 
   const nameRegex = /^[A-Za-z\s\-']+$/;
-  const urlRegex = /^(ftp|http|https):\/\/[^\s/$.?#].[^\s]*$/i;
   const wordCountRegex = /\b\w+\b/g;
   const currencyRegex = /^[A-Z]{3}$/; // Basic check for currency code format (e.g., USD, EUR)
 
@@ -141,25 +138,14 @@ export const eventValidation = (
     errors.currency = "Currency must be a valid 3-letter currency code (e.g., USD, EUR).";
   }
 
-  // URL Validation
-  // if (registrationLink && !urlRegex.test(registrationLink)) {
-  //   errors.registrationLink = "Registration Link must be a valid URL.";
-  // }
-
-  // // Access link validation
-  // if (!accessLink || !urlRegex.test(accessLink)) {
-  //   errors.accessLink = "Access Link must be a valid URL.";
-  // }
-
-  // Banner file validation
+  // Banner file validation (Optional)
   if (bannerFile) {
     const allowTypes = ["image/jpeg", "image/png", "image/gif"];
     if (!allowTypes.includes(bannerFile.type)) {
       errors.banner = "Banner file must be an image (JPEG, PNG, GIF).";
     }
-  } else {
-    errors.banner = "Banner file is required.";
   }
 
   return errors;
 };
+

@@ -22,8 +22,6 @@ const useUploadPost = () => {
   const queryClient = useQueryClient();
   return useMutation(uploadPost, {
     onSuccess: (data) => {
-      console.log("data ====>", data);
-
       queryClient.invalidateQueries("feed");
       queryClient.invalidateQueries("posts");
       console.log("data after uploaded post ==>", data);
@@ -107,11 +105,6 @@ const useAddComment = () => {
   const queryClient = useQueryClient();
   return useMutation(addComment, {
     onSuccess: (data) => {
-      console.log("Data after commenting ===>", data);
-
-      // Verify the actual structure of the data object
-      console.log("Success field:", data.success);
-
       if (data.success) {
         // Validating the queries related to the specific post
         queryClient.invalidateQueries(["posts"]);

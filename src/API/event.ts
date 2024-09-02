@@ -14,7 +14,7 @@ export const createEvent = async (eventData: FormData) => {
   try {
     logFormData(eventData);
     console.log("called");
-    
+
     const response = await Api.post(userRoutes.createEvent, eventData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -72,7 +72,7 @@ export const fetchEventDetails = async (eventId: string | undefined) => {
 //   try {
 //     const response = await Api.get(userRoutes.)
 //   } catch (error) {
-    
+
 //   }
 // }
 
@@ -80,36 +80,84 @@ export const fetchEventDetails = async (eventId: string | undefined) => {
 //   try {
 //     const response = await Api.get(userRoutes.joinLink, {});
 //     console.log("response llink ==>",response.data);
-    
+
 //     return response.data.joinLink;
 //   } catch (error) {}
 // };
 
 export const registerEvent = async (registerData: IEventRegister) => {
   try {
-    console.log('Register Data Sent:', registerData);
-
-    const result = await Api.post(userRoutes.eventRegister, {registerData});
-    console.log('Response from API:', result);
+    const result = await Api.post(userRoutes.eventRegister, { registerData });
+    console.log("Response from API:", result);
 
     return result.data;
-  } catch (error) {
-    console.log(error)
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
   }
-
-
 };
 
-  // for event meeting
-  export const getMettingEvent = async (eventId : string) => {
-    try {
-      console.log("called eventGet");
-      
-      const response = await Api.get(userRoutes.joinMeeting,{
-        params : { eventId }
-      })
-      return response.data
-    } catch (error : any) {
-      console.log("errro",error.message)
+// payment registration
+export const makePayment = async (
+  eventPrice: string | undefined,
+  eventId: string | undefined,
+  userId: string | undefined
+) => {
+  try {
+    const response = await Api.post(userRoutes.makePayment, {
+      eventPrice,
+      eventId,
+      userId,
+    });
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
     }
-  } 
+  }
+};
+
+// for event meeting
+export const getMettingEvent = async (eventId: string) => {
+  try {
+    const response = await Api.get(userRoutes.joinMeeting, {
+      params: { eventId },
+    });
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+export const changeStatusEvent = async (eventId: string, status: string) => {
+  try {
+    const response = await Api.post(userRoutes.changeStatus, {
+      eventId,
+      status,
+    });
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
