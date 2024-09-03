@@ -20,7 +20,6 @@ export const createEvent = async (eventData: FormData) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(response.data);
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -68,22 +67,6 @@ export const fetchEventDetails = async (eventId: string | undefined) => {
   }
 };
 
-// export const getToken = async () => {
-//   try {
-//     const response = await Api.get(userRoutes.)
-//   } catch (error) {
-
-//   }
-// }
-
-// export const getJoinLink = async (date :string,time: string) => {
-//   try {
-//     const response = await Api.get(userRoutes.joinLink, {});
-//     console.log("response llink ==>",response.data);
-
-//     return response.data.joinLink;
-//   } catch (error) {}
-// };
 
 export const registerEvent = async (registerData: IEventRegister) => {
   try {

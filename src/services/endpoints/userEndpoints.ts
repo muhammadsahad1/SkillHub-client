@@ -62,16 +62,19 @@ const userRoutes = {
   createEvent: "/user/createEvent",
   listEvents: "/user/getEvents",
   event: "/user/eventDetails",
-  joinLink : "/user/joinLink",
-  eventRegister :"/user/eventRegister",
-  makePayment : "/user/create-checkout-session",
-  getToken : "/user/generateToken",
-  joinMeeting :'/user/joinMeeting',
-  updateEvent : '/user/updateEvent',
-  changeStatus : "/user/changeStatus",
+  joinLink: "/user/joinLink",
+  eventRegister: "/user/eventRegister",
+  makePayment: "/user/create-checkout-session",
+  getToken: "/user/generateToken",
+  joinMeeting: "/user/joinMeeting",
+  updateEvent: "/user/updateEvent",
+  changeStatus: "/user/changeStatus",
 
   //groups
-  createGroup : "/user/createGroup",
+  createGroup: "/user/createGroup",
+  getGroups: "/user/groups",
+  joinGroup : "/user/joinGroup",
+  getGroup : "/user/group",
 
   logout: "/user/logout",
 };

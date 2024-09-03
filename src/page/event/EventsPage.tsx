@@ -4,7 +4,7 @@ import NavBar from '../../components/common/navBar'
 
 const EventsPage = () => {
   return (
-    <div>
+    <div className='bg-zinc-100 m-0'>
       <NavBar/>
       <EventsLists />
     </div>

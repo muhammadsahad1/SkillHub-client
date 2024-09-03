@@ -29,7 +29,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     };
   }, []);
 
-  
   if (!connected) {
     console.log("not connecteddd run");
     

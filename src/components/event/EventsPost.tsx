@@ -29,35 +29,35 @@ const EventPost = ({ event, fetchEvent }: any) => {
     try {
       const dateOnly = event.date.split("T")[0];
       const dateTimeString = `${dateOnly}T${event.time}`;
-  
+
       const eventDateTime = new Date(dateTimeString);
       const currentTime = new Date();
       const endTime = new Date(
         eventDateTime.getTime() + event.duration * 60000
       );
-  
+
       if (currentTime >= endTime) {
         // Event has ended
         handleEventStateUpdate("Completed");
       } else if (currentTime >= eventDateTime) {
         // Event is ongoing
         handleEventStateUpdate("Ongoing");
-  
+
         // Schedule status update to "Completed" when the event duration ends
         const endTimerId = setTimeout(() => {
           handleEventStateUpdate("Completed");
         }, endTime.getTime() - currentTime.getTime());
-  
+
         return () => clearTimeout(endTimerId);
       } else {
         // Event is upcoming
         handleEventStateUpdate("Upcoming");
-  
+
         // Schedule status update to "Ongoing" when the event starts
         const timerId = setTimeout(() => {
           handleEventStateUpdate("Ongoing");
         }, eventDateTime.getTime() - currentTime.getTime());
-  
+
         return () => clearTimeout(timerId);
       }
     } catch (error) {
@@ -252,16 +252,15 @@ const EventPost = ({ event, fetchEvent }: any) => {
               Ongoing
             </motion.div>
           ) : event.eventStatus === "Completed" ? (
-              <p className="font-bold">Completed</p>
+            <p className="font-bold">Completed</p>
           ) : (
             <button
-            className="text-sm text-white bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded transition duration-300"
-            onClick={handleNavigate}
-          >
-            Register Here
-          </button>
+              className="text-sm text-white bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded transition duration-300"
+              onClick={handleNavigate}
+            >
+              Register Here
+            </button>
           )}
-      
         </div>
       </div>
       {isEditEventModalOpen && (

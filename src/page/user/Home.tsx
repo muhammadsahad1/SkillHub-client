@@ -11,7 +11,7 @@ const Home: React.FC = () => {
   const currentUser = useGetUser();
 
   return (
-    <div className="flex min-h-screen justify-center">
+    <div className="flex min-h-screen justify-center font-poppins bg-zinc-100">
       <NavBar />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -24,7 +24,7 @@ const Home: React.FC = () => {
             <h1 className="text-zinc-950 text-4xl sm:text-5xl font-bold text-center mb-4">
               Empower Your Skills, Connect with Experts
             </h1>
-            <div className="w-full">
+            <div className="w-full font">
               <DisplayPostCard />
               <hr className="mt-8 border-zinc-400" />
               <UsersRelatedSkill />

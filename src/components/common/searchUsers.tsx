@@ -27,7 +27,7 @@ const SearchUsers = () => {
       setLoading(false);
     }
   };
-
+  // searching function
   const handleSearchInput = debounce(
     (e: React.SyntheticEvent, value: string) => {
       if (value) {
@@ -41,7 +41,6 @@ const SearchUsers = () => {
 
   // navigate to view profile
   const handleNavigation = (option: string[]) => {
-
     navigate(`/auth/OtherProfileView/${option._id}`, {
       state: {
         profileImageUrl: option?.profileImageUrl,
@@ -55,10 +54,9 @@ const SearchUsers = () => {
       sx={{
         marginLeft: 4,
         border: 2,
-        
         borderColor: "gray",
         borderRadius: 50,
-        width: 300,
+        width: 230,
         backgroundColor: "#fff",
       }}
     >
@@ -96,10 +94,13 @@ const SearchUsers = () => {
                 justifyContent: "center",
               }}
             >
-              <Typography variant="subtitle1" component="div" color="text.primary">
+              <Typography
+                variant="subtitle1"
+                component="div"
+                color="text.primary"
+              >
                 {option.name}
               </Typography>
-              
             </Box>
           </Box>
         )}

@@ -16,7 +16,7 @@ const OutlinedCard: React.FC = () => {
   const [thoughts, setThoughts] = useState<string | null>(null);
   const [isEventModalOpen, setEventModalOpen] = useState<boolean>(false);
   const [isThoughts, setIsThoughts] = useState<boolean>(false);
-  
+
   const currentUser = useGetUser();
 
   const openModal = () => {
@@ -54,7 +54,7 @@ const OutlinedCard: React.FC = () => {
 
   // for handle the event modal
   const handleEventModal = () => setEventModalOpen(true);
-  const handleCloseEventModal = () => setEventModalOpen(false)
+  const handleCloseEventModal = () => setEventModalOpen(false);
 
   return (
     <Box
@@ -136,7 +136,9 @@ const OutlinedCard: React.FC = () => {
         </CardActions>
       </Card>
       <PostSpringModal isOpen={isOpen} onClose={closeModal} />
-      {isEventModalOpen && <EventModal isOpen={isEventModalOpen} onClose={handleCloseEventModal}/>}
+      {isEventModalOpen && (
+        <EventModal isOpen={isEventModalOpen} onClose={handleCloseEventModal} />
+      )}
     </Box>
   );
 };

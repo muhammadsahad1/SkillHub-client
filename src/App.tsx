@@ -10,7 +10,10 @@ import { SocketProvider } from "./contexts/SocketContext";
 import NotificationHandler from "./components/notification/NotificationHandler";
 import { Routes, Route, useRoutes } from "react-router-dom";
 import routes from "./routes/AllRoutes/allRoutes.tsx";
-import { useVideoCall, VideoCallProvider } from "./contexts/VideoCallContext.tsx";
+import {
+  useVideoCall,
+  VideoCallProvider,
+} from "./contexts/VideoCallContext.tsx";
 import VideoCallComponent from "./components/videoCall/VideoCallComponent.tsx";
 
 const theme = createTheme();
@@ -27,16 +30,14 @@ function App() {
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <GoogleOAuthProvider clientId={clientId}>
-
-                <SocketProvider>
-                  <VideoCallProvider>
+              <SocketProvider>
+                <VideoCallProvider>
                   <NotificationHandler />
                   {routing}
                   <Toaster />
-                  <ConditionalVideoCallComponent/>
-                  </VideoCallProvider>
-                </SocketProvider>
-            
+                  <ConditionalVideoCallComponent />
+                </VideoCallProvider>
+              </SocketProvider>
             </GoogleOAuthProvider>
           </PersistGate>
         </Provider>
@@ -46,12 +47,11 @@ function App() {
 }
 
 const ConditionalVideoCallComponent = () => {
-  const { isCallRequested , isCallAccepted} = useVideoCall()
-  if(isCallRequested || isCallAccepted){
-    return <VideoCallComponent/>
+  const { isCallRequested, isCallAccepted } = useVideoCall();
+  if (isCallRequested || isCallAccepted) {
+    return <VideoCallComponent />;
   }
-  return null
-} 
-
+  return null;
+};
 
 export default App;

@@ -87,7 +87,7 @@ const NavBar: React.FC = () => {
 
   return (
     <nav className="bg-zinc-100 shadow-lg fixed w-full right-0 z-50 top-0 left-0">
-      <div className="container mx-auto flex justify-between items-center px-4 py-4">
+      <div className="container mx-auto flex justify-between items-center px-4 py-4 font-poppins" >
         <div className="flex justify-start items-center space-x-4">
           <img className="w-20 h-12" src={skill} alt="Skill Logo" />
           <div className="hidden md:block">
@@ -103,8 +103,11 @@ const NavBar: React.FC = () => {
           <Link to="/" className="text-zinc-900 font-bold hover:text-gray-600">
             Home
           </Link>
-          <Link to="/auth/events" className="text-gray-800 font-bold hover:text-gray-600">
+          <Link to="/auth/events" className="text-zinc-900 font-bold hover:text-gray-600">
             Explore
+          </Link>
+          <Link to="/auth/groups" className="text-zinc-900 font-bold hover:text-gray-600">
+            Groups
           </Link>
           <Link to="/auth/chat">
             <TbMessageDots size={32} className="cursor-pointer" />
@@ -196,8 +199,11 @@ const NavBar: React.FC = () => {
           <Link to="/" className="text-zinc-900 font-bold hover:text-gray-600">
             Home
           </Link>
-          <Link to="/auth/events" className="text-gray-800 font-bold hover:text-gray-600">
+          <Link to="/auth/events" className="text-zinc-900 font-bold hover:text-gray-600">
             Explore
+          </Link>
+          <Link to="/auth/groups" className="text-zinc-900 font-bold hover:text-gray-600">
+            Groups
           </Link>
           <Link to="/auth/chat">
             <TbMessageDots size={32} className="cursor-pointer" />

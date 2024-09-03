@@ -21,7 +21,7 @@ const EventsLists = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 mt-32 ">
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">
+      <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center font-poppins">
         Upcoming Events
       </h1>
       <p className="text-lg text-gray-600 mb-12 text-center">
