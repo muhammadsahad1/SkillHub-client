@@ -6,6 +6,8 @@ const adminRoutes = {
   updateRequestStatus : 'admin/changeVerifyStatus',
   getEvents : "admin/events",
   updateEventStatus: 'admin/changeEventsStatus',
+  getReports :'admin/reports',
+  reportAction : "admin/action",
   logout : 'admin/logout'
 }
 

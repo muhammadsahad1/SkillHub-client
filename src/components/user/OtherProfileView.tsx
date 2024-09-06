@@ -250,7 +250,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                         City:
                       </p>
                       <p className="text-gray-800 font-poppins">
-                        {userDetails.city}
+                        {userDetails.states}
                       </p>
                     </div>
                   </div>

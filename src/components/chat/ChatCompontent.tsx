@@ -81,8 +81,6 @@ const ChatComponent = ({ onNewMessage }: OnNewMessage) => {
   useEffect(() => {
     if (socket) {
       const handleReceiveMessage = (data: any) => {
-        console.log();
-
         if (data.receiverId === userId || data.senderId === userId) {
           setChat((prevChat: any) => [...prevChat, data]);
           onNewMessage();
@@ -96,7 +94,6 @@ const ChatComponent = ({ onNewMessage }: OnNewMessage) => {
     }
   }, [socket, userId, onNewMessage]);
 
-
   // fetch the chat history
   const fetchChat = async () => {
     try {
@@ -105,7 +102,6 @@ const ChatComponent = ({ onNewMessage }: OnNewMessage) => {
           sender.id as string,
           userId as string
         );
-        console.log("userCHat ==>", userChat);
 
         setUser(userChat?.userWithProfileImage);
         setChat(userChat?.messages || []);
@@ -273,7 +269,6 @@ const ChatComponent = ({ onNewMessage }: OnNewMessage) => {
       onNewMessage();
     } catch (error) {}
   };
-
 
   return (
     <Box

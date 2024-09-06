@@ -157,7 +157,8 @@ const SideBar = forwardRef<SideBarHandle>((props, ref) => {
         boxShadow: "0px 0px 1px rgba(0,0,0,0.05)",
         display: "flex",
         flexDirection: "column",
-      }}>
+      }}
+    >
       <Stack padding={3}>
         <Stack direction="row" alignItems="center" marginBottom={3}>
           <Typography
@@ -297,7 +298,9 @@ const SideBar = forwardRef<SideBarHandle>((props, ref) => {
                       <Badge
                         color="primary"
                         variant="dot"
-                        invisible={  person.isRead && sender.id !== person.user._id } // Hide badge if message is read
+                        invisible={
+                          person.isRead && sender.id !== person.user._id
+                        } // Hide badge if message is read
                       ></Badge>
                       <ListItemAvatar>
                         <Avatar

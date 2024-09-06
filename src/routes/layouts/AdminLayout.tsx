@@ -6,7 +6,8 @@ import useGetUser from "../../hook/getUser";
 // for adminprotect layout routes
 const AdminLayout: React.FC = () => {
   const currentAdmin: User | null = useGetUser();
-  if (currentAdmin && currentAdmin?.id) {
+  console.log("ADMIN", currentAdmin);
+  if (currentAdmin) {
     return <Outlet />;
   } else {
     return <Navigate to="/admin/login" />;

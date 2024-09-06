@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { fetchGroups, joinGroup } from "../../API/group";
 import { IGroup } from "../../@types/groupType";
-import { UserPlus } from "lucide-react";
+import { Eye, MessageCircle, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useGetUser from "../../hook/getUser";
 
@@ -12,19 +12,16 @@ interface props {
 
 const GroupLists: React.FC<props> = ({ isCreated }) => {
   const [groups, setGroups] = useState<IGroup[] | []>([]);
-  const [isJoined, setIsJoin] = useState<boolean>(false);
+  const [loadingGroupId, setLoadingGroupId] = useState<string | null>(null);
   const navigate = useNavigate();
   const currentUser = useGetUser();
 
   const fetchGroupsLists = async () => {
     try {
       const result = await fetchGroups();
+      console.log(result)
       if (result.success) {
         setGroups(result.result);
-        if (result.result.members.includes(currentUser.id)) {
-          console.log("joined ahn")
-          setIsJoin(true);
-        }
       } else {
         showToastError("Failed to fetch groups");
       }
@@ -33,23 +30,26 @@ const GroupLists: React.FC<props> = ({ isCreated }) => {
     }
   };
 
-  const handleViewGroup = (groupId: string) => {
-    try {
-      navigate(`/auth/group/${groupId}`);
-    } catch (error) {}
+  const handleViewGroupChat = (groupId: string) => {
+    navigate(`/auth/groupChat/${groupId}`);
   };
 
-  const handleJoinGroup = async (groupId: string) => {
+  const handleJoinGroup = async (groupId: string, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevents triggering the parent div's onClick
+    setLoadingGroupId(groupId); // Set loading state for the current group
     try {
       const result = await joinGroup(groupId);
-      console.log(result);
       if (result.success) {
         showToastSuccess(result.message);
         fetchGroupsLists();
       } else {
         showToastError(result.message);
       }
-    } catch (error) {}
+    } catch (error) {
+      showToastError("Failed to join group");
+    } finally {
+      setLoadingGroupId(null); // Reset loading state
+    }
   };
 
   useEffect(() => {
@@ -61,12 +61,12 @@ const GroupLists: React.FC<props> = ({ isCreated }) => {
       {groups.length === 0 ? (
         <div className="text-center py-4">No groups available</div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-4 cursor-pointer ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-4 cursor-pointer">
           {groups.map((group: IGroup) => (
             <div
               key={group._id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 w-56 h-[300px] flex flex-col "
-              onClick={() => handleViewGroup(group._id)}
+              className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 w-56 h-[300px] flex flex-col"
+              onClick={() => handleViewGroupChat(group._id)}
             >
               <img
                 src={group.groupImageUrl || "/api/placeholder/300/200"}
@@ -82,16 +82,67 @@ const GroupLists: React.FC<props> = ({ isCreated }) => {
                     {group.description}
                   </p>
                 </div>
-                <div className=" flex justify-center">
-                  <button className="bg-zinc-950 rounded-full w-32 text-white font-semibold py-1 px-2 hover:bg-zinc-900 transition duration-300 ease-in-out flex items-center justify-center mt-4">
-                    <UserPlus size={15} className="mr-2 " />
-                    <span
-                      className="text-sm"
-                      onClick={() => handleJoinGroup(group._id)}
+                <div className="flex justify-center">
+            
+                  {group.members.some(member => member?.userId === currentUser.id )? (
+                    <button 
+                      className="bg-zinc-100 rounded-full w-32 text-black font-semibold py-1 px-2 hover:bg-zinc-200 transition duration-300 ease-in-out flex items-center justify-center mt-4"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleViewGroupChat(group._id);
+                      }}
                     >
-                      Join Group
-                    </span>
-                  </button>
+                      <MessageCircle size={15} className="mr-2" />
+                      <span className="text-sm">Open Chat</span>
+                    </button>
+
+// members: [
+//   {
+//     isOnline: false,
+//     _id: new ObjectId('66d84efb39271db4e2e8bb49'),
+//     buffer: <Buffer 66 b7 7e 5f 54 ba 21 5c 82 85 31 1a>
+//   },
+//   { isOnline: false, _id: new ObjectId('66d84edb21ff3338a1069b13') },
+//   { isOnline: false, _id: new ObjectId('66d84ee621ff3338a1069b9e') }
+// ],
+
+                  ) : (
+                    <button
+                      className="bg-zinc-950 rounded-full w-32 text-white font-semibold py-1 px-2 hover:bg-zinc-900 transition duration-300 ease-in-out flex items-center justify-center mt-4"
+                      onClick={(event) => handleJoinGroup(group._id, event)}
+                      disabled={loadingGroupId === group._id}
+                    >
+                      {loadingGroupId === group._id ? (
+                        <svg
+                          className="animate-spin h-5 w-5 mr-2 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zM12 24c-4.627 0-8-3.373-8-8h-4c0 6.627 5.373 12 12 12v-4z"
+                          ></path>
+                        </svg>
+                      ) : (
+                        <UserPlus size={15} className="mr-2" />
+                      )}
+                      <span className="text-sm">
+                        {loadingGroupId === group._id
+                          ? "Joining..."
+                          : "Join Group"}
+                      </span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

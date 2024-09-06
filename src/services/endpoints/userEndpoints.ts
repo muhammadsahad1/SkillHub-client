@@ -46,6 +46,7 @@ const userRoutes = {
   editComment: "/user/editComment",
   viewPost: "/user/viewPost",
   thoughtPost: "/user/postThoughts",
+  reportPost : "/user/report",
 
   // Conversations
   getChatUsers: "/user/getChat",
@@ -75,6 +76,9 @@ const userRoutes = {
   getGroups: "/user/groups",
   joinGroup : "/user/joinGroup",
   getGroup : "/user/group",
+  sendMessage :"/user/sendGroupMessage",
+  getChatMessages :"/user/messages",
+  updateStatus : "/user/status",
 
   logout: "/user/logout",
 };

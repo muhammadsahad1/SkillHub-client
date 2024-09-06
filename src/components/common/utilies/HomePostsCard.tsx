@@ -30,7 +30,7 @@ import {
   usePostLike,
   useViewPost,
 } from "../../../hook/usePosts";
-import { showToastError } from "./toast";
+import { showToastError, showToastSuccess } from "./toast";
 import { Link, useNavigate } from "react-router-dom";
 import CommentBox from "./CommentBox";
 import PopUpModal from "./Modal";
@@ -38,6 +38,8 @@ import { useQueryClient } from "react-query";
 import { useSocket } from "../../../hook/useSocket";
 import { useNotifyUser } from "../../../hook/useNotifyUser";
 import { LuBadgeCheck } from "react-icons/lu";
+import { IPost } from "../../../@types/postType";
+import { reportPost } from "../../../API/group";
 
 const ActionButton = styled(Button)(({ theme }) => ({
   color: theme.palette.grey[400],
@@ -60,7 +62,11 @@ const formatDate = (dateString: string) => {
   }).format(date);
 };
 
-const HomePostCard = ({ post }: any) => {
+interface HomePostCardProps {
+  post: IPost; // Accept post as an object
+}
+
+const HomePostCard = ({ post }: HomePostCardProps) => {
   console.log("post ==>", post);
   const user = useGetUser();
   const navigate = useNavigate();
@@ -70,7 +76,8 @@ const HomePostCard = ({ post }: any) => {
   const { mutate: postLike } = usePostLike();
   const { mutate: editComment } = useEditComment();
   const { mutate: deleteComment } = useDeleteComment();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<boolean | HTMLElement | null>(false);
+  const [anchorE2, setAnchorE2] = useState<boolean | HTMLElement | null>(false);
   const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [editedCaption, setEditedCaption] = useState<string>("");
   const [isLiked, setLiked] = useState<boolean>(false);
@@ -92,6 +99,8 @@ const HomePostCard = ({ post }: any) => {
     text: string;
   } | null>(null);
 
+  const [isReportModelOpen, setReportModelOpen] = useState<boolean>(false);
+
   const isCommentMenuOpen = Boolean(commentAnchorEl);
   const queryClient = useQueryClient();
 
@@ -105,8 +114,16 @@ const HomePostCard = ({ post }: any) => {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleOtherPostMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorE2(event.currentTarget);
+  };
+
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleMenuClose2 = () => {
+    setAnchorE2(null);
   };
 
   const handleDelete = async () => {
@@ -211,8 +228,6 @@ const HomePostCard = ({ post }: any) => {
 
   const handleEditComment = async () => {
     if (commentBeingEdited) {
-      console.log("id ==>", commentBeingEdited.id);
-
       try {
         editComment({
           commentId: commentBeingEdited.id,
@@ -247,6 +262,30 @@ const HomePostCard = ({ post }: any) => {
   // for view the one post
   const handlePostDetaileView = async () => {
     navigate(`/auth/post/${post._id}`);
+  };
+
+  // report post
+  const handleRepostModal = () => {
+    setReportModelOpen(true);
+    setAnchorE2(false);
+  };
+
+  const handleReportModelClose = () => {
+    setReportModelOpen(false);
+  };
+
+  const handlePostReport = async (reason: string | undefined) => {
+    try {
+      console.log("resong ===?",reason)
+      const result = await reportPost(post._id as string, reason as string);
+      if(result.success){
+        showToastSuccess(result.message)
+        setReportModelOpen(false);
+      }else{
+        showToastError(result.message)
+      }
+      setReportModelOpen(false);
+    } catch (error) {}
   };
 
   return (
@@ -289,7 +328,11 @@ const HomePostCard = ({ post }: any) => {
             <IconButton onClick={handleMenuClick}>
               <MoreVertIcon />
             </IconButton>
-          ) : null
+          ) : (
+            <IconButton onClick={handleOtherPostMenu}>
+              <MoreVertIcon />
+            </IconButton>
+          )
         }
       />
       <CardContent
@@ -549,6 +592,15 @@ const HomePostCard = ({ post }: any) => {
       </Modal>
 
       {/* Post Options Menu */}
+
+      <Menu
+        anchorEl={anchorE2}
+        open={Boolean(anchorE2)}
+        onClose={handleMenuClose2}
+      >
+        <MenuItem onClick={handleRepostModal}>Report</MenuItem>
+      </Menu>
+
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -564,8 +616,16 @@ const HomePostCard = ({ post }: any) => {
         isOpen={isDeleteModalOpen}
         isClose={closeDeleteModal}
         onConfirm={handleDelete}
-        title="Are you sure you want to delete this post?"
-        content={""}
+        title="Are you sure you want to delete this post ?"
+        content={"Delete Post"}
+      />
+
+      <PopUpModal
+        isOpen={isReportModelOpen}
+        isClose={handleReportModelClose}
+        onConfirm={handlePostReport}
+        title="Are you sure you want to report this post ?"
+        content={"Report Post"}
       />
     </Card>
   );

@@ -104,7 +104,41 @@ export const changeEventStatus = async (requestId: string, action: string) => {
       requestId,
       action,
     });
-    return response.data
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+export const getReports = async () => {
+  try {
+    console.log("callledd getReq");
+    const response = await Api.get(adminRoutes.getReports);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};
+
+export const changeReportStatus = async (reportId: string, status: string) => {
+  try {
+    const response = await Api.post(adminRoutes.reportAction, {
+      reportId,
+      status,
+    });
+    return response.data;
   } catch (error: any) {
     if (error.response) {
       return error.response.data;

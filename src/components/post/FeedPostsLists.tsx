@@ -2,6 +2,7 @@ import React from "react";
 import { useGetPosts } from "../../hook/usePosts";
 import { Box, CircularProgress, Skeleton, Typography } from "@mui/material";
 import HomePostCard from "../common/utilies/HomePostsCard";
+import { IPost } from "../../@types/postType";
 
 const FeedPostsLists = () => {
   const { data, isLoading, error } = useGetPosts();
@@ -27,7 +28,7 @@ const FeedPostsLists = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      {data.posts.map((post: any) => (
+      {data.posts.map((post: IPost) => (
         <HomePostCard key={post._id} post={post} />
       ))}
     </Box>
