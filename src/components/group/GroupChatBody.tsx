@@ -3,11 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   fetchGroupMessages,
   fetchSelectedGroup,
+  leaveGroup,
   sendGroupChat,
   updateOnlineStatus,
 } from "../../API/group";
 import { IGroup } from "../../@types/groupType";
-import { showToastError } from "../common/utilies/toast";
+import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { Send, Info } from "lucide-react";
 import useGetUser from "../../hook/getUser";
 import { IMember } from "../../@types/membersType";
@@ -127,7 +128,6 @@ const GroupChatBody: React.FC = () => {
       console.log("keriyaa");
 
       socket.on("receiveGroupMessage", (message) => {
-        console.log("messageres ==>", message);
         setMessages((prevMessage) => [...prevMessage, message]);
       });
 
@@ -137,43 +137,6 @@ const GroupChatBody: React.FC = () => {
     }
   }, [socket]);
   console.log("groupSkills", groupSkills);
-
-  // Handle online status and visibility change
-  useEffect(() => {
-    if (socket) {
-      socket.emit("joinGroup", {
-        senderId: logedUser.id,
-        groupId: groupId,
-      });
-
-      const handleVisibilityChange = () => {
-        if (document.hidden) {
-          updateOnline(false); // Mark offline when the user navigates away
-        } else {
-          updateOnline(true); // Mark online when user comes back
-        }
-      };
-
-      const handleBeforeUnload = () => {
-        updateOnline(false); // Mark offline on page unload
-      };
-
-      // Add event listeners for visibility change and before unload
-      document.addEventListener("visibilitychange", handleVisibilityChange);
-      window.addEventListener("beforeunload", handleBeforeUnload);
-
-      return () => {
-        document.removeEventListener(
-          "visibilitychange",
-          handleVisibilityChange
-        );
-        window.removeEventListener("beforeunload", handleBeforeUnload);
-
-        socket.emit("leaveGroup", { senderId: logedUser.id, groupId: groupId });
-        updateOnline(false); // Mark offline on component unmount
-      };
-    }
-  }, [socket, groupId, logedUser.id]);
 
   useEffect(() => {
     if (lastMessageRef.current) {
@@ -187,6 +150,20 @@ const GroupChatBody: React.FC = () => {
       member.userName.toLowerCase().includes(value.toLowerCase())
     );
     setFilterGroupUsers(filtered as IMember[]);
+  };
+
+  const handleLeaveGroup = async (userId: string) => {
+    try {
+      setLoading(true);
+      const result = await leaveGroup(userId, group?._id);
+      if (result.success) {
+        navigate("/auth/groups");
+        showToastSuccess("Leave group successfully");
+      } else {
+        showToastError("failed to leave the group");
+      }
+      setLoading(false);
+    } catch (error) {}
   };
 
   if (loading) {
@@ -203,16 +180,13 @@ const GroupChatBody: React.FC = () => {
       <div className="w-72 bg-white border-r border-gray-200 flex-none hidden md:flex flex-col">
         <div className="p-4 border-b border-gray-200">
           <div className="flex justify-between">
-          <h2 className="text-xl font-semibold text-gray-800">
-            {group?.groupName}
-          </h2>
-            <button className="text-sm font-poppins rounded-full bg-zinc-900 hover:bg-zinc-800 text-zinc-100 p-2">
-              view members
-            </button>
+            <h2 className="text-xl font-semibold text-gray-800">
+              {group?.groupName}
+            </h2>
           </div>
-            <p className="text-sm text-gray-600">
-              {group?.members.length} members
-            </p>
+          <p className="text-sm text-gray-600">
+            {group?.members.length} members
+          </p>
         </div>
         <input
           className="ms-5 mt-2 shadow-md p-2 rounded-full border-2 w-60"
@@ -265,9 +239,11 @@ const GroupChatBody: React.FC = () => {
             alt={group?.groupName || "Group"}
             className="w-14 h-14 object-cover rounded-full mr-3"
           />
+
           <h2 className="text-xl font-semibold text-gray-800">
             {group?.groupName}
           </h2>
+
           <button
             onClick={() => setShowInfo(!showInfo)}
             className="ml-auto text-gray-500 hover:text-gray-700"
@@ -275,7 +251,6 @@ const GroupChatBody: React.FC = () => {
             <Info size={24} />
           </button>
         </div>
-
         <div
           className="flex-1 overflow-y-auto p-4 space-y-4 bg-zinc-950"
           ref={chatContainerRef}
@@ -368,6 +343,14 @@ const GroupChatBody: React.FC = () => {
                 </span>
               ))}
             </div>
+
+            <button
+              onClick={() => handleLeaveGroup(logedUser.id as string)}
+              className="mt-6 text-sm  p-2 bg-zinc-900 rounded-full text-zinc-100"
+            >
+              {" "}
+              Leave group
+            </button>
           </div>
         </div>
       )}

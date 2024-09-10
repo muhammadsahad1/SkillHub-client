@@ -42,7 +42,7 @@ const Adminlogin = () => {
       if (response.success) {
         toast.success(response.message);
         dispatch(setUser(response.admin));
-        navigate('/admin/dashBoard')
+        navigate('/admin/dashboard')
       } else {
         toast.error(response?.message);
       }

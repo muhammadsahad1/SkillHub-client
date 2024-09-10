@@ -19,7 +19,7 @@ const GroupLists: React.FC<props> = ({ isCreated }) => {
   const fetchGroupsLists = async () => {
     try {
       const result = await fetchGroups();
-      console.log(result)
+      console.log(result);
       if (result.success) {
         setGroups(result.result);
       } else {
@@ -65,8 +65,7 @@ const GroupLists: React.FC<props> = ({ isCreated }) => {
           {groups.map((group: IGroup) => (
             <div
               key={group._id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 w-56 h-[300px] flex flex-col"
-              onClick={() => handleViewGroupChat(group._id)}
+              className="bg-white rounded-lg shadow-lg overflow-hidden  w-56 h-[300px] flex flex-col"
             >
               <img
                 src={group.groupImageUrl || "/api/placeholder/300/200"}
@@ -83,10 +82,11 @@ const GroupLists: React.FC<props> = ({ isCreated }) => {
                   </p>
                 </div>
                 <div className="flex justify-center">
-            
-                  {group.members.some(member => member?.userId === currentUser.id )? (
-                    <button 
-                      className="bg-zinc-100 rounded-full w-32 text-black font-semibold py-1 px-2 hover:bg-zinc-200 transition duration-300 ease-in-out flex items-center justify-center mt-4"
+                  {group.members.some(
+                    (member :any) => member?.userId  === currentUser.id
+                  ) ? (
+                    <button
+                      className="bg-zinc-100 rounded-full w-32 text-black font-semibold py-1 px-2 hover:bg-zinc-200 transition-transform duration-300 hover:scale-105 ease-in-out flex items-center justify-center mt-4"
                       onClick={(event) => {
                         event.stopPropagation();
                         handleViewGroupChat(group._id);
@@ -95,20 +95,9 @@ const GroupLists: React.FC<props> = ({ isCreated }) => {
                       <MessageCircle size={15} className="mr-2" />
                       <span className="text-sm">Open Chat</span>
                     </button>
-
-// members: [
-//   {
-//     isOnline: false,
-//     _id: new ObjectId('66d84efb39271db4e2e8bb49'),
-//     buffer: <Buffer 66 b7 7e 5f 54 ba 21 5c 82 85 31 1a>
-//   },
-//   { isOnline: false, _id: new ObjectId('66d84edb21ff3338a1069b13') },
-//   { isOnline: false, _id: new ObjectId('66d84ee621ff3338a1069b9e') }
-// ],
-
                   ) : (
                     <button
-                      className="bg-zinc-950 rounded-full w-32 text-white font-semibold py-1 px-2 hover:bg-zinc-900 transition duration-300 ease-in-out flex items-center justify-center mt-4"
+                      className="bg-zinc-950 rounded-full w-32 text-white font-semibold py-1 px-2 hover:bg-zinc-900 ease-in-out flex items-center justify-center mt-4 transition-transform duration-300 hover:scale-105"
                       onClick={(event) => handleJoinGroup(group._id, event)}
                       disabled={loadingGroupId === group._id}
                     >

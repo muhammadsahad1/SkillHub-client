@@ -17,10 +17,7 @@ export interface IuserSkillCardProps {
 const UsersRelatedSkill = () => {
   const currentUser = useGetUser();
   const currentUserSkill = currentUser.skill;
-  const [skillRelatedUsers, setSkillRelatedUsers] = useState<
-    any
-  >([]);
-
+  const [skillRelatedUsers, setSkillRelatedUsers] = useState<any>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const fetchSkillRelatedUsers = async () => {
@@ -45,13 +42,29 @@ const UsersRelatedSkill = () => {
 
   return (
     <div className="mt-5">
-      <p className="font-poppins font-semibold text-zinc-900">
-        Your Skill Network
-      </p>
+      {skillRelatedUsers.length > 0 && (
+        <p className="font-poppins font-semibold text-zinc-900">
+          Your Skill Network
+        </p>
+      )}
+
       {isLoading ? (
-        <SkeletonUsers/>
-      ) : (
+        <SkeletonUsers />
+      ) : skillRelatedUsers.length > 0 ? (
         <OutlinedCard users={skillRelatedUsers} />
+      ) : (
+        <div className="text-center mt-5">
+          <p className="text-zinc-700 font-medium">
+            No users found with the skill "{currentUserSkill}".
+          </p>
+          <p className="text-zinc-600 mt-2">
+            Connect with groups or search for users based on other skills.
+          </p>
+          {/* Optionally add a search or connect button */}
+          {/* <button className="bg-blue-500 text-white mt-4 px-4 py-2 rounded-md">
+          Search for Groups
+        </button> */}
+        </div>
       )}
     </div>
   );

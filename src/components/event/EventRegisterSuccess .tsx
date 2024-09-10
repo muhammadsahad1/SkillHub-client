@@ -32,7 +32,10 @@ const EventSuccessPage = () => {
             console.log("Registration success");
             navigate("/auth/events");
           } else {
-            console.log("Registration error:", result?.message || "Unknown error");
+            console.log(
+              "Registration error:",
+              result?.message || "Unknown error"
+            );
             // showToastError(result?.message || "Registration failed");
           }
         } catch (error: any) {

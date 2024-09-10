@@ -290,7 +290,7 @@ const NavBar: React.FC = () => {
         </div>
       )}
             {isNotificationsDropdownOpen && (
-        <div className="absolute top-50 right-4 w-80 z-50 max-h-96">
+        <div className="absolute top-50 right-4 w-80 z-1 max-h-96">
           <NotificationEntry onClose={toggleNotificationsDropdown} />
         </div>
       )}

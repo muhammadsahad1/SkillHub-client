@@ -167,3 +167,18 @@ export const reportPost = async (postId: string, reason: string) => {
     }
   }
 };
+
+export const leaveGroup = async (userId: string, groupId: string | undefined) => {
+  try {
+    const response = await Api.post(userRoutes.leaveGroup, { userId, groupId });
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+};

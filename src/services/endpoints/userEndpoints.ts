@@ -79,6 +79,7 @@ const userRoutes = {
   sendMessage :"/user/sendGroupMessage",
   getChatMessages :"/user/messages",
   updateStatus : "/user/status",
+  leaveGroup : "/user/leave",
 
   logout: "/user/logout",
 };

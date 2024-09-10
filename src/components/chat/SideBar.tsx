@@ -30,7 +30,11 @@ type SideBarHandle = {
   fetchChatUsers: () => Promise<void>;
 };
 
-const SideBar = forwardRef<SideBarHandle>((props, ref) => {
+type SideBarProps = {
+  onSelectUser: (userId: string) => void;
+};
+
+const SideBar = forwardRef<SideBarHandle, SideBarProps>((props, ref) => {
   const [chatUsers, setChatUsers] = useState<any[]>([]);
   const [searchVal, setSearchVal] = useState<string>("");
   const [filteredUser, setFilteredUser] = useState<any[]>([]);
@@ -126,6 +130,10 @@ const SideBar = forwardRef<SideBarHandle>((props, ref) => {
             user._id === conversationId ? { ...user, isRead: true } : user
           )
         );
+      }
+
+      if (props.onSelectUser) {
+        props.onSelectUser(receiverId);
       }
       // function to mark message as read
       await markMessageAsRead(conversationId);
@@ -278,9 +286,7 @@ const SideBar = forwardRef<SideBarHandle>((props, ref) => {
                           flexDirection: "column",
                           alignItems: "flex-end",
                         }}
-                      >
-                        {/* Optional time and unread badge */}
-                      </Box>
+                      ></Box>
                     </ListItem>
                   </Link>
                 ))

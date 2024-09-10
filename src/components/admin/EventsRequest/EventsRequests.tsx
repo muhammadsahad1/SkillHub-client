@@ -40,13 +40,11 @@ const EventsRequestsComponent = () => {
     }
   };
 
-  console.log(requests);
-
   return (
-    <div className="p-4 bg-gray-100">
+    <div className="p-4 bg-gray-100 ">
       <h1 className="text-2xl font-bold mb-4">Event Approval Requests</h1>
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="w-full">
+      <div className="bg-white rounded-lg shadow overflow-x-auto">
+        <table className="min-w-full">
           <thead>
             <tr className="bg-zinc-950">
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">

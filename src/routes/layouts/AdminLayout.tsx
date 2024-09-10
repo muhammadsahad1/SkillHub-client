@@ -7,11 +7,14 @@ import useGetUser from "../../hook/getUser";
 const AdminLayout: React.FC = () => {
   const currentAdmin: User | null = useGetUser();
   console.log("ADMIN", currentAdmin);
-  if (currentAdmin) {
+  if (!currentAdmin || !currentAdmin.email || !currentAdmin.id ) {
+    console.log("Navigating to admin login...");
+    return <Navigate to="/admin/login" replace={true} />;
+  }else{
+
     return <Outlet />;
-  } else {
-    return <Navigate to="/admin/login" />;
   }
+  
 };
 
 export default AdminLayout;

@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import EventEditModal from "./EventEditModal";
 import { motion } from "framer-motion";
 import { changeStatusEvent } from "../../API/event";
+import { eventAttendees } from "../../@types/eventAttend";
 
 const EventPost = ({ event, fetchEvent }: any) => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const EventPost = ({ event, fetchEvent }: any) => {
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const [isEditEventModalOpen, setEditEventModalOpen] =
     useState<boolean>(false);
-  console.log("eventDuration =>", event.duration);
+  console.log("eventDuration =>", event);
 
   useEffect(() => {
     if (event && currentUser) {
@@ -85,9 +86,7 @@ const EventPost = ({ event, fetchEvent }: any) => {
     duration,
     category,
     eventStatus,
-    accessLink,
     createdBy,
-    agoraToken,
   } = event;
 
   const eventDate = new Date(date);
@@ -170,10 +169,10 @@ const EventPost = ({ event, fetchEvent }: any) => {
 
   return (
     <motion.div
-      className="flex flex-col lg:flex-row bg-white rounded-lg shadow-lg overflow-hidden mb-10 font-poppins transform transition duration-300 hover:shadow-xl max-w-4xl mx-auto"
+      className="flex flex-col lg:flex-row bg-zinc-100 rounded-lg shadow-lg overflow-hidden mb-10 font-poppins transform transition duration-300 hover:shadow-xl max-w-4xl mx-auto"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 8, y: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.9 }}
     >
       {bannerImageUrl && (
         <div className="lg:w-1/3 w-full">
@@ -193,7 +192,7 @@ const EventPost = ({ event, fetchEvent }: any) => {
             </div>
             <div className="font-semibold text-blue-600">{eventStatus}</div>
           </div>
-          {isCreatorAndProfessional && (
+          {isCreatorAndProfessional && event.eventStatus != "Completed" && (
             <div className="flex space-x-2">
               <button
                 className="text-sm text-white bg-blue-600 hover:bg-blue-700 py-1 px-3 rounded transition duration-300"
@@ -210,7 +209,7 @@ const EventPost = ({ event, fetchEvent }: any) => {
             </div>
           )}
 
-          {isRegistered && (
+          {isRegistered && event.eventStatus != "Completed" && (
             <div className="flex space-x-2">
               <button
                 className="text-sm text-white bg-blue-600 hover:bg-blue-700 py-1 px-3 rounded transition duration-300"
@@ -253,6 +252,10 @@ const EventPost = ({ event, fetchEvent }: any) => {
             </motion.div>
           ) : event.eventStatus === "Completed" ? (
             <p className="font-bold">Completed</p>
+          ) : event.attendees.some(
+              (obj: eventAttendees) => obj.userId === currentUser.id
+            ) ? (
+            <p className="font-bold"> Registered</p>
           ) : (
             <button
               className="text-sm text-white bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded transition duration-300"

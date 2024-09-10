@@ -1,9 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { IuserSkillCardProps } from "../user/UsersRelatedSkill";
 import noProfile from "../../assets/nonProfile.jpg";
@@ -35,23 +33,21 @@ const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }: any) => {
   }, []);
 
   return (
-    <Box sx={{ position: "relative", width: "100%", mt: 2, cursor: "pointer" }} >
-      <Box 
+    <Box sx={{ width: "100%", mt: 2, overflow: "hidden" }}>
+      <Box
         ref={scrollRef}
         sx={{
           display: "flex",
-          justifyContent: "center",
-          flexDirection: "row",
+          flexWrap: "nowrap",
+          overflowX: "auto",
           gap: { xs: 1, sm: 2 },
           p: { xs: 1, sm: 2 },
-          pl: { xs: 49, sm: 9 },
-          overflowX: "auto",
-          whiteSpace: "nowrap",
-          scrollbarWidth: "none", // For Firefox
+          scrollbarWidth: "none",
           "&::-webkit-scrollbar": {
-            display: "none", // For Chrome, Safari, and Opera
+            display: "none",
           },
-          scrollBehavior: "smooth", // Ensures smooth scrolling
+          scrollBehavior: "smooth",
+          "-webkit-overflow-scrolling": "touch",
         }}
       >
         {users.map((user: any) => (
@@ -59,13 +55,15 @@ const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }: any) => {
             key={user._id}
             variant="outlined"
             sx={{
-              width: { xs: 150, sm: 180 },
+              minWidth: { xs: 200, sm: 200, md: 200 },
+              maxWidth: { xs: 200, sm: 200, md: 200 },
               borderColor: "black",
               borderRadius: "16px",
+              cursor: "pointer",
               boxShadow: 3,
               transition: "transform 0.3s ease-in-out",
               "&:hover": {
-                transform: "scale(1.01)",
+                transform: "scale(1.05)",
                 boxShadow: 6,
               },
               flex: "0 0 auto",
@@ -79,24 +77,29 @@ const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }: any) => {
               })
             }
           >
-            <CardContent sx={{ padding: "0" }}>
+            <CardContent sx={{ padding: 0 }}>
               <img
                 src={user?.imageUrl || noProfile}
                 alt=""
-                className="w-full h-32 object-cover rounded-t-md"
+                style={{
+                  width: "100%",
+                  height: "120px",
+                  objectFit: "cover",
+                  borderTopLeftRadius: "16px",
+                  borderTopRightRadius: "16px",
+                }}
               />
-              <Typography sx={{ mb: 1, p: 1 }} color="text.secondary">
-                <span className="font-semibold">{user.name}</span>
-              </Typography>
-              <Typography variant="body2" sx={{ p: 1 }}>
-                <b>
-                  Skill: <span>{user.skill}</span>
-                </b>
-                <br />
-                <b>
-                  Country: <span>{user.country}</span>
-                </b>
-              </Typography>
+              <Box sx={{ p: 1 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                  {user.name}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Skill:</strong> {user.skill}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Country:</strong> {user.country}
+                </Typography>
+              </Box>
             </CardContent>
           </Card>
         ))}

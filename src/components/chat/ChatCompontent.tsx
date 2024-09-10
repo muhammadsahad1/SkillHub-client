@@ -33,6 +33,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Button } from "antd";
 import { showToastError } from "../common/utilies/toast";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 const formatTime = (dateString: string) => {
   const date = new Date(dateString);
@@ -55,9 +56,10 @@ const formatTime = (dateString: string) => {
 
 type OnNewMessage = {
   onNewMessage: () => Promise<void>;
+  handleBackClick : () => void
 };
 
-const ChatComponent = ({ onNewMessage }: OnNewMessage) => {
+const ChatComponent = ({ onNewMessage ,handleBackClick}: OnNewMessage) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [image, setImage] = useState<null | File>(null);
   const [prevModal, setPrevModal] = useState<boolean>(false);
@@ -87,7 +89,6 @@ const ChatComponent = ({ onNewMessage }: OnNewMessage) => {
         }
       };
       socket.on("receiveData", handleReceiveMessage);
-
       return () => {
         socket.off("receiveData", handleReceiveMessage);
       };
@@ -297,6 +298,7 @@ const ChatComponent = ({ onNewMessage }: OnNewMessage) => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
+          <IoMdArrowRoundBack className="me-4 size-5 cursor-pointer" onClick={handleBackClick}/>
           {user?.profileImageUrl ? (
             <Avatar
               src={user?.profileImageUrl}
@@ -363,7 +365,7 @@ const ChatComponent = ({ onNewMessage }: OnNewMessage) => {
           flexGrow: 1,
           overflowY: "auto",
           p: 2,
-          backgroundImage: `url(${bgWp})`,
+          background: "linear-gradient(to right, #6f6a6a , #feb47b)",
           backgroundSize: "cover",
           backgroundPosition: "end",
         }}

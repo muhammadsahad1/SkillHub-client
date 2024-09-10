@@ -1,4 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from "react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  useInfiniteQuery,
+} from "react-query";
 import {
   uploadPost,
   fetchFeed,
@@ -16,6 +21,7 @@ import {
   showToastError,
   showToastSuccess,
 } from "../components/common/utilies/toast";
+import { LastPage } from "@mui/icons-material";
 
 // Hook to upload a post and refetch the feed
 const useUploadPost = () => {
@@ -36,12 +42,20 @@ const useUploadPost = () => {
 // Hook to get posts
 const useGetPosts = () => {
   const user = useGetUser();
-  return useQuery(["posts", user?.skill], () => fetchFeed(user?.skill), {
-    enabled: !!user?.skill,
-    staleTime: 5 * 60 * 1000,
-  });
-};
 
+  return useInfiniteQuery(
+    ["posts", user?.skill],
+    ({ pageParam = 1 }) => fetchFeed(user?.skill, pageParam),
+    {
+      enabled: !!user?.skill,
+      getNextPageParam: (lastPage, allPages) => {
+        // Determine if there are more pages to fetch
+        return lastPage.hasMore ? allPages.length + 1 : undefined;
+      },
+      staleTime: 5 * 60 * 1000,
+    }
+  );
+};
 // Hook to get posts
 const useGetMyPosts = () => {
   const user = useGetUser();
@@ -146,15 +160,15 @@ const useEditComment = () => {
   });
 };
 
-  const useViewPost = (postId : string) => {
-    return useQuery(['post', postId], () => viewPost(postId), {
-      enabled: !!postId, // Fetch only if postId is available
-      onError: (error : any) => {
-        console.error('Fetch error:', error.message);
-        showToastError('Failed to fetch post');
-      },
-    });
-  };
+const useViewPost = (postId: string) => {
+  return useQuery(["post", postId], () => viewPost(postId), {
+    enabled: !!postId, // Fetch only if postId is available
+    onError: (error: any) => {
+      console.error("Fetch error:", error.message);
+      showToastError("Failed to fetch post");
+    },
+  });
+};
 
 export {
   useUploadPost,

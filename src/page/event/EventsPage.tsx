@@ -1,14 +1,16 @@
-import React from 'react'
-import EventsLists from '../../components/event/EventsLists'
-import NavBar from '../../components/common/navBar'
+import React from "react";
+import EventsLists from "../../components/event/EventsLists";
+import NavBar from "../../components/common/navBar";
 
 const EventsPage = () => {
   return (
-    <div className='bg-zinc-100 m-0'>
-      <NavBar/>
-      <EventsLists />
+    <div>
+      <NavBar />
+      <div>
+        <EventsLists />
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default EventsPage
+export default EventsPage;

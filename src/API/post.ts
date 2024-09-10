@@ -21,10 +21,10 @@ export const uploadPost = async (formData: FormData) => {
   }
 };
 
-export const fetchFeed = async (skill: string) => {
+export const fetchFeed = async (skill: string, pageParam: number) => {
   try {
     const response = await Api.get(userRoutes.fetchPosts, {
-      params: { skill: skill },
+      params: { skill: skill, pageParam: pageParam },
     });
     console.log("first res ===>", response.data);
     return response.data;
@@ -177,7 +177,6 @@ export const editingComment = async ({
   postId: string;
   updatedText: string;
 }) => {
-
   try {
     const response = await Api.put(userRoutes.editComment, {
       data: {
@@ -203,7 +202,6 @@ export const editingComment = async ({
 //view one post
 export const viewPost = async (postId: string) => {
   try {
-  
     const response = await Api.get(userRoutes.viewPost, {
       params: {
         postId,

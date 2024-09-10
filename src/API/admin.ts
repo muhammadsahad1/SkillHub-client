@@ -41,7 +41,7 @@ export const getUsers = async () => {
 };
 
 // Blocking users
-export const blockUser = async (id: string) => {
+export const blockUser = async (id: string | undefined) => {
   const response = await Api.post(adminRoutes.blockUser, { id: id });
   console.log("response =>", response.data);
   return response.data;
@@ -149,6 +149,22 @@ export const changeReportStatus = async (reportId: string, status: string) => {
     }
   }
 };
+
+//fetchAnalyticsData
+export const fetchAnalyticsData = async () => {
+  try {
+    const response = await Api.get(adminRoutes.fetchAnalyticsData)
+    return response.data
+  } catch (error: any) {
+    if (error.response) {
+      return error.response.data;
+    } else if (error.request) {
+      return { success: false, message: "No response from server" };
+    } else {
+      return { success: false, message: error.message };
+    }
+  }
+}
 
 // Logout admin
 export const adminLogout = async () => {

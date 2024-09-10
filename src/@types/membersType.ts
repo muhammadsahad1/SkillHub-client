@@ -1,7 +1,5 @@
-export interface IMember{
-  userId : string ,
-  profileImageUrl : string,
-  userName : string,
-  isOnline? : string
-  
+export interface IMember {
+  userId: string;
+  isOnline: boolean;
+  _id: string;
 }

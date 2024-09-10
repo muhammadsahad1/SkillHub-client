@@ -8,7 +8,8 @@ const adminRoutes = {
   updateEventStatus: 'admin/changeEventsStatus',
   getReports :'admin/reports',
   reportAction : "admin/action",
-  logout : 'admin/logout'
+  fetchAnalyticsData :'admin/dashboard',
+  logout : 'admin/adminLogout'
 }
 
 export default adminRoutes

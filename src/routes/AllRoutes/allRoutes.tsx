@@ -3,6 +3,7 @@ import { DotLoader } from "react-spinners";
 import { RouteObject } from "react-router-dom";
 import ViewMembersPage from "../../page/group/ViewMembersPage";
 import ReportsRequests from "../../page/admin/ReportsRequests";
+import ProtectedRoute from "../layouts/ProtectedLayout";
 
 // Layouts
 const AdminLayout = React.lazy(() => import("../layouts/AdminLayout"));
@@ -262,6 +263,15 @@ const routes: RouteObject[] = [
         ),
       }
     ],
+  },{
+    path: "admin/login",
+    element: (
+      <ProtectedRoute>
+        <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Adminlogin />
+        </Suspense>
+      </ProtectedRoute>
+    ),
   },
   {
     path: "admin/",
@@ -271,14 +281,7 @@ const routes: RouteObject[] = [
       </Suspense>
     ),
     children: [
-      {
-        path: "login",
-        element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
-            <Adminlogin />
-          </Suspense>
-        ),
-      },
+      
       {
         path: "dashboard",
         element: (
@@ -288,7 +291,7 @@ const routes: RouteObject[] = [
         ),
       },
       {
-        path: "userManagement",
+        path: "ums",
         element: (
           <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
             <UserManagement />
@@ -296,7 +299,7 @@ const routes: RouteObject[] = [
         ),
       },
       {
-        path: "eventRequests",
+        path: "events",
         element: (
           <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
             <EventsRequests />
@@ -304,7 +307,7 @@ const routes: RouteObject[] = [
         ),
       },
       {
-        path: "verificationRequests",
+        path: "verification-requests",
         element: (
           <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
             <VerificationRequestsPage />

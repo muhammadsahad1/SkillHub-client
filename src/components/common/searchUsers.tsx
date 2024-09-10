@@ -41,7 +41,7 @@ const SearchUsers = () => {
 
   // navigate to view profile
   const handleNavigation = (option: string[]) => {
-    navigate(`/auth/OtherProfileView/${option._id}`, {
+    navigate(`/auth/OtherProfileView/${option?._id}`, {
       state: {
         profileImageUrl: option?.profileImageUrl,
       },
@@ -53,10 +53,11 @@ const SearchUsers = () => {
       spacing={2}
       sx={{
         marginLeft: 4,
-        border: 2,
+        border: 0,
         borderColor: "gray",
         borderRadius: 50,
-        width: 230,
+        width: "250px", // Set the desired width
+        height: "45px",
         backgroundColor: "#fff",
       }}
     >
@@ -73,9 +74,11 @@ const SearchUsers = () => {
             key={option._id}
             onClick={() => handleNavigation(option)}
             sx={{
+              
               display: "flex",
               alignItems: "center",
               padding: "8px 16px",
+
               "&:hover": {
                 backgroundColor: "#f0f0f0",
                 cursor: "pointer",
@@ -112,6 +115,8 @@ const SearchUsers = () => {
               ...params.InputProps,
               type: "search",
               sx: {
+                width: "250px", // Set the desired width
+                height: "45px",
                 borderRadius: "50px",
                 backgroundColor: "#f5f6f7",
                 paddingLeft: "10px",

@@ -64,8 +64,8 @@ const UserLogin: React.FC = () => {
       dispatch(setUser(response.user));
       navigate(`/`);
       setIsLoading(false);
-    }else{
-      showToastError(response.message)
+    } else {
+      showToastError(response.message);
       setIsLoading(false);
     }
   };
@@ -156,7 +156,7 @@ const UserLogin: React.FC = () => {
               label="password"
               register={register}
               validation={{ validate: validatePassword }}
-              errors={errors?.newPassword}
+              errors={errors?.password}
               placeholder="Enter a password"
             />
             <button

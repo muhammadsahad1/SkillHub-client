@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { showToastError } from "../common/utilies/toast";
 import { readNotification } from "../../redux/features/notificationSlices";
 import { useDispatch } from "react-redux";
+import { MdReport } from "react-icons/md";
 
 export interface Notification {
   _id: string;
@@ -17,7 +18,7 @@ export interface Notification {
   link: string;
 }
 
-type NotificationType = "follow" | "like" | "comment" | "chat" | "verifyRequestAccepted" | "verifyRequestRejected";
+type NotificationType = "follow" | "like" | "comment" | "chat" | "verifyRequestAccepted" | "verifyRequestRejected" | "ReportAction";
 
 interface NotificationsDrawerProps {
   notifications: Notification[];
@@ -28,6 +29,8 @@ const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
   notifications,
   onClose,
 }) => {
+  console.log("notiys ==>",notifications);
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -76,6 +79,7 @@ const NotificationsDrawer: React.FC<NotificationsDrawerProps> = ({
             {notification?.type === "chat" && <MdChat />}
             {notification?.type === "verifyRequestAccepted" && <FaCheckCircle />}
             {notification?.type === "verifyRequestRejected" && <FaTimesCircle />}
+            {notification?.type === "ReportAction" && <MdReport/>}
             <div className="ml-2">
               <p className="text-zinc-black font-bold ">  
                 {notification?.message}
