@@ -21,27 +21,25 @@ const PopUpModal: React.FC<DynamicModalProps> = ({
   confirmText = "Confirm",
   cancelText = "Cancel",
 }) => {
+  const [inputVal, setInputVal] = useState<string | "">("");
 
-  const [inputVal , setInputVal] = useState<string | ''>('')
-
-  const handleChangeInputVal = (e : React.ChangeEvent<HTMLInputElement>) => {
-    setInputVal(e.target.value)
-  }
+  const handleChangeInputVal = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputVal(e.target.value);
+  };
 
   const handleConfirm = () => {
-    if(content === "Report Post"){
-      onConfirm(inputVal)
-    }else{
-      onConfirm()
+    if (content === "Report Post") {
+      onConfirm(inputVal);
+    } else {
+      onConfirm();
     }
-  }
+  };
 
   return (
     <Modal
       open={isOpen}
       title={<h2 className="text-1xl font-bold text-gray-800">{title}</h2>}
       onCancel={isClose}
-  
       footer={[
         <Button
           key="cancel"
@@ -61,10 +59,13 @@ const PopUpModal: React.FC<DynamicModalProps> = ({
       destroyOnClose
     >
       {content === "Report Post" ? (
-        <Input placeholder="Enter you reason here" value={inputVal} onChange={handleChangeInputVal}/>
-      ): (
+        <Input
+          placeholder="Enter you reason here"
+          value={inputVal}
+          onChange={handleChangeInputVal}
+        />
+      ) : (
         <p className="text-gray-700">{content}</p>
-
       )}
     </Modal>
   );

@@ -1,6 +1,4 @@
 export interface eventAttendees {
-  joinToken: string;
-  paymentStatus: string;
   userId: string;
-  _id: string;
+  // other properties if necessary
 }

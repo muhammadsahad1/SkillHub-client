@@ -60,7 +60,7 @@ const OtpForm: React.FC = () => {
       }
       setLoading(true);
       const response = await verifyCreateUser({ email, verifyCode: otpCode });
-      console.log("res ==:>>>>", response);
+      console.log("res after the registerd =>",response)
       if (response.success) {
         dispatch(setEmail(email));
         navigator("/");

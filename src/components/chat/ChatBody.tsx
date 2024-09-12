@@ -48,19 +48,20 @@ const ChatBody = () => {
       ) : (
         !isMobile && (
           <div className="w-full sm:w-2/3 md:w-3/4 lg:w-4/5 xl:w-5/6 flex justify-center items-center bg-gray-100">
-          <div className="text-center p-8 bg-white rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4 font-poppins">
-              Welcome to SkillHub Chat
-            </h2>
-            <p className="text-gray-600">
-              Connect with fellow members to share knowledge and grow your skills.
-            </p>
-            <p className="text-gray-500 mt-2">
-              Select a user from the list to start exchanging insights and expertise.
-            </p>
+            <div className="text-center p-8 bg-white rounded-lg shadow-md">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4 font-poppins">
+                Welcome to SkillHub Chat   
+              </h2>
+              <p className="text-gray-600">
+                Connect with fellow members to share knowledge and grow your
+                skills.
+              </p>
+              <p className="text-gray-500 mt-2">
+                Select a user from the list to start exchanging insights and
+                expertise.
+              </p>
+            </div>
           </div>
-        </div>
-        
         )
       )}
     </div>

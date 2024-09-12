@@ -82,6 +82,7 @@ const ViewProfile: React.FC = () => {
     setCoverImgModalOpen(true);
   };
 
+  console.log("userCurr =>",currentUser.picture?.imageUrl)
   // here api calling to backend
   const handleChangeCoverImg = async (imageFile: File) => {
     try {
@@ -137,7 +138,7 @@ const ViewProfile: React.FC = () => {
               />
             </button>
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
-              {currentUser?.picture?.imageUrl.length > 2 ? (
+              {typeof currentUser?.picture?.imageUrl ===  "string" && currentUser?.picture?.imageUrl != '' ? (
                 <img
                   src={currentUser?.picture?.imageUrl}
                   alt={`${currentUser.name}'s profile`}
@@ -160,7 +161,7 @@ const ViewProfile: React.FC = () => {
               <BiEdit className="mr-2" />
               Edit Profile
             </button>
-            <EditProfileModal isOpen={isOpen} isRequestClose={closeModal} />
+            <EditProfileModal isOpen={isOpen} onRequestClose={closeModal} />
             <CoverImageModal
               isOpen={isCoverImgModalOpen}
               onRequestClose={() => setCoverImgModalOpen(false)}

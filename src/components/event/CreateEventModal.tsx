@@ -10,8 +10,6 @@ import {
 } from "@mui/material";
 import { UploadFile } from "@mui/icons-material"; // Optional, for file upload icon
 import { eventValidation } from "../../utils/validation";
-import { BarLoader } from "react-spinners";
-import { getJoinLink } from "../../API/event";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 
 const style = {
@@ -19,13 +17,22 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 800,
-  maxHeight: "80vh", // Ensure the modal does not exceed 80% of the viewport height
+  width: "90vw", // Responsive width
+  maxWidth: 800,
+  height: "80vh", // Fixed height to avoid scrolling
   bgcolor: "background.paper",
   borderRadius: 2,
   boxShadow: 24,
   p: 4,
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
+};
+
+const formContainerStyle = {
+  flex: 1,
   overflowY: "auto",
+  pr: 1,
 };
 
 interface CreateEventModalProps {
@@ -46,8 +53,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
   const [duration, setDuration] = useState("");
   const [speaker, setSpeaker] = useState("");
   const [bannerFile, setBannerFile] = useState<File | null>(null);
-  const [bannerPreview, setBannerPreview] = useState<string | ArrayBuffer>(""); // Store image preview URL;
-  const [accessLink, setAccessLink] = useState("");
+  const [bannerPreview, setBannerPreview] = useState<string | ArrayBuffer>(""); // Store image preview URL
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState<number>(0); // Add price state
   const [currency, setCurrency] = useState<string>("USD"); // Add currency state
@@ -81,7 +87,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
       date,
       time,
       duration,
-      speaker,  
+      speaker,
       bannerFile,
       price,
       currency
@@ -110,158 +116,154 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
     }
   };
 
-
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box sx={style}>
-        {/* {loading && (
-          <div className="inset-0 z-50 absolute bg-white bg-opacity-75 flex items-center justify-center ">
-            <BarLoader />
-          </div>
-        )} */}
         <Typography variant="h6" component="h2" sx={{ fontWeight: "bold" }}>
           Create a New Event
         </Typography>
-        <Grid container spacing={2} sx={{ mt: 2 }}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              error={!!errors.title}
-              helperText={errors.title}
-              required
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              multiline
-              rows={4}
-              error={!!errors.description}
-              helperText={errors.description}
-              required
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              type="date"
-              label="Date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              error={!!errors.date}
-              helperText={errors.date}
-              required
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              type="time"
-              label="Time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              error={!!errors.time}
-              helperText={errors.time}
-              required
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              type="number"
-              label="Duration (minutes)"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              error={!!errors.duration}
-              helperText={errors.duration}
-              required
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Speaker"
-              value={speaker}
-              onChange={(e) => setSpeaker(e.target.value)}
-              error={!!errors.speaker}
-              helperText={errors.speaker}
-              required
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              type="number"
-              label="Price (0 for Free)"
-              value={price}
-              onChange={(e) => setPrice(parseFloat(e.target.value))}
-              error={!!errors.price}
-              helperText={errors.price}
-              required
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Currency"
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-              error={!!errors.currency}
-              helperText={errors.currency}
-              required
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              variant="outlined"
-              component="label"
-              startIcon={<UploadFile />}
-              fullWidth
-              sx={{ mb: 2 }}
-            >
-              Upload Banner
-              <input
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={handleFileChange}
+        <Box sx={formContainerStyle}>
+          <Grid container spacing={2} sx={{ mt: 2 }}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                error={!!errors.title}
+                helperText={errors.title}
+                required
               />
-            </Button>
-            {bannerPreview && (
-              <Box
-                component="img"
-                src={bannerPreview as string}
-                alt="Banner Preview"
-                sx={{
-                  width: "100%",
-                  height: "auto",
-                  borderRadius: 2,
-                  objectFit: "contain",
-                  mt: 1,
-                }}
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                multiline
+                rows={4}
+                error={!!errors.description}
+                helperText={errors.description}
+                required
               />
-            )}
-            {errors.banner && (
-              <FormHelperText error>{errors.banner}</FormHelperText>
-            )}
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                type="date"
+                label="Date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+                error={!!errors.date}
+                helperText={errors.date}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                type="time"
+                label="Time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+                error={!!errors.time}
+                helperText={errors.time}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                type="number"
+                label="Duration (minutes)"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                error={!!errors.duration}
+                helperText={errors.duration}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Speaker"
+                value={speaker}
+                onChange={(e) => setSpeaker(e.target.value)}
+                error={!!errors.speaker}
+                helperText={errors.speaker}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                type="number"
+                label="Price (0 for Free)"
+                value={price}
+                onChange={(e) => setPrice(parseFloat(e.target.value))}
+                error={!!errors.price}
+                helperText={errors.price}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Currency"
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+                error={!!errors.currency}
+                helperText={errors.currency}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="outlined"
+                component="label"
+                startIcon={<UploadFile />}
+                fullWidth
+                sx={{ mb: 2 }}
+              >
+                Upload Banner
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={handleFileChange}
+                />
+              </Button>
+              {bannerPreview && (
+                <Box
+                  component="img"
+                  src={bannerPreview as string}
+                  alt="Banner Preview"
+                  sx={{
+                    width: "100%",
+                    height: "auto",
+                    borderRadius: 2,
+                    objectFit: "contain",
+                    mt: 1,
+                  }}
+                />
+              )}
+              {errors.banner && (
+                <FormHelperText error>{errors.banner}</FormHelperText>
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            />
-          </Grid>
-        </Grid>
+        </Box>
         <Button
           variant="contained"
           sx={{ mt: 3 }}

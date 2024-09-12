@@ -56,10 +56,10 @@ const formatTime = (dateString: string) => {
 
 type OnNewMessage = {
   onNewMessage: () => Promise<void>;
-  handleBackClick : () => void
+  handleBackClick: () => void;
 };
 
-const ChatComponent = ({ onNewMessage ,handleBackClick}: OnNewMessage) => {
+const ChatComponent = ({ onNewMessage, handleBackClick }: OnNewMessage) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [image, setImage] = useState<null | File>(null);
   const [prevModal, setPrevModal] = useState<boolean>(false);
@@ -72,7 +72,7 @@ const ChatComponent = ({ onNewMessage ,handleBackClick}: OnNewMessage) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { requestCall } = useVideoCall();
-  const imageUseRef = useRef(null);
+  const imageUseRef = useRef<HTMLInputElement>(null);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
@@ -298,7 +298,10 @@ const ChatComponent = ({ onNewMessage ,handleBackClick}: OnNewMessage) => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IoMdArrowRoundBack className="me-4 size-5 cursor-pointer" onClick={handleBackClick}/>
+          <IoMdArrowRoundBack
+            className="me-4 size-5 cursor-pointer"
+            onClick={handleBackClick}
+          />
           {user?.profileImageUrl ? (
             <Avatar
               src={user?.profileImageUrl}

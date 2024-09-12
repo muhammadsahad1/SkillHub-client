@@ -32,9 +32,13 @@ export const createEvent = async (eventData: FormData) => {
   }
 };
 
-export const getEventsList = async () => {
+export const getEventsList = async (pageNumber: number) => {
   try {
-    const response = await Api.get(userRoutes.listEvents);
+    const response = await Api.get(userRoutes.listEvents, {
+      params: {
+        pageNumber,
+      },
+    });
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -66,7 +70,6 @@ export const fetchEventDetails = async (eventId: string | undefined) => {
     }
   }
 };
-
 
 export const registerEvent = async (registerData: IEventRegister) => {
   try {

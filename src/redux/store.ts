@@ -3,6 +3,7 @@
   import storage from "redux-persist/lib/storage";
   import userReducer from "./userSlices";
   import notificationReducer from '../redux/features/notificationSlices'
+
   const rootReducer = combineReducers({
     user: userReducer,
     notifications : notificationReducer

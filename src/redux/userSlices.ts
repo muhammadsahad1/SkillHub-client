@@ -16,7 +16,6 @@ const initialState = {
   picture: {
     imageUrl: "",
     coverImageUrl: "",
-    
   },
   imageKey: "",
   coverImage: "",
@@ -31,64 +30,57 @@ const initialState = {
   verificationStatus: "",
   isProfessional: false,
   professionalBadge: false,
+  website : ""
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser: (state, action) => {
-      const {
-        _id,
-        name,
-        email,
-        role,
-        bio,
-        blocked,
-        city,
-        country,
-        states,
-        skill,
-        profile,
-        picture,
-        coverImage,
-        coverImageKey,
-        imageKey,
-        profileImage,
-        approved,
-        showNotification,
-        accountPrivacy,
-        isRequested,
-        verificationStatus,
-        isProfessional,
-        professionalBadge,
-      } = action.payload;
-      state.id = _id;
-      state.name = name;
-      state.email = email;
-      state.role = role;
-      state.bio = bio;
-      state.city = city;
-      state.country = country;
-      state.states = states;
-      state.skill = skill;
-      state.profile = profile;
-      state.picture = picture;
-      state.coverImage = coverImage;
-      state.coverImageKey = coverImageKey;
-      state.blocked = blocked;
-      state.imageKey = imageKey;
-      state.profileImage = profileImage;
-      state.approved = approved;
-      state.showNotification = showNotification;
-      state.accountPrivacy = accountPrivacy;
-      state.followersCount = action.payload.followersCount;
-      state.followingsCount = action.payload.followingsCount;
-      state.isRequested = isRequested;
-      state.verificationStatus = verificationStatus;
-      state.isProfessional = isProfessional;
-      state.professionalBadge = professionalBadge;
-    },
+
+    
+setUser: (state, action) => {
+  const {
+    _id,
+    name,
+    email,
+    role,
+    bio,
+    blocked,
+    country,
+    states,        // Assuming "states" is the same as in the payload
+    skill,
+    profile,
+    isProfessional,
+    professionalBadge,
+    verificationStatus,
+    isRequested,
+    accountPrivacy,
+    followers = [],  // Fallback to empty array if not present
+    following = [],  // Fallback to empty array if not present
+    website = "",    // Defaulting to empty string if not present
+  } = action.payload;
+
+  // Update the state with the received user data
+  state.id = _id;
+  state.name = name;
+  state.email = email;
+  state.role = role;
+  state.bio = bio;
+  state.blocked = blocked;
+  state.country = country;
+  state.states = states;
+  state.skill = skill;
+  state.profile = profile;
+  state.isProfessional = isProfessional;
+  state.professionalBadge = professionalBadge;
+  state.verificationStatus = verificationStatus;
+  state.isRequested = isRequested;
+  state.accountPrivacy = accountPrivacy;
+  state.followersCount = followers.length;  // Count of followers
+  state.followingsCount = following.length; // Count of followings
+  state.website = website;
+},
     setIsRequest: (state, action) => {
       state.isRequested = action.payload;
     },
@@ -157,7 +149,6 @@ const userSlice = createSlice({
       state.verificationStatus = "";
       state.isRequested = false;
       state.professionalBadge = false;
-      
     },
   },
 });

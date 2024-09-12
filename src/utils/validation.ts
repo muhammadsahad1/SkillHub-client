@@ -2,30 +2,65 @@
 
 export const validateUsername = (username: string) => {
   const minLength = 3;
-  const usernameRegex = /^[A-Za-z]+$/;
+  const usernameRegex = /^[A-Za-z\s]+$/; // Allow letters and spaces
 
   if (!username) {
     return "Username is required";
   }
 
   if (username.length < minLength) {
-    return `Username should have at least ${minLength}`;
+    return `Username should have at least ${minLength} characters`;
   }
 
   if (!usernameRegex.test(username)) {
-    return "Username should only contain letter";
+    return "Username should only contain letters and spaces";
   }
 
-  if (/\s/.test(username)) {
-    return "Username should not contain space";
+  // Check for leading or trailing spaces
+  if (/^\s/.test(username) || /\s$/.test(username)) {
+    return "Username should not start or end with a space";
   }
+
   return true;
 };
 
 export const validateEmail = (email: string) => {
+  // Regular expression for validating the general structure of an email address
   const regexValidEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-  return regexValidEmail.test(email) ? true : "Invalid email format";
+
+  // Ensure the email structure is valid
+  if (!regexValidEmail.test(email)) {
+    return "Invalid email format";
+  }
+
+  // Split email into local and domain parts
+  const [localPart, domainPart] = email.split('@');
+
+  // Ensure local part is not empty and does not consist only of special characters
+  if (!localPart || /^[._%+-]+$/.test(localPart)) {
+    return "Invalid email username. It should not consist only of special characters.";
+  }
+
+  // Ensure domain part contains at least one period and is well-formed
+  if (!domainPart || !domainPart.includes('.')) {
+    return "Email domain must include a dot";
+  }
+
+  // Split domain part into domain and TLD
+  const [domain, tld] = domainPart.split('.');
+  if (!domain || !tld) {
+    return "Email domain is not properly formatted";
+  }
+
+  // Optional: Additional check for common domain typos (e.g., "gamil.com" instead of "gmail.com")
+  const commonTypos = ['gamil.com', 'gnail.com', 'gmaill.com', 'gmaail.com'];
+  if (commonTypos.includes(domainPart.toLowerCase())) {
+    return "Domain may contain a typo. Check your domain.";
+  }
+
+  return true;
 };
+
 
 export const validatePassword = (password: string) => {
   if (typeof password !== "string") return false;
@@ -68,7 +103,7 @@ export const eventValidation = (
   speaker: string,
   bannerFile: File | null,
   price: number,
-  currency: string,
+  currency: string
 ): { [key: string]: string } => {
   const errors: { [key: string]: string } = {};
   const today = new Date().toISOString().split("T")[0];
@@ -129,13 +164,20 @@ export const eventValidation = (
   }
 
   // Price validation
-  if (price === undefined || price === null || isNaN(Number(price)) || Number(price) < 0 || Number(price) > 10000) {
+  if (
+    price === undefined ||
+    price === null ||
+    isNaN(Number(price)) ||
+    Number(price) < 0 ||
+    Number(price) > 10000
+  ) {
     errors.price = "Price must be a number between 0 and 10,000.";
   }
 
   // Currency validation
   if (!currency || !currencyRegex.test(currency)) {
-    errors.currency = "Currency must be a valid 3-letter currency code (e.g., USD, EUR).";
+    errors.currency =
+      "Currency must be a valid 3-letter currency code (e.g., USD, EUR).";
   }
 
   // Banner file validation (Optional)
@@ -148,4 +190,3 @@ export const eventValidation = (
 
   return errors;
 };
-

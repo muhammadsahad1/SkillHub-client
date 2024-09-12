@@ -31,7 +31,7 @@ interface EventEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   eventData?: any;
-  onUpdated: () => void; // Callback function to trigger refetch in parent component
+  onUpdated: (pageNumber : number) => void; // Callback function to trigger refetch in parent component
 }
 
 
@@ -119,7 +119,7 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
         const result = await createEvent(formData);
         if (result.success) {
           showToastSuccess(result.message);
-          onUpdated()
+          onUpdated(1)
         } else {
           showToastError(result.message);
         }

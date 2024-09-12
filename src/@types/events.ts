@@ -1,3 +1,5 @@
+import { eventAttendees } from "./eventAttend";
+
 export interface IEvent {
   _id: string;
   title: string;
@@ -13,10 +15,10 @@ export interface IEvent {
   registrationLink: string;
   accessLink: string;
   isPublic: boolean;
-  attendees: string[];
+  attendees: eventAttendees[];
   eventStatus: string;
   approvalStatus: string;
-  createdBy: string[];
+  createdBy: string;
   bannerImageUrl?: string;
   createdAt: Date;
   updatedAt: Date;

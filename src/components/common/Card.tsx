@@ -6,8 +6,12 @@ import Typography from "@mui/material/Typography";
 import { IuserSkillCardProps } from "../user/UsersRelatedSkill";
 import noProfile from "../../assets/nonProfile.jpg";
 import { useNavigate } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }: any) => {
+const OutlinedCard: React.FC<{ users : IuserSkillCardProps[]}> = ({ users }) => {
+  console.log("users ==>",users)
   const navigate = useNavigate();
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
@@ -55,8 +59,8 @@ const OutlinedCard: React.FC<IuserSkillCardProps> = ({ users }: any) => {
             key={user._id}
             variant="outlined"
             sx={{
-              minWidth: { xs: 200, sm: 200, md: 200 },
-              maxWidth: { xs: 200, sm: 200, md: 200 },
+              minWidth: { xs: 200, sm: 200, md: 180 },
+              maxWidth: { xs: 200, sm: 200, md: 180 },
               borderColor: "black",
               borderRadius: "16px",
               cursor: "pointer",

@@ -7,6 +7,7 @@ import DisplayPostCard from "../post/DisplayPostCard";
 import FeedPostsLists from "../../components/post/FeedPostsLists";
 import { motion } from "framer-motion";
 import { Button } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const Home: React.FC = () => {
   const currentUser = useGetUser();
@@ -17,7 +18,8 @@ const Home: React.FC = () => {
         Welcome to the Skill Sharing Platform
       </h2>
       <p className="text-zinc-700 text-lg sm:text-xl max-w-2xl">
-        Connect with experts, share your knowledge, and grow your skills in our vibrant community.
+        Connect with experts, share your knowledge, and grow your skills in our
+        vibrant community.
       </p>
       <div className="space-y-4">
         <h3 className="text-zinc-900 text-xl font-semibold">Why Join Us?</h3>
@@ -29,8 +31,38 @@ const Home: React.FC = () => {
         </ul>
       </div>
       <div className="flex space-x-4">
-        <Button variant="default">Login</Button>
-        <Button variant="outline">Register</Button>
+        <Link to={"auth/userLogin"}>
+          <Button
+            sx={{
+              transition: "transform 0.2s ease-in-out",
+              background: "#18181b",
+              color: "whitesmoke",
+              letterSpacing: 3,
+              "&:hover": {
+                background: "#18181b",
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            Login
+          </Button>
+        </Link>
+        <Link to={"auth/userSignup"}>
+          <Button
+            sx={{
+              transition: "transform 0.2s ease-in-out",
+              background: "#18181b",
+              color: "whitesmoke",
+              letterSpacing: 3,
+              "&:hover": {
+                background: "#18181b",
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            Register
+          </Button>
+        </Link>
       </div>
     </div>
   );
@@ -44,7 +76,7 @@ const Home: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="flex flex-col justify-center mt-16 sm:mt-24 w-full max-w-4xl px-4"
       >
-        {currentUser?.skill ? (
+        {currentUser?.skill || currentUser?.email ? (
           <>
             <h1 className="text-zinc-950 text-4xl sm:text-5xl font-bold text-center mb-4 mt-6">
               Empower Your Skills, Connect with Experts

@@ -10,6 +10,7 @@ import useGetUser from "../../../hook/getUser";
 import { postingThoughts } from "../../../API/conversation";
 import { showToastError, showToastSuccess } from "./toast";
 import EventModal from "../../event/EventModal";
+import { CgProfile } from "react-icons/cg";
 
 const OutlinedCard: React.FC = () => {
   const [isOpen, setModalOpen] = useState<boolean>(false);
@@ -95,11 +96,16 @@ const OutlinedCard: React.FC = () => {
             component="div"
             className="flex justify-between space-x-3"
           >
-            <img
-              src={currentUser?.picture?.imageUrl}
-              alt=""
-              className="w-12 h-12 rounded-full object-cover"
-            />
+            {typeof currentUser.picture?.imageUrl === "string" && currentUser.picture?.imageUrl != "" ? (
+              <img
+                src={currentUser.picture?.imageUrl}
+                alt=""
+                className="w-12 h-12 rounded-full object-cover"
+              />
+            ) : (
+              <CgProfile className="w-12 h-12 rounded-full object-cover"/>
+            )}
+
             <input
               onChange={handleInputChange}
               value={(thoughts as string) || ""}

@@ -76,14 +76,11 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
     const { mutate: postLike } = usePostLike();
     const { mutate: editComment } = useEditComment();
     const { mutate: deleteComment } = useDeleteComment();
-    const [anchorEl, setAnchorEl] = useState<boolean | HTMLElement | null>(
-      false
-    );
-    const [anchorE2, setAnchorE2] = useState<boolean | HTMLElement | null>(
-      false
-    );
+    const [postAnchorE1, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [anchorE2, setAnchorE2] = useState<HTMLElement | null>(null);
     const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
-    const [editedCaption, setEditedCaption] = useState<string>("");
+    const [editedCaption, setEditedCaption] = useState<string>(post.caption);
+    const [editedComment, setEditedComment] = useState<string>("");
     const [isLiked, setLiked] = useState<boolean>(false);
     const [likeCount, setLikeCount] = useState<number>(0);
     const [isCommentBoxOpen, setCommentBoxOpen] = useState<boolean>(false);
@@ -97,6 +94,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
       id: string;
       text: string;
     } | null>(null);
+    console.log(commentBeingEdited);
 
     const [captionBeingEdit, setCaptionBeingEdit] = useState<{
       id: string;
@@ -106,6 +104,8 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
     const [isReportModelOpen, setReportModelOpen] = useState<boolean>(false);
 
     const isCommentMenuOpen = Boolean(commentAnchorEl);
+    const isPostMenuOpen = Boolean(postAnchorE1);
+    const isOtherMenuOpen = Boolean(anchorE2);
     const queryClient = useQueryClient();
 
     useEffect(() => {
@@ -114,7 +114,10 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
       setLikeCount(post.likes.length);
     }, [post.likes, user.id]);
 
+    // handlMenu click
     const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+      console.log("click cheyth");
+      // setDeleteModalOpen(true)
       setAnchorEl(event.currentTarget);
     };
 
@@ -126,14 +129,15 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
       setAnchorEl(null);
     };
 
-    const handleMenuClose2 = () => {
-      setAnchorE2(null);
-    };
+    // const handleMenuClose2 = () => {
+    //   setAnchorE2(null);
+    // };
 
     const handleDelete = async () => {
       try {
         await deletePost(post._id);
         handleMenuClose();
+        setDeleteModalOpen(false);
         queryClient.invalidateQueries(["posts"]);
       } catch (error) {
         console.error("Error deleting post:", error);
@@ -141,6 +145,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
     };
 
     const handleEdit = () => {
+      console.log("called");
       setCaptionBeingEdit({
         id: post._id,
         text: post.caption,
@@ -153,11 +158,14 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
       setEditModalOpen(false);
     };
 
-    const handleEditModal = (comment: any) => {
+    const handleEditModal = (commentId: string, commentText: string) => {
+      console.log("keri");
       setCommentBeingEdited({
-        id: comment._id,
-        text: comment.comment,
+        id: commentId,
+        text: commentText,
       });
+      console.log("prev ==>", commentBeingEdited);
+
       setCommentEditModalOpen(true);
       handleCommentMenuClose();
     };
@@ -169,7 +177,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
     const handleSave = async () => {
       try {
         if (captionBeingEdit && captionBeingEdit.text.trim() !== "") {
-          await editPost({ id: post._id, caption: captionBeingEdit.text });
+          await editPost({ id: post._id, caption: editedCaption });
           post.caption = captionBeingEdit?.text;
           setEditModalOpen(false);
         }
@@ -223,15 +231,25 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
 
     const deletingComment = async (commentId: string, postId: string) => {
       try {
-        await deleteComment({ commentId, postId });
+        const result = await deleteComment({ commentId, postId });
+        console.log("res ==>", result);
         handleCommentMenuClose();
       } catch (error) {
         console.error("Failed to delete comment:", error);
       }
     };
 
-    const handleEditComment = async () => {
+    const handleEditChange = (value: string) => {
       if (commentBeingEdited) {
+        setCommentBeingEdited({
+          ...commentBeingEdited,
+          text: value,
+        });
+      }
+    };
+
+    const handleEditComment = async () => {
+      if (commentBeingEdited && commentBeingEdited.text.trim() !== "") {
         try {
           editComment({
             commentId: commentBeingEdited.id,
@@ -246,6 +264,14 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
       }
     };
 
+    const openMiniPostModel = (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorEl(event.currentTarget);
+    };
+
+    const closeMiniPostModel = () => {
+      setAnchorEl(null);
+    };
+
     const openMiniModal = (event: React.MouseEvent<HTMLElement>) => {
       setCommentAnchorEl(event.currentTarget);
     };
@@ -254,16 +280,24 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
       setCommentAnchorEl(null);
     };
 
-    const handleCommentEditModalClose = () => {
-      setCommentEditModalOpen(false);
-    };
-
     const handleDeleteModalOpen = () => {
       setDeleteModalOpen(true);
       handleMenuClose();
     };
 
-    // for view the one post
+    const handleCloseOtherMenu = () => {
+      setAnchorE2(null);
+    };
+
+    // const handleCommentEditModalClose = () => {
+    //   setCommentEditModalOpen(false);
+    // };
+
+    // const handleCaptionEditModelOpen = () => {
+    //   setEditCaptionModal(true)
+    // };
+
+    // // for view the one post
     const handlePostDetaileView = async () => {
       navigate(`/auth/post/${post._id}`);
     };
@@ -271,7 +305,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
     // report post
     const handleRepostModal = () => {
       setReportModelOpen(true);
-      setAnchorE2(false);
+      setAnchorE2(null);
     };
 
     const handleReportModelClose = () => {
@@ -291,6 +325,8 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
         setReportModelOpen(false);
       } catch (error) {}
     };
+
+    console.log("post ==>", post);
 
     return (
       <Card
@@ -330,7 +366,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
           }
           action={
             post.userId === user.id ? (
-              <IconButton onClick={handleMenuClick}>
+              <IconButton onClick={openMiniPostModel}>
                 <MoreVertIcon />
               </IconButton>
             ) : (
@@ -340,6 +376,39 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
             )
           }
         />
+
+        <Menu
+          anchorEl={anchorE2}
+          open={isOtherMenuOpen}
+          onClose={handleCloseOtherMenu}
+          PaperProps={{
+            elevation: 1,
+            sx: {
+              width: "150px",
+              bgcolor: "background.paper",
+            },
+          }}
+        >
+          <MenuItem onClick={handleRepostModal}>Report</MenuItem>
+        </Menu>
+
+        <Menu
+          anchorEl={postAnchorE1}
+          open={isPostMenuOpen}
+          onClose={closeMiniPostModel}
+          PaperProps={{
+            elevation: 1,
+            sx: {
+              width: "150px",
+              bgcolor: "background.paper",
+            },
+          }}
+        >
+          <MenuItem onClick={handleEdit}>Edit</MenuItem>
+          <MenuItem onClick={handleDeleteModalOpen}>Delete</MenuItem>
+          <MenuItem onClick={handlePostDetaileView}>View post</MenuItem>
+        </Menu>
+
         <CardContent
           sx={{
             flex: 1,
@@ -441,6 +510,12 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
               gap: 2,
             }}
           >
+            <CommentBox
+              postId={post._id}
+              onClose={commentClose}
+              userId={""}
+              comments={[]}
+            />
             {post?.comments?.map((comment: any) => (
               <Box
                 key={comment._id}
@@ -453,7 +528,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Avatar
                     alt={comment.userName}
-                    src={comment?.imageUrl}
+                    src={comment?.commentedUserProfileUrl}
                     sx={{ width: 30, height: 30 }}
                   />
                   <Box>
@@ -473,6 +548,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
                     <HiDotsCircleHorizontal />
                   </IconButton>
                 )}
+
                 <Menu
                   anchorEl={commentAnchorEl}
                   open={isCommentMenuOpen}
@@ -485,18 +561,80 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
                     },
                   }}
                 >
-                  <MenuItem onClick={() => handleEditModal(comment._id)}>
+                  <MenuItem
+                    onClick={() =>
+                      handleEditModal(comment._id, comment.comment)
+                    }
+                  >
                     Edit
                   </MenuItem>
-                  <MenuItem onClick={() => handleDeleteComment(comment._id)}>
+                  <MenuItem
+                    onClick={() => deletingComment(comment._id, post._id)}
+                  >
                     Delete
                   </MenuItem>
                 </Menu>
               </Box>
             ))}
-            <CommentBox postId={post._id} />
           </Box>
         )}
+
+        {/*comment edit modal*/}
+        <Modal
+          open={isCommentEditModalOpen}
+          onClose={() => setCommentEditModalOpen(false)}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Box
+            sx={{
+              width: "400px",
+              padding: 2,
+              bgcolor: "background.paper",
+              borderRadius: 1,
+            }}
+          >
+            <Typography
+              variant="h6"
+              component="span"
+              className="font-poppins font-bold"
+            >
+              Edit Comment
+            </Typography>
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              variant="outlined"
+              value={commentBeingEdited?.text || ""}
+              onChange={(e) => handleEditChange(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleEditComment}
+            >
+              Save Changes
+            </Button>
+          </Box>
+        </Modal>
+
+        {/*report request modal */}
+          <PopUpModal isOpen={isReportModelOpen} isClose={handleReportModelClose} onConfirm={handlePostReport} content="Report Post" title="Are you sure do you want report ?"/>
+
+
+        {/* post delte modal*/}
+        <PopUpModal
+          isOpen={isDeleteModalOpen}
+          isClose={closeDeleteModal}
+          onConfirm={handleDelete}
+          title={"Are you sure for delete the post ?"}
+          content={"Deleting post"}
+        />
 
         {/* Modals */}
         <Modal
@@ -516,6 +654,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
               borderRadius: 1,
             }}
           >
+            <span className="font-poppins font-bold ">Edit Caption</span>
             <TextField
               fullWidth
               multiline
@@ -528,7 +667,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
             <Button
               variant="contained"
               color="primary"
-              onClick={() => handleEditPost(post._id)}
+              onClick={() => handleSave()}
             >
               Save Changes
             </Button>

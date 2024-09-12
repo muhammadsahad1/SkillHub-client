@@ -7,24 +7,26 @@ import SkeletonUsers from "../common/skeleton/SkeletonUserList";
 export interface IuserSkillCardProps {
   _id?: string;
   userName?: string;
-  profileUrl?: string;
-  coverImgUrl?: string;
+  imageUrl?: string;
+  coverImageUrl?: string;
   country?: string;
   skill?: string;
   bio?: string;
+  isFollowingBack: boolean;
 }
 
 const UsersRelatedSkill = () => {
   const currentUser = useGetUser();
   const currentUserSkill = currentUser.skill;
-  const [skillRelatedUsers, setSkillRelatedUsers] = useState<any>([]);
+  const [skillRelatedUsers, setSkillRelatedUsers] = useState<
+    IuserSkillCardProps[]
+  >([]);
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const fetchSkillRelatedUsers = async () => {
     try {
       setLoading(true);
       const result = await getSkillRelatedUsers(currentUserSkill);
-
       if (result.success) {
         setSkillRelatedUsers(result.userDetails);
       }

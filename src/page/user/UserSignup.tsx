@@ -29,7 +29,7 @@ const SignUp: React.FC = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm({
+  } = useForm<UserData>({
     mode: "onBlur",
   });
 

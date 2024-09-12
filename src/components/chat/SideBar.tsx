@@ -160,7 +160,12 @@ const SideBar = forwardRef<SideBarHandle, SideBarProps>((props, ref) => {
       sx={{
         position: "relative",
         height: "100%",
-        width: "100%",
+        width: {
+          xs: "100%", // Full width on small screens
+          sm: "300px", // 300px on small screens
+          md: "350px", // 350px on medium screens
+          lg: "400px", // 400px on large screens
+        },
         backgroundColor: "rgb(245, 245, 245)",
         boxShadow: "0px 0px 1px rgba(0,0,0,0.05)",
         display: "flex",

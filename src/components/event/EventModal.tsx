@@ -12,11 +12,12 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 700,
+  width: { xs: "90%", sm: "80%", md: 700 }, // Responsive width
+  maxWidth: 700,
   bgcolor: "background.paper",
   borderRadius: 2,
   boxShadow: 24,
-  p: 4,
+  p: { xs: 2, sm: 4 }, // Responsive padding
 };
 
 interface eventModalProps {
@@ -43,6 +44,7 @@ const EventModal: React.FC<eventModalProps> = ({ isOpen, onClose }) => {
     setCreateEventInfoOpen(false);
     setCreateEventOpen(true);
   };
+
   const handleCloseModal = () => {
     setCreateEventInfoOpen(false);
     setCreateEventOpen(false);
@@ -53,7 +55,9 @@ const EventModal: React.FC<eventModalProps> = ({ isOpen, onClose }) => {
     onClose();
     const result = await createEvent(eventData);
     if (result.success) {
-      showToastSuccess("Your request for the event has been successfully submitted. Please wait for approval. ")
+      showToastSuccess(
+        "Your request for the event has been successfully submitted. Please wait for approval. "
+      );
     } else {
       showToastError(result.message);
     }
@@ -74,7 +78,7 @@ const EventModal: React.FC<eventModalProps> = ({ isOpen, onClose }) => {
               mt: 2,
               fontFamily: "Poppins, sans-serif",
               fontWeight: "bold",
-              fontSize: 30,
+              fontSize: { xs: 24, sm: 30 }, // Responsive font size
               textAlign: "center",
             }}
           >
@@ -85,14 +89,12 @@ const EventModal: React.FC<eventModalProps> = ({ isOpen, onClose }) => {
             sx={{
               mt: 2,
               fontFamily: "Poppins, sans-serif",
-              fontSize: 16,
+              fontSize: { xs: 14, sm: 16 }, // Responsive font size
               textAlign: "justify",
             }}
           >
             <span style={{ fontWeight: "bold" }}>
-              Hosting an event is your opportunity to make meaningful
-              connections, share knowledge, and inspire growth within your
-              community.
+              Hosting an event is your opportunity to make meaningful connections, share knowledge, and inspire growth within your community.
             </span>{" "}
             Here’s how you can craft an event that truly resonates:
             <ul
@@ -104,27 +106,19 @@ const EventModal: React.FC<eventModalProps> = ({ isOpen, onClose }) => {
               }}
             >
               <li>
-                <strong>Identify Your Impact:</strong> Think about the value
-                your event will bring to others and how it can help them enhance
-                their skills or discover new passions.
+                <strong>Identify Your Impact:</strong> Think about the value your event will bring to others and how it can help them enhance their skills or discover new passions.
               </li>
               <li>
-                <strong>Choose the Perfect Time:</strong> Select a date and time
-                that works best for you and your audience to maximize
-                engagement.
+                <strong>Choose the Perfect Time:</strong> Select a date and time that works best for you and your audience to maximize engagement.
               </li>
               <li>
-                <strong>Create an Eye-Catching Banner:</strong> Design a banner
-                that not only represents your event but also grabs attention and
-                excites potential participants.
+                <strong>Create an Eye-Catching Banner:</strong> Design a banner that not only represents your event but also grabs attention and excites potential participants.
               </li>
               <li>
-                <strong>Select a Relevant Category:</strong> Pick a category
-                that aligns with your event’s theme to reach the right audience.
+                <strong>Select a Relevant Category:</strong> Pick a category that aligns with your event’s theme to reach the right audience.
               </li>
               <li>
-                <strong>Fill in the Details:</strong> Complete the upcoming form
-                with all the essential details to make your event a success.
+                <strong>Fill in the Details:</strong> Complete the upcoming form with all the essential details to make your event a success.
               </li>
             </ul>
             <span
@@ -134,18 +128,24 @@ const EventModal: React.FC<eventModalProps> = ({ isOpen, onClose }) => {
                 marginTop: "16px",
               }}
             >
-              Ready to make a difference? Click the "Proceed" button below to
-              start creating your event and watch your network grow!
+              Ready to make a difference? Click the "Proceed" button below to start creating your event and watch your network grow!
             </span>
           </Typography>
 
-          <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
+          <Box
+            sx={{
+              mt: 3,
+              display: "flex",
+              justifyContent: { xs: "center", sm: "flex-end" }, // Responsive button alignment
+            }}
+          >
             <Button
               variant="contained"
               onClick={handleOpenCreateModal}
               sx={{
                 bgcolor: "primary.main",
                 "&:hover": { bgcolor: "primary.dark" },
+                px: { xs: 3, sm: 5 }, // Adjust button padding for responsiveness
               }}
             >
               Proceed
@@ -154,7 +154,6 @@ const EventModal: React.FC<eventModalProps> = ({ isOpen, onClose }) => {
         </Box>
       </Modal>
 
-      {/* Modal for creating event goes here */}
       <CreateEventModal
         isOpen={isCreateEventOpen}
         onClose={handleCloseModal}

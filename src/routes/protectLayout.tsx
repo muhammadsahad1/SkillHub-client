@@ -8,7 +8,7 @@ const ProtectLayout: React.FC = () => {
 
   if (currentUser && currentUser.blocked) {
     return <Navigate to="/blockedUser" />;
-  } else if (currentUser && currentUser.email ) {
+  } else if (currentUser && currentUser.email) {
     return <Outlet />;
   } else {
     return <Navigate to="/auth/userLogin" />;
