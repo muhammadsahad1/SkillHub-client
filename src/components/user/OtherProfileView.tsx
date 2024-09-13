@@ -36,7 +36,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   const [isMeOnlyFollowing, setIsMeOnlyFollowing] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
-
+console.log("useD =>",userDetails)
   const currentUser = useGetUser();
   const { socket } = useSocket();
 
@@ -115,12 +115,12 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
     try {
       if (isLoading) return; // Prevent multiple clicks
       setLoading(true);
-      setIsConnected(false)
+      setIsConnected(false);
       const result = await unFollow(userId, currentUser.id);
       if (result.success) {
         fetchUserDetails();
         showToastSuccess("Unfollowed");
-        setIsMeOnlyFollowing(false)
+        setIsMeOnlyFollowing(false);
       }
     } catch (error: any) {
       showToastError(error.message);
@@ -128,7 +128,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       setLoading(false);
     }
   };
-// to get the correct follow btn based on follow system
+  // to get the correct follow btn based on follow system
   const getFollowButtonText = () => {
     if (isConnected) {
       return "Connected";
@@ -142,7 +142,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   };
 
   const handleFollowToggle = () => {
-    if (isMeOnlyFollowing  || isConnected) {
+    if (isMeOnlyFollowing || isConnected) {
       handleUnfollow();
     } else {
       followThisUser();
@@ -192,7 +192,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
               content={getFollowButtonText()}
               onClick={handleFollowToggle}
               isLoading={isLoading}
-              className="bg-blue-500 text-white hover:bg-blue-600"
+              
             />
           </div>
           {userDetails ? (

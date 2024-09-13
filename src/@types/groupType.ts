@@ -1,3 +1,5 @@
+import { Member } from "./membersType";
+
 export interface IGroup {
   _id: string;
   groupName: string;
@@ -6,7 +8,7 @@ export interface IGroup {
   // creatorId: mongoose.Types.ObjectId;
   // members: mongoose.Types.ObjectId[];
   skills: string[];
-  members: string[];
+  members: Member[];
   created_at?: Date;
   updated_at?: Date;
   groupImage?: string;

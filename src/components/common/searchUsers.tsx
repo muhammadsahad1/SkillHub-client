@@ -40,7 +40,7 @@ const SearchUsers = () => {
   );
 
   // navigate to view profile
-  const handleNavigation = (option: string[]) => {
+  const handleNavigation = (option: any) => {
     navigate(`/auth/OtherProfileView/${option?._id}`, {
       state: {
         profileImageUrl: option?.profileImageUrl,
@@ -74,7 +74,6 @@ const SearchUsers = () => {
             key={option._id}
             onClick={() => handleNavigation(option)}
             sx={{
-              
               display: "flex",
               alignItems: "center",
               padding: "8px 16px",
@@ -117,6 +116,7 @@ const SearchUsers = () => {
               sx: {
                 width: "250px", // Set the desired width
                 height: "45px",
+                border: 2,
                 borderRadius: "50px",
                 backgroundColor: "#f5f6f7",
                 paddingLeft: "10px",

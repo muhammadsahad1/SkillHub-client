@@ -8,7 +8,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { SocketProvider } from "./contexts/SocketContext";
 import NotificationHandler from "./components/notification/NotificationHandler";
-import { Routes, Route, useRoutes } from "react-router-dom";
+import { useRoutes } from "react-router-dom";
 import routes from "./routes/AllRoutes/allRoutes.tsx";
 import {
   useVideoCall,

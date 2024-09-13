@@ -11,7 +11,7 @@ import { IGroup } from "../../@types/groupType";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { Send, Info } from "lucide-react";
 import useGetUser from "../../hook/getUser";
-import { IMember } from "../../@types/membersType";
+import { IMember, Member } from "../../@types/membersType";
 import { useSocket } from "../../hook/useSocket";
 import { useNotifyUser } from "../../hook/useNotifyUser";
 import { GroupMessages } from "../../@types/groupMessageI";
@@ -21,8 +21,8 @@ import { MdOutlineAdminPanelSettings } from "react-icons/md";
 const GroupChatBody: React.FC = () => {
   const { groupId } = useParams();
   const [group, setGroup] = useState<IGroup | null>(null);
-  const [messages, setMessages] = useState<GroupMessages[] | null>([]);
-  const [filterGroupUsers, setFilterGroupUsers] = useState<IMember[] | null>(
+  const [messages, setMessages] = useState<GroupMessages[] | []>([]);
+  const [filterGroupUsers, setFilterGroupUsers] = useState<Member[] | null>(
     null
   );
   const [searchUser, setSearchUser] = useState<string | null>(null);
@@ -37,12 +37,6 @@ const GroupChatBody: React.FC = () => {
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
-
-  const currentUser = {
-    id: "1",
-    name: "Alice",
-    avatar: "/api/placeholder/40/40",
-  };
 
   const fetchGroup = async (groupId: string) => {
     try {
@@ -99,26 +93,29 @@ const GroupChatBody: React.FC = () => {
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!socket) return;
+    if (!socket || !groupId || !logedUser.id) return;
 
     const message = newMessage.trim();
     if (!message) return;
 
-    let newMsg = {
-      _id: groupId,
-      media: null,
+    const newMsg: GroupMessages = {
+      _id: groupId, // Now this is always a string
+      media: undefined,
       readBy: [],
       sender: {
+        name: logedUser.name,
         _id: logedUser.id,
-        userProfile: logedUser?.picture?.imageUrl as string,
+        userProfile: logedUser?.picture?.imageUrl || "",
       },
-      message: newMessage,
-      createAt: new Date().toISOString(),
+      message: message,
+      createdAt: new Date().toISOString(),
     };
-    setMessages((prevMessage) => [...prevMessage, newMsg]);
+
+    setMessages((prevMessages) => [...(prevMessages || []), newMsg]);
+
     setNewMessage("");
     socket.emit("sendGroupMessage", newMsg);
-    await sendGroupChat(groupId as string, currentUser.id, message as string);
+    await sendGroupChat(groupId as string, logedUser._id, message as string);
     fetchGroupMessages(groupId as string);
   };
 
@@ -144,12 +141,19 @@ const GroupChatBody: React.FC = () => {
     }
   }, [messages]);
 
+  console.log("grp =>", group);
   const handleSearchPeople = (value: string) => {
     setSearchUser(value);
-    const filtered = group?.members.filter((member) =>
+    const members = group?.members;
+    if (!members) {
+      setFilterGroupUsers(null);
+      return;
+    }
+
+    const filtered = members.filter((member: Member) =>
       member.userName.toLowerCase().includes(value.toLowerCase())
     );
-    setFilterGroupUsers(filtered as IMember[]);
+    setFilterGroupUsers(filtered);
   };
 
   const handleLeaveGroup = async (userId: string) => {
@@ -198,9 +202,11 @@ const GroupChatBody: React.FC = () => {
           {(!filterGroupUsers ? group?.members : filterGroupUsers)?.map(
             (member: any) => (
               <div
-                onClick={() =>
-                  navigate(`/auth/OtherProfileView/${member.userId}`)
-                }
+                onClick={() => {
+                  logedUser.id !== member.userId
+                    ? navigate(`/auth/OtherProfileView/${member.userId}`)
+                    : navigate('/auth/viewProfile');
+                }}
                 key={member?.userId || member?.userId}
                 className="flex items-center p-3 hover:bg-gray-200 transition-colors cursor-pointer"
               >
@@ -255,7 +261,7 @@ const GroupChatBody: React.FC = () => {
           className="flex-1 overflow-y-auto p-4 space-y-4 bg-zinc-950"
           ref={chatContainerRef}
         >
-          {messages.map((message: GroupMessages) => (
+          {messages?.map((message: GroupMessages) => (
             <div
               key={message._id || message.sender._id}
               className={`flex items-start ${

@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import React from "react";
 import NavBar from "../../components/common/navBar";
 import UsersRelatedSkill from "../../components/user/UsersRelatedSkill";

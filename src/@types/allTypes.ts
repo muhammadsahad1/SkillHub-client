@@ -9,6 +9,7 @@ export interface User {
   role?: string;
   blocked?: boolean;
   isRequested?: boolean;
+  profileImageUrl?: string;
   phoneNumber?: string;
   profileImage?: string | ArrayBuffer | null | Blob;
   coverImage?: string | ArrayBuffer | null | Blob;

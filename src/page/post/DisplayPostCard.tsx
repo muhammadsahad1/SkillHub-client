@@ -1,4 +1,3 @@
-import React from 'react'
 import PostCard from '../../components/post/PostCard'
 
 const DisplayPostCard = () => {

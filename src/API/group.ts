@@ -1,18 +1,10 @@
 import Api from "../services/axios";
 import userRoutes from "../services/endpoints/userEndpoints";
 
-const logFormData = (formData: FormData) => {
-  const data = {};
-  formData.forEach((value, key) => {
-    data[key] = value;
-  });
-  console.log("FormData:", data);
-};
-
 // ================================ Group API ========================= \\
 export const createGroup = async (groupData: FormData) => {
   try {
-    logFormData(groupData);
+
     const response = await Api.post(userRoutes.createGroup, groupData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -87,7 +79,7 @@ export const fetchSelectedGroup = async (groupId: string) => {
 
 export const sendGroupChat = async (
   groupId: string,
-  senderId: string,
+  senderId: string | undefined,
   message: string
 ) => {
   try {
