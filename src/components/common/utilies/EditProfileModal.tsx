@@ -34,7 +34,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     control,
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<User>({
     mode: "onChange",

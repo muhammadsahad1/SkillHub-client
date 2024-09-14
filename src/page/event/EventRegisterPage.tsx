@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+
 import EventRegisteration from "../../components/event/EventRegisteration";
 import NavBar from "../../components/common/navBar";
 

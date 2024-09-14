@@ -1,4 +1,4 @@
-import React from 'react'
+
 import FollowersLists from '../../components/user/FollowersLists'
 import NavBar from '../../components/common/navBar'
 

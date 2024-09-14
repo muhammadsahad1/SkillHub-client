@@ -25,7 +25,7 @@ import {
 
 import { useDeletePost } from "../../../hook/usePosts";
 import useGetUser from "../../../hook/getUser";
-import { showToastError, showToastSuccess } from "../../common/utilies/toast";
+import { showToastError } from "../../common/utilies/toast";
 import { useEditPost } from "../../../hook/usePosts";
 
 interface PostCardProps {

@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { registerEvent } from "../../API/event";
-import { showToastSuccess, showToastError } from "../common/utilies/toast";
+import { showToastSuccess } from "../common/utilies/toast";
 import { useNavigate } from "react-router-dom";
 import { DotLoader } from "react-spinners";
 

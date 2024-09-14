@@ -1,17 +1,23 @@
-import React, { useEffect } from 'react';
-import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
-import { IEvent } from '../../@types/events';
+import React, { useEffect } from "react";
+import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
+import { IEvent } from "../../@types/events";
 
 interface User {
   id: string;
   name: string;
 }
 
-const ZegoVideoCall: React.FC<{ event: IEvent ; currentUser: User }> = ({ event, currentUser }) => {
+const ZegoVideoCall: React.FC<{ event: IEvent | null; currentUser: User }> = ({
+  event,
+  currentUser,
+}) => {
   useEffect(() => {
     const initZegoUIKit = async () => {
       try {
-
+        if (!event) {
+          console.error("Event is null, cannot initialize ZEGOCLOUD UI Kit.");
+          return;
+        }
         const appID = Number(import.meta.env.VITE_ZEGO_APP_ID);
         const serverSecret = import.meta.env.VITE_ZEGO_SERVER_SECRET;
 
@@ -19,9 +25,9 @@ const ZegoVideoCall: React.FC<{ event: IEvent ; currentUser: User }> = ({ event,
         const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
           appID,
           serverSecret,
-          event._id,               
-          currentUser.id,           
-          currentUser.name          
+          event._id,
+          currentUser.id,
+          currentUser.name
         );
 
         // Initialize ZegoUIKitPrebuilt with the generated token
@@ -47,7 +53,7 @@ const ZegoVideoCall: React.FC<{ event: IEvent ; currentUser: User }> = ({ event,
   }, [event, currentUser]);
 
   return (
-    <div id="video-container" style={{ width: '100vw', height: '100vh' }}>
+    <div id="video-container" style={{ width: "100vw", height: "100vh" }}>
       {/* Zego UIKit will render video elements here */}
     </div>
   );

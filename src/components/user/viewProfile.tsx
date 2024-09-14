@@ -1,35 +1,32 @@
 import { useEffect, useState } from "react";
 import useGetUser from "../../hook/getUser";
-import { coverImageUpload, profileImage } from "../../API/user";
+import {  profileImage } from "../../API/user";
 import {
-  setCoverImage,
   setFollowingsFollowersCount,
   setUserImages,
 } from "../../redux/userSlices";
 import { useDispatch } from "react-redux";
 import NavBar from "../common/navBar";
-import { Link, useNavigate } from "react-router-dom";
+// import { Link, useNavigate } from "react-router-dom";
 import bgImage from "../../assets/sideImage.png";
 import { BiEdit } from "react-icons/bi";
-import { TbCameraPlus } from "react-icons/tb";
+// import { TbCameraPlus } from "react-icons/tb";
 import EditProfileModal from "../common/utilies/EditProfileModal";
-import CoverImageModal from "../common/utilies/CoverImageModal";
 import noProfile from "../../assets/no profile.png";
-import toast from "react-hot-toast";
 import SkeletonLoader from "../common/skeleton/Skelton";
 import ProfilePostsActivity from "./profile/ProfilePostsActivity";
 import PostSpringModal from "../post/MediaPostModal";
 import { HiCheckBadge } from "react-icons/hi2";
+import { Link } from "react-router-dom";
 
 const ViewProfile: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isCoverImgModalOpen, setCoverImgModalOpen] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isModelOpen, setModalOpen] = useState<boolean>(false);
 
   const currentUser = useGetUser();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // Image fetch Request for profile image
   const fetchProfileImage = async () => {
@@ -77,31 +74,6 @@ const ViewProfile: React.FC = () => {
     setIsOpen(false);
   };
 
-  // to open add cover image
-  const handleCoverImage = () => {
-    setCoverImgModalOpen(true);
-  };
-
-  console.log("userCurr =>", currentUser.picture?.imageUrl);
-  // here api calling to backend
-  const handleChangeCoverImg = async (imageFile: File) => {
-    try {
-      const formData = new FormData();
-      formData.append("coverImage", imageFile);
-
-      const response = await coverImageUpload(formData);
-      dispatch(setCoverImage(response.user));
-
-      if (response.success) {
-        toast.success(response.message);
-      } else {
-        toast.error("Cover image upload failed");
-      }
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
   return (
     <div className="w-full min-h-screen bg-gray-100">
       <NavBar />
@@ -128,7 +100,7 @@ const ViewProfile: React.FC = () => {
               />
             )}
 
-            <button
+            {/* <button
               className="absolute right-5 top-5 bg-transparent border rounded-full border-gray-800 p-2 hover:bg-gray-900"
               onClick={handleCoverImage}
             >
@@ -136,7 +108,7 @@ const ViewProfile: React.FC = () => {
                 size={32}
                 className="text-gray-800 bg-transparent rounded-full p-1 transition duration-100 hover:text-white hover:bg-gray-900"
               />
-            </button>
+            </button> */}
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
               {typeof currentUser?.picture?.imageUrl === "string" &&
               currentUser?.picture?.imageUrl != "" ? (
@@ -163,11 +135,6 @@ const ViewProfile: React.FC = () => {
               Edit
             </button>
             <EditProfileModal isOpen={isOpen} onRequestClose={closeModal} />
-            <CoverImageModal
-              isOpen={isCoverImgModalOpen}
-              onRequestClose={() => setCoverImgModalOpen(false)}
-              onCoverImageChange={handleChangeCoverImg}
-            />
 
             {currentUser.profile ? (
               <div className="flex flex-col items-center md:items-start mt-6">

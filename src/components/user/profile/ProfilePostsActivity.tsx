@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import PostGrid from "./PostGrid";
 import { useGetMyPosts } from "../../../hook/usePosts";
 

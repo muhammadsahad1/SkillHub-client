@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useViewPost } from "../../hook/usePosts";
-import { showToastError } from "../../components/common/utilies/toast";
-import { Grid, Typography } from "@mui/material";
+
+import { Grid } from "@mui/material";
 import PostCard from "../../components/user/profile/PostCard";
 import { viewPost } from "../../API/post";
 
 const PostDetails = () => {
   const { postId } = useParams<{ postId: string }>();
-  console.log("ID ==>",postId)
   const [onePost,setPost] = useState<any>([])
-  // const { data: post, isLoading, isError } = useViewPost(postId as string);
+
   const viewPostt = async (postId: string) => {
     const post = await viewPost(postId);
+    
     setPost(post)
     console.log("post =(())==>", post);
   };

@@ -52,7 +52,7 @@ const UsersRelatedSkill = () => {
 
       {isLoading ? (
         <SkeletonUsers />
-      ) : skillRelatedUsers.length > 0 ? (
+      ) : skillRelatedUsers.length > 0 ? (  
         <OutlinedCard users={skillRelatedUsers} />
       ) : (
         <div className="text-center mt-5">

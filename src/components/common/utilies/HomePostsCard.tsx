@@ -28,7 +28,7 @@ import {
   useEditComment,
   useEditPost,
   usePostLike,
-  useViewPost,
+  // useViewPost,
 } from "../../../hook/usePosts";
 import { showToastError, showToastSuccess } from "./toast";
 import { Link, useNavigate } from "react-router-dom";
@@ -80,7 +80,6 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
     const [anchorE2, setAnchorE2] = useState<HTMLElement | null>(null);
     const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
     const [editedCaption, setEditedCaption] = useState<string>(post.caption);
-    const [editedComment, setEditedComment] = useState<string>("");
     const [isLiked, setLiked] = useState<boolean>(false);
     const [likeCount, setLikeCount] = useState<number>(0);
     const [isCommentBoxOpen, setCommentBoxOpen] = useState<boolean>(false);
@@ -114,13 +113,6 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
       setLikeCount(post.likes.length);
     }, [post.likes, user.id]);
 
-    // handlMenu click
-    const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-      console.log("click cheyth");
-      // setDeleteModalOpen(true)
-      setAnchorEl(event.currentTarget);
-    };
-
     const handleOtherPostMenu = (event: React.MouseEvent<HTMLElement>) => {
       setAnchorE2(event.currentTarget);
     };
@@ -150,12 +142,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
       handleMenuClose();
     };
 
-    const handleModalClose = () => {
-      setEditModalOpen(false);
-    };
-
     const handleEditModal = (commentId: string, commentText: string) => {
-      console.log("keri");
       setCommentBeingEdited({
         id: commentId,
         text: commentText,
@@ -226,8 +213,8 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
 
     const deletingComment = async (commentId: string, postId: string) => {
       try {
-        const result = await deleteComment({ commentId, postId });
-        console.log("res ==>", result);
+        await deleteComment({ commentId, postId });
+
         handleCommentMenuClose();
       } catch (error) {
         console.error("Failed to delete comment:", error);
@@ -499,12 +486,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
               gap: 2,
             }}
           >
-            <CommentBox
-              postId={post._id}
-              onClose={commentClose}
-              userId={""}
-              comments={[]}
-            />
+            <CommentBox postId={post._id} onClose={commentClose} />
             {post?.comments?.map((comment: any) => (
               <Box
                 key={comment._id}

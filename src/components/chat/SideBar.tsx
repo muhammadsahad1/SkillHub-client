@@ -16,8 +16,7 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import SimpleBarReact from "simplebar-react";
-import { TbMessages } from "react-icons/tb";
+
 import {
   getConversationsUsers,
   markMessageAsRead,
@@ -25,6 +24,7 @@ import {
 import { Link } from "react-router-dom";
 import { useSocket } from "../../hook/useSocket";
 import useGetUser from "../../hook/getUser";
+import { TbMessages } from "react-icons/tb";
 
 type SideBarHandle = {
   fetchChatUsers: () => Promise<void>;
@@ -44,12 +44,12 @@ const SideBar = forwardRef<SideBarHandle, SideBarProps>((props, ref) => {
   const fetchChatUsers = async () => {
     try {
       const result = await getConversationsUsers();
-      const sortedResultByRecentlyChat = result.sort((a: any, b: any) => {
-        const dateA = new Date(a.lastMessageTime).getTime();
-        const dateB = new Date(b.lastMessageTime).getTime();
+      // const sortedResultByRecentlyChat = result.sort((a: any, b: any) => {
+      //   const dateA = new Date(a.lastMessageTime).getTime();
+      //   const dateB = new Date(b.lastMessageTime).getTime();
 
-        return dateB - dateA;
-      });
+      //   return dateB - dateA;
+      // });
       setChatUsers(result);
     } catch (error) {}
   };

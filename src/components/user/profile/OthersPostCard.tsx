@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardMedia,
   IconButton,
   TextField,
   Typography,
@@ -17,20 +16,24 @@ import {
 import { Avatar } from "antd";
 import PopUpModal from "../../common/utilies/Modal";
 import {
-  MoreVert as MoreVertIcon,
   Favorite as LikeIcon,
   Comment as CommentIcon,
-  Send as SendIcon,
-  Delete as DeleteIcon,
 } from "@mui/icons-material";
 import { HiDotsCircleHorizontal } from "react-icons/hi";
 import CommentBox from "../../common/utilies/CommentBox"; // Ensure this path is correct
 import useGetUser from "../../../hook/getUser";
 import { Link, useNavigate } from "react-router-dom";
-import { useDeleteComment, useDeletePost, useEditComment, useEditPost, usePostLike } from "../../../hook/usePosts";
+import {
+  useDeleteComment,
+  useDeletePost,
+  useEditComment,
+  useEditPost,
+  usePostLike,
+} from "../../../hook/usePosts";
 import { useNotifyUser } from "../../../hook/useNotifyUser";
 import { useSocket } from "../../../hook/useSocket";
 import { showToastError } from "../../common/utilies/toast";
+import { useQueryClient } from "react-query";
 
 interface Comment {
   _id: string;
@@ -49,6 +52,8 @@ interface PostCardProps {
     userName?: string;
     likes: string[];
     comments: Comment[];
+    userId: string;
+    type: string;
   };
 }
 const ActionButton: React.FC<React.ComponentProps<typeof Button>> = (props) => (
@@ -68,10 +73,9 @@ const formatDate = (dateString: string) => {
 };
 
 const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
-  console.log("post in others =>",post)
   const user = useGetUser();
-  const navigate = useNavigate()
-  const { socket } = useSocket()
+  const navigate = useNavigate();
+  const { socket } = useSocket();
   const { mutate: editPost } = useEditPost();
   const { mutate: deleteComment } = useDeleteComment();
   const { mutate: deletePost } = useDeletePost();
@@ -97,46 +101,41 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
     text: string;
   } | null>(null);
 
+  const queryClient = useQueryClient();
 
-
-  const isMenuOpen = Boolean(anchorEl);
   const isCommentMenuOpen = Boolean(commentAnchorEl);
 
   const handlePostLike = async () => {
     const wasLiked = !isLiked;
-      await postLike(post._id);
-      setLiked(wasLiked);
-  
-      // Check if the current user is not the owner of the post
-      if (wasLiked && user.id !== post?.userId) {
-        // Emit socket event for liking the post
-        socket?.emit("postLiked", {
-          senderId: user.id,
-          receiverId: post?.userId,
-          type: "like",
-          message: `${user.name} liked your post`,
-          link: `/auth/post/${post._id}`,
-        });
-  
-        // Create a new notification for the post like
-        await useNotifyUser(
-          user.id,
-          post?.userId,
-          "like",
-          `${user.name} liked your post`,
-          `/auth/post/${post._id}`
-        );
-      }
-  
-      // Update like count
-      setLikeCount((prevCount) => {
-        const newCount = wasLiked ? prevCount + 1 : prevCount - 1;
-        return newCount;
-      });
-  };
+    await postLike(post._id);
+    setLiked(wasLiked);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+    // Check if the current user is not the owner of the post
+    if (wasLiked && user.id !== post?.userId) {
+      // Emit socket event for liking the post
+      socket?.emit("postLiked", {
+        senderId: user.id,
+        receiverId: post?.userId,
+        type: "like",
+        message: `${user.name} liked your post`,
+        link: `/auth/post/${post._id}`,
+      });
+
+      // Create a new notification for the post like
+      await useNotifyUser(
+        user.id,
+        post?.userId,
+        "like",
+        `${user.name} liked your post`,
+        `/auth/post/${post._id}`
+      );
+    }
+
+    // Update like count
+    setLikeCount((prevCount) => {
+      const newCount = wasLiked ? prevCount + 1 : prevCount - 1;
+      return newCount;
+    });
   };
 
   const handleMenuClose = () => {
@@ -155,11 +154,8 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
     setCommentEditModalOpen(false);
   };
 
-
   const handleEditComment = () => {
     if (commentBeingEdited) {
-      console.log("id ==>", commentBeingEdited.id);
-
       try {
         editComment({
           commentId: commentBeingEdited.id,
@@ -185,7 +181,6 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
     }
   };
 
-
   const deletingComment = async (commentId: string, postId: string) => {
     try {
       await deleteComment({ commentId, postId });
@@ -195,11 +190,9 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
     }
   };
 
-  
   const handleModalClose = () => {
     setEditModalOpen(false);
   };
-
 
   const commentClose = () => {
     setCommentBoxOpen(!isCommentBoxOpen);
@@ -229,215 +222,205 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
     handleMenuClose();
   };
 
-    // for view the one post
-    const handlePostDetaileView = async () => {
-      navigate(`/auth/post/${post._id}`);
-    };
-  
-    const closeDeleteModal = () => {
-      setDeleteModalOpen(false);
-    };
+  // for view the one post
+  const handlePostDetaileView = async () => {
+    navigate(`/auth/post/${post._id}`);
+  };
 
-    
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+  };
 
-    const handleSave = async () => {
-      try {
-        if (captionBeingEdit && captionBeingEdit.text.trim() !== "") {
-          await editPost({ id: post._id, caption: captionBeingEdit.text });
-          post.caption = captionBeingEdit?.text;
-          setEditModalOpen(false);
-        }
-      } catch (error) {
-        console.error("Error updating post:", error);
-        showToastError("Error updating post");
+  const handleSave = async () => {
+    try {
+      if (captionBeingEdit && captionBeingEdit.text.trim() !== "") {
+        await editPost({ id: post._id, caption: captionBeingEdit.text });
+        post.caption = captionBeingEdit?.text;
+        setEditModalOpen(false);
       }
-    };
-
+    } catch (error) {
+      console.error("Error updating post:", error);
+      showToastError("Error updating post");
+    }
+  };
 
   return (
-<Card
-    sx={{
-      maxWidth: 800,
-      margin: "auto",
-      marginTop: 3,
-      boxShadow: 2,
-      marginBottom: 2,
-    }}
-  >
-    <CardHeader
-      avatar={
-        <Link to={`auth/OtherProfileView/${post?.userId}`}>
-          <Avatar src={post.profileImageUrl} />
-        </Link>
-      }
-      title={
-        <Typography variant="subtitle1" fontWeight="bold">
-          {post?.userName}
-        </Typography>
-      }
-      subheader={
-        post.createdAt ? (
-          <Typography variant="body2" color="text.secondary">
-            {formatDate(post.createdAt)}
+    <Card
+      sx={{
+        maxWidth: 800,
+        margin: "auto",
+        marginTop: 3,
+        boxShadow: 2,
+        marginBottom: 2,
+        borderRadius: 4,
+      }}
+    >
+      <CardHeader
+        avatar={
+          <Link to={`auth/OtherProfileView/${post?.userId}`}>
+            <Avatar src={post.profileImageUrl} />
+          </Link>
+        }
+        title={
+          <Typography variant="subtitle1" fontWeight="bold">
+            {post?.userName}
           </Typography>
-        ) : null
-      }
-    />
-    <CardContent>
-      {post?.caption && (
-        <Typography variant="body2" color="text.secondary" paragraph>
-          {post?.caption}
-        </Typography>
-      )}
-      {post?.postUrl && (
+        }
+        subheader={
+          post.createdAt ? (
+            <Typography variant="body2" color="text.secondary">
+              {formatDate(post.createdAt)}
+            </Typography>
+          ) : null
+        }
+      />
+      <CardContent>
+        {post?.caption && (
+          <Typography variant="body2" color="text.secondary" paragraph>
+            {post?.caption}
+          </Typography>
+        )}
+        {post?.postUrl && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              mb: 2,
+              p: 0,
+              m: 0,
+              overflow: "hidden",
+              height: 400,
+              width: "100%",
+              "@media (max-width: 600px)": {
+                maxWidth: "100%",
+              },
+            }}
+          >
+            {post?.type === "video" ? (
+              <Box
+                component="video"
+                src={post?.postUrl}
+                controls
+                sx={{
+                  width: "100%",
+                  objectFit: "cover",
+                  height: { xs: 250, sm: 400 }, // height is 250px on small screens (<600px), 400px on larger screens
+                }}
+              />
+            ) : (
+              <Box
+                component="img"
+                src={post?.postUrl}
+                alt="Post content"
+                sx={{
+                  width: "100%",
+                  objectFit: "cover",
+                  height: { xs: 250, sm: 400 }, // height is 250px on small screens, 400px on larger screens
+                }}
+              />
+            )}
+          </Box>
+        )}
+      </CardContent>
+
+      <CardActions className="bg-zinc-100 flex justify-between py-1">
         <Box
           sx={{
             display: "flex",
-            justifyContent: "center",
-            mb: 2,
-            p: 0,
-            m: 0,
-            overflow: "hidden",
-            height: 400,
+            justifyContent: "space-between",
             width: "100%",
-            "@media (max-width: 600px)": {
-              maxWidth: "100%",
-            },
           }}
         >
-          {post?.type === "video" ? (
-            <video
-              src={post?.postUrl}
-              controls
-              style={{
-                width: "100%",
-                objectFit: "cover",
-                "@media (max-width: 600px)": {
-                  height: 250,
-                },
-                "@media (min-width: 600px)": {
-                  height: 400,
-                },
-              }}
-            />
-          ) : (
-            <img
-              src={post?.postUrl}
-              alt="Post content"
-              style={{
-                width: "100%",
-                objectFit: "cover",
-                "@media (max-width: 600px)": {
-                  height: 250,
-                },
-                "@media (min-width: 600px)": {
-                  height: 400,
-                },
-              }}
-            />
-          )}
-        </Box>
-      )}
-    </CardContent>
-
-    <CardActions className="bg-zinc-100 flex justify-between py-1">
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "100%",
-        }}
-      >
-        <ActionButton
-          onClick={handlePostLike}
-          sx={{
-            color: isLiked ? "#007BFF" : "#18181b",
-            backgroundColor: isLiked ? "#E3F2FD" : "transparent",
-            "&:hover": {
-              backgroundColor: isLiked ? "#BBDEFB" : "#d0d0d0",
-              color: isLiked ? "#007BFF" : "#000",
-            },
-          }}
-        >
-          <LikeIcon sx={{ mr: 0.5 }} />
-          {likeCount} Likes
-        </ActionButton>
-        <ActionButton onClick={commentClose}>
-          <CommentIcon sx={{ mr: 0.5, color: "black" }} />
-          <p className="text-zinc-800">{post?.comments?.length} Comments</p>
-        </ActionButton>
-      </Box>
-    </CardActions>
-
-    {/* Comment Section */}
-    {isCommentBoxOpen && (
-      <Box
-        sx={{
-          padding: "8px 16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        {post?.comments?.map((comment: any) => (
-          <Box
-            key={comment._id}
+          <ActionButton
+            onClick={handlePostLike}
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
+              color: isLiked ? "#007BFF" : "#18181b",
+              backgroundColor: isLiked ? "#E3F2FD" : "transparent",
+              "&:hover": {
+                backgroundColor: isLiked ? "#BBDEFB" : "#d0d0d0",
+                color: isLiked ? "#007BFF" : "#000",
+              },
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Avatar
-                alt={comment.userName}
-                src={comment?.userImageUrl}
-                sx={{ width: 30, height: 30 }}
-              />
-              <Box>
-                <Typography
-                  variant="body2"
-                  sx={{ fontWeight: "bold", color: "#333" }}
-                >
-                  {comment.userName}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#555" }}>
-                  {comment.comment}
-                </Typography>
-              </Box>
-            </Box>
-            {comment.userId === user.id && (
-              <IconButton onClick={openMiniModal}>
-                <HiDotsCircleHorizontal />
-              </IconButton>
-            )}
-            <Menu
-              anchorEl={commentAnchorEl}
-              open={isCommentMenuOpen}
-              onClose={handleCommentMenuClose}
-              PaperProps={{
-                elevation: 1,
-                sx: {
-                  width: "150px",
-                  bgcolor: "background.paper",
-                },
+            <LikeIcon sx={{ mr: 0.5 }} />
+            {likeCount} Likes
+          </ActionButton>
+          <ActionButton onClick={commentClose}>
+            <CommentIcon sx={{ mr: 0.5, color: "black" }} />
+            <p className="text-zinc-800">{post?.comments?.length} Comments</p>
+          </ActionButton>
+        </Box>
+      </CardActions>
+
+      {/* Comment Section */}
+      {isCommentBoxOpen && (
+        <Box
+          sx={{
+            padding: "8px 16px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          {post?.comments?.map((comment: any) => (
+            <Box
+              key={comment._id}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              <MenuItem onClick={() => handleEditModal(comment)}>
-                Edit
-              </MenuItem>
-              <MenuItem
-                onClick={() => deletingComment(comment._id, post._id)}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Avatar
+                  alt={comment.userName}
+                  src={comment?.userImageUrl}
+                  style={{ width: 30, height: 30 }}
+                />
+                <Box>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: "bold", color: "#333" }}
+                  >
+                    {comment.userName}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "#555" }}>
+                    {comment.comment}
+                  </Typography>
+                </Box>
+              </Box>
+              {comment.userId === user.id && (
+                <IconButton onClick={openMiniModal}>
+                  <HiDotsCircleHorizontal />
+                </IconButton>
+              )}
+              <Menu
+                anchorEl={commentAnchorEl}
+                open={isCommentMenuOpen}
+                onClose={handleCommentMenuClose}
+                PaperProps={{
+                  elevation: 1,
+                  sx: {
+                    width: "150px",
+                    bgcolor: "background.paper",
+                  },
+                }}
               >
-                Delete
-              </MenuItem>
-            </Menu>
-          </Box>
-        ))}
-        <CommentBox postId={post._id} onClose={commentClose}/>
-      </Box>
-    )}
-  <Modal open={isEditModalOpen} onClose={handleModalClose}>
+                <MenuItem onClick={() => handleEditModal(comment)}>
+                  Edit
+                </MenuItem>
+                <MenuItem
+                  onClick={() => deletingComment(comment._id, post._id)}
+                >
+                  Delete
+                </MenuItem>
+              </Menu>
+            </Box>
+          ))}
+          <CommentBox postId={post._id} onClose={commentClose} />
+        </Box>
+      )}
+      <Modal open={isEditModalOpen} onClose={handleModalClose}>
         <Box
           sx={{
             position: "absolute",

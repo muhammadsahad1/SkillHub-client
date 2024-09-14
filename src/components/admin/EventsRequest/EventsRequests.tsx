@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IEventRequets } from "../../../@types/eventRequests";
 import { changeEventStatus, getEvents } from "../../../API/admin";
 

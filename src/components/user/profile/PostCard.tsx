@@ -1,8 +1,7 @@
-import React, { useState, MouseEvent, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardHeader,
-  CardMedia,
   CardContent,
   CardActions,
   Avatar,
@@ -18,11 +17,7 @@ import {
 import {
   FavoriteBorder as LikeIcon,
   Comment as CommentIcon,
-  Send as SendIcon,
-  Delete as DeleteIcon,
   MoreVert as MoreVertIcon,
-  Save as SaveIcon,
-  Report as ReportIcon,
 } from "@mui/icons-material";
 import { HiDotsCircleHorizontal } from "react-icons/hi";
 
@@ -93,7 +88,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }: any) => {
   const { mutate: deleteComment } = useDeleteComment();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
-  const [editedCaption, setEditedCaption] = useState<string>("");
+  const [editedCaption, setEditedCaption] = useState<string>(post.caption);
   const [isLiked, setLiked] = useState<boolean>(false);
   const [likeCount, setLikeCount] = useState<number>(0);
   const [isCommentBoxOpen, setCommentBoxOpen] = useState<boolean>(false);
@@ -173,6 +168,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }: any) => {
       showToastError("Error updating post");
     }
   };
+
+  console.log("cmt", commentBeingEdited);
   // handling the post like
   const handlePostLike = async () => {
     try {
@@ -262,18 +259,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }: any) => {
   const handlePostDetaileView = async () => {
     navigate(`/auth/post/${post._id}`);
   };
-
-  // width: "100%",
-  // maxWidth: "800px",
-  // margin: "auto",
-  // marginTop: 3,
-  // boxShadow: 2,
-  // marginBottom: 2,
-  // borderRadius: 4,
-  // height: 600,
-  // display: "flex",
-  // flexDirection: "column",
-  // justifyContent: "space-between",
 
   return (
     <Card
@@ -452,12 +437,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }: any) => {
               </Menu>
             </Box>
           ))}
-          <CommentBox
-            postId={post._id}
-            onClose={commentClose}
-            userId={""}
-            comments={[]}
-          />
+          <CommentBox postId={post._id} onClose={commentClose} />
         </Box>
       )}
 
@@ -483,15 +463,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }: any) => {
             fullWidth
             multiline
             rows={4}
-            value={captionBeingEdit?.text || ""}
-            onChange={(e) => {
-              if (captionBeingEdit) {
-                setCaptionBeingEdit({
-                  ...captionBeingEdit,
-                  text: e.target.value,
-                });
-              }
-            }}
+            value={captionBeingEdit}
+            onChange={(e) => setEditedCaption(e.target.value)}
             sx={{ mt: 2 }}
           />
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>

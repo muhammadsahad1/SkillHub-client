@@ -1,4 +1,4 @@
-import React from 'react'
+
 import NavBar from '../../components/common/navBar'
 import PostDetails from './PostDetails'
 

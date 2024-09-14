@@ -1,4 +1,4 @@
-import React from "react";
+
 import ChatBody from "../../components/chat/ChatBody";
 import NavBar from "../../components/common/navBar";
 import { motion } from "framer-motion";

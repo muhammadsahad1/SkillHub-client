@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useGetUser from "../../hook/getUser";
 import { CgProfile } from "react-icons/cg";
-import { BiEdit } from "react-icons/bi";
 import EditProfileModal from "../common/utilies/EditProfileModal";
 import { profileImage } from "../../API/user";
 import { useDispatch } from "react-redux";
@@ -10,13 +9,13 @@ import { setUserImages } from "../../redux/userSlices";
 const AccountInformation = () => {
   const currentUser = useGetUser();
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const fetchProfileImage = async () => {
     if (currentUser?.id) {
       try {
         const response = await profileImage();
-        if(response.imageUrls){
+        if (response.imageUrls) {
           dispatch(setUserImages(response.imageUrls));
         }
       } catch (error) {
@@ -25,13 +24,9 @@ const AccountInformation = () => {
     }
   };
 
-
   useEffect(() => {
-
     fetchProfileImage();
-  
-}, [currentUser?.id]);
-
+  }, [currentUser?.id]);
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -40,16 +35,18 @@ const AccountInformation = () => {
   const closeModal = () => {
     setModalOpen(false);
   };
-  
 
   return (
     <div className="w-full flex justify-center items-center mt-28">
       <div className="w-full max-w-2xl shadow-md rounded-lg p-6 mb-7">
-        <h1 className="font-poppins font-bold mb-4 text-3xl">Personal Information</h1>
+        <h1 className="font-poppins font-bold mb-4 text-3xl">
+          Personal Information
+        </h1>
         <p className="font-montserrat">Update your personal details below</p>
-        
+
         <div className="mt-8 cursor-pointer">
-          {typeof currentUser.picture?.imageUrl === "string" ? (
+          {typeof currentUser.picture?.imageUrl === "string" &&
+          currentUser.picture?.imageUrl != "" ? (
             <img
               src={currentUser.picture?.imageUrl}
               alt=""
@@ -59,10 +56,14 @@ const AccountInformation = () => {
             <CgProfile
               size={80}
               className="text-zinc-500 bg-transparent rounded-full p-1 cursor-pointer"
-              onClick={() => document.getElementById("profileImageInput")?.click()}
+              onClick={() =>
+                document.getElementById("profileImageInput")?.click()
+              }
             />
           )}
-          <p className="font-semibold mt-3">Upload or change your profile picture</p>
+          <p className="font-semibold mt-3">
+            Upload or change your profile picture
+          </p>
         </div>
         <input
           id="profileImageInput"
@@ -133,7 +134,6 @@ const AccountInformation = () => {
             onClick={handleOpenModal}
           >
             Update Profile
-            
           </button>
           <EditProfileModal isOpen={isModalOpen} onRequestClose={closeModal} />
         </div>

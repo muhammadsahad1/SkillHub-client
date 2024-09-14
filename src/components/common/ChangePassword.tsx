@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import NavBar from "./navBar";
 import toast from "react-hot-toast";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { DotLoader } from "react-spinners";
 import { validatePassword } from "../../utils/validation";
 import { changePassword } from "../../API/user";
-import { useMatch, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import PasswordInput from "./passwordInput";
 import loginPunch from '../../assets/change pass.png'
 

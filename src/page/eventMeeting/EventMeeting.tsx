@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import ZegoComponent from "../../components/event/ZegoComponent";
 import { useLocation } from "react-router-dom";
 import { IEvent } from "../../@types/events";

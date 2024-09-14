@@ -7,4 +7,5 @@ export interface IEventRequets {
   duration: number;
   category: string;
   approvalStatus: string;
+  userName: string;
 }

@@ -1,4 +1,4 @@
-import React from "react";
+
 import GroupChatBody from "../../components/group/GroupChatBody";
 import NavBar from "../../components/common/navBar";
 

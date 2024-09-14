@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from "react";
+import { useRef, useCallback } from "react";
 import { useGetPosts } from "../../hook/usePosts";
 import { Box, CircularProgress, Typography, Skeleton } from "@mui/material";
 import HomePostCard from "../common/utilies/HomePostsCard";

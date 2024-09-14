@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import bgWp from "../../assets/bg black.jpg";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import { BiPaperPlane } from "react-icons/bi";
 import EmojiPicker from "emoji-picker-react";
@@ -139,16 +138,16 @@ const ChatComponent = ({ onNewMessage, handleBackClick }: OnNewMessage) => {
       setImage(file);
       const previewUrl = URL.createObjectURL(file);
 
-      const tempMsbId = new Date().getTime().toString();
+      // const tempMsbId = new Date().getTime().toString();
 
-      let newMessage = {
-        _id: tempMsbId,
-        senderId: sender.id,
-        receiverId: userId,
-        message: " ",
-        mediaUrl: previewUrl,
-        createAt: new Date().toISOString(),
-      };
+      // // let newMessage = {
+      // //   _id: tempMsbId,
+      // //   senderId: sender.id,
+      // //   receiverId: userId,
+      // //   message: " ",
+      // //   mediaUrl: previewUrl,
+      // //   createAt: new Date().toISOString(),
+      // // };
 
       setImagePrev(previewUrl);
       setPrevModal(true);

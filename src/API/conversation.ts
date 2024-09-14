@@ -1,6 +1,5 @@
 import Api from "../services/axios";
 import userRoutes from "../services/endpoints/userEndpoints";
-import { ImageData, UsersData } from "../@types/imageData";
 
 export const fetchChatUsers = async (
   senderId: string,

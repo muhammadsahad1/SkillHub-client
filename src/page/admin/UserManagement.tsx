@@ -1,4 +1,4 @@
-import React from 'react'
+
 import UserLists from '../../components/admin/userManagement/UserLists'
 import SideBar from '../../components/admin/layouts/SideBar'
 import useGetUser from '../../hook/getUser'

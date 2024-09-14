@@ -1,4 +1,4 @@
-import React from "react";
+
 import { format, isToday } from "date-fns";
 import { IEvent } from "../../@types/events";
 import { Clock, Calendar, User, Tag } from "lucide-react";

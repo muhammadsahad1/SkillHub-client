@@ -1,4 +1,4 @@
-import React from "react";
+
 import blockImg from "../../assets/blockedPageIcon.png";
 
 const BlockedUserPage = () => {

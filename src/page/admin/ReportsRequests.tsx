@@ -1,4 +1,4 @@
-import React from 'react'
+
 import PostReports from '../../components/admin/postReports/PostReports'
 import SideBar from '../../components/admin/layouts/SideBar'
 

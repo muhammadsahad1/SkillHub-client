@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "../../@types/allTypes";
 import { followBack, myFollowers, removeFollower } from "../../API/user";
 import { FaUserAlt } from "react-icons/fa";
-import useGetUser from "../../hook/getUser";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import PopUpModal from "../common/utilies/Modal";
 
@@ -10,7 +9,6 @@ const FollowersLists = () => {
   const [followers, setFollowers] = useState<User[]>([]);
   const [selectedFollowerId, setSelectedFollowerId] = useState<string | null>(null);
   const [isOpen, setOpenModal] = useState<boolean>(false);
-  const currentUser = useGetUser();
 
   const fetchFollowers = async () => {
     try {

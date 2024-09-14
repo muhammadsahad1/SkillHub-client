@@ -1,4 +1,3 @@
-import React from "react";
 import { Field, Switch } from "@headlessui/react";
 
 const CheckBoxBtn = ({ label, isChecked,  onChange }  : any) => {

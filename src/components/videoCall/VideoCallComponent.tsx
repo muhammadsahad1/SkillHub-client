@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { useVideoCall } from "../../contexts/VideoCallContext";
 import useGetUser from "../../hook/getUser";
-import { useSocket } from "../../hook/useSocket";
 import { MdJoinInner } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
@@ -26,7 +25,6 @@ const VideoCallComponent = () => {
     null
   );
   const user = useGetUser();
-  const { socket } = useSocket();
   const navigate = useNavigate();
 
   const initCall = useCallback(async () => {
@@ -36,7 +34,7 @@ const VideoCallComponent = () => {
       const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
         appID,
         serverSecret,
-        roomId,
+        roomId as string,
         Date.now().toString(),
         user.name
       );

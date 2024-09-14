@@ -12,7 +12,7 @@ import { verifityRequesting } from "../../../API/user";
 import useGetUser from "../../../hook/getUser";
 import { showToastSuccess } from "../../common/utilies/toast";
 import { BarLoader } from "react-spinners";
-import { setIsProfessional, setIsRequest } from "../../../redux/userSlices";
+import {  setIsRequest } from "../../../redux/userSlices";
 import { useDispatch } from "react-redux";
 
 // Styles for the modal

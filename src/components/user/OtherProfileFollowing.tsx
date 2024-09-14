@@ -1,17 +1,19 @@
 import React from "react";
 
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { getMyFollowings, othersFollowings, unFollow } from "../../API/user";
+import {  useNavigate } from "react-router-dom";
+import {
+  followApi,
+  othersFollowings,
+  unFollow,
+} from "../../API/user";
 import useGetUser from "../../hook/getUser";
-import { User } from "../../@types/allTypes";
-import toast from "react-hot-toast";
 import { FaUserAlt } from "react-icons/fa";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { TbMessageDots } from "react-icons/tb";
 
-const OtherProfileFollowings = ({ userId }:{ userId: string | undefined}) => {
-  const [followings, setFollowing] = useState<any>(); 
+const OtherProfileFollowings = ({ userId }: { userId: string | undefined }) => {
+  const [followings, setFollowing] = useState<any>();
   const navigate = useNavigate();
   const currentUser = useGetUser();
 
@@ -23,7 +25,7 @@ const OtherProfileFollowings = ({ userId }:{ userId: string | undefined}) => {
   };
 
   // remove followings user
-  const handleUnfollow = async (toUnFollowId: string) => {
+  const handleUnfollow = async (toUnFollowId: undefined | string) => {
     try {
       const fromFollowerId = currentUser.id;
       const result = await unFollow(toUnFollowId, fromFollowerId);
@@ -40,7 +42,20 @@ const OtherProfileFollowings = ({ userId }:{ userId: string | undefined}) => {
     }
   };
 
-  console.log("following lists ==>", followings);
+  const handleFollow = async (followingId: string) => {
+    try {
+      console.log("click")
+      const result = await followApi({
+        toFollowingId: followingId,
+        fromFollowerId: currentUser.id,
+      });
+
+      if (result.success) {
+        console.log("res ==>>.>>",result)
+        showToastSuccess(result.message);
+      }
+    } catch (error) {}
+  };
 
   useEffect(() => {
     fetchFollowingUser();
@@ -53,7 +68,8 @@ const OtherProfileFollowings = ({ userId }:{ userId: string | undefined}) => {
         {followings && followings.length > 0 ? (
           followings.map(
             (following: {
-              _id: React.Key | null | undefined;
+              relationship: "mutal" | "following" | "followed by";
+              _id: undefined | string;
               imageUrl: string | undefined;
               name:
                 | string
@@ -88,7 +104,6 @@ const OtherProfileFollowings = ({ userId }:{ userId: string | undefined}) => {
                   {following?.imageUrl ? (
                     <img
                       src={following?.imageUrl}
-                      alt={following.name}
                       className="w-12 h-12 rounded-full object-cover ed-lg cursor-pointer"
                       onClick={() =>
                         navigate(`/auth/OtherProfileView/${following._id}`, {
@@ -137,7 +152,7 @@ const OtherProfileFollowings = ({ userId }:{ userId: string | undefined}) => {
                   ) : (
                     <button
                       className="shadow-[inset_0_0_0_2px_#616467] text-black px-3 py-1 rounded-md tracking-widest font-bold bg-transparent hover:bg-[#18181b] hover:text-white dark:text-neutral-200 transition duration-200"
-                      onClick={() => handleUnfollow(following._id)}
+                      onClick={() => handleFollow(following._id as string)}
                     >
                       follow
                     </button>

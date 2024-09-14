@@ -5,15 +5,13 @@ import {
   fetchSelectedGroup,
   leaveGroup,
   sendGroupChat,
-  updateOnlineStatus,
 } from "../../API/group";
 import { IGroup } from "../../@types/groupType";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { Send, Info } from "lucide-react";
 import useGetUser from "../../hook/getUser";
-import { IMember, Member } from "../../@types/membersType";
+import { Member } from "../../@types/membersType";
 import { useSocket } from "../../hook/useSocket";
-import { useNotifyUser } from "../../hook/useNotifyUser";
 import { GroupMessages } from "../../@types/groupMessageI";
 import { BarLoader } from "react-spinners";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
@@ -25,10 +23,10 @@ const GroupChatBody: React.FC = () => {
   const [filterGroupUsers, setFilterGroupUsers] = useState<Member[] | null>(
     null
   );
-  const [searchUser, setSearchUser] = useState<string | null>(null);
+  // const [setSearchUser] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [showInfo, setShowInfo] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); 
   const [groupSkills, setSkills] = useState<string[][]>([]);
 
   const { socket } = useSocket();
@@ -69,18 +67,18 @@ const GroupChatBody: React.FC = () => {
     }
   };
 
-  const updateOnline = async (status: boolean) => {
-    try {
-      const res = await updateOnlineStatus(
-        groupId as string,
-        logedUser.id as string,
-        status
-      );
-      console.log(res);
-    } catch (error) {
-      console.error("Error updating online status");
-    }
-  };
+  // const updateOnline = async (status: boolean) => {
+  //   try {
+  //     const res = await updateOnlineStatus(
+  //       groupId as string,
+  //       logedUser.id as string,
+  //       status
+  //     );
+  //     console.log(res);
+  //   } catch (error) {
+  //     console.error("Error updating online status");
+  //   }
+  // };
 
   useEffect(() => {
     if (groupId) {
@@ -140,7 +138,7 @@ const GroupChatBody: React.FC = () => {
   }, [messages]);
 
   const handleSearchPeople = (value: string) => {
-    setSearchUser(value);
+    // setSearchUser(value as string);
     const members = group?.members;
     if (!members) {
       setFilterGroupUsers(null);

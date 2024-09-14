@@ -1,4 +1,4 @@
-import React from "react";
+
 import VerificationRequests from "../../components/admin/verificationRequest/VerificationRequests";
 import SideBar from "../../components/admin/layouts/SideBar";
 

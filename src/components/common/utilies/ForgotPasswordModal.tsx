@@ -4,7 +4,7 @@ import { forgotPassword } from "../../../API/user";
 import toast from "react-hot-toast";
 import { validateEmail } from "../../../utils/validation";
 import { useForm } from "react-hook-form";
-import { BarLoader, DotLoader } from "react-spinners";
+import { BarLoader } from "react-spinners";
 import fogotimage from "../../../assets/forgot.webp";
 
 interface forgotPassowordPops {

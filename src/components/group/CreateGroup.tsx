@@ -20,6 +20,8 @@ import { createGroup } from "../../API/group";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { UploadFile } from "@mui/icons-material";
 import { BarLoader } from "react-spinners";
+import { SelectChangeEvent } from '@mui/material/Select';
+
 
 interface props {
   onCreated : () => void
@@ -35,7 +37,6 @@ const CreateGroup : React.FC<props> = ({onCreated}) => {
     ""
   );
   const [loading, setLoading] = useState<boolean>(false);
-
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleOpen = () => setIsOpen(true);
@@ -47,15 +48,14 @@ const CreateGroup : React.FC<props> = ({onCreated}) => {
     setDescription("");
   };
 
-  const handleSkillChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleSkillChange = (event: SelectChangeEvent<string[]>) => {
     const {
       target: { value },
     } = event;
     setSelectedSkills(
-      typeof value === "string" ? value.split(",") : (value as string[])
+      typeof value === "string" ? value.split(",") : value as string[]
     );
   };
-
   const validate = () => {
     let tempErrors: { [key: string]: string } = {};
     if (!groupName) tempErrors.groupName = "Group Name is required.";

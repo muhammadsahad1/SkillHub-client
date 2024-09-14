@@ -2,17 +2,9 @@ import { IEventRegister } from "../@types/eventRegister";
 import Api from "../services/axios";
 import userRoutes from "../services/endpoints/userEndpoints";
 
-const logFormData = (formData: FormData) => {
-  const data = {};
-  formData.forEach((value, key) => {
-    data[key] = value;
-  });
-  console.log("FormData:", data);
-};
-
 export const createEvent = async (eventData: FormData) => {
   try {
-    logFormData(eventData);
+    
     console.log("called");
 
     const response = await Api.post(userRoutes.createEvent, eventData, {

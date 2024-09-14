@@ -8,9 +8,16 @@ import Typography from "@mui/material/Typography";
 import { fetchSearchUsers } from "../../API/user";
 import { debounce } from "lodash";
 import { useNavigate } from "react-router-dom";
+import { AutocompleteInputChangeReason } from "@mui/material/Autocomplete";
+
+interface Option {
+  _id: string;
+  name: string;
+  profileImageUrl?: string;
+}
 
 const SearchUsers = () => {
-  const [options, setOptions] = useState<any[]>([]);
+  const [options, setOptions] = useState<Option[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -27,17 +34,23 @@ const SearchUsers = () => {
       setLoading(false);
     }
   };
+
+  const handleInputChange = (
+    _event: React.SyntheticEvent,
+    value: string,
+    _reason: AutocompleteInputChangeReason
+  ) => {
+    // Use the debounced search function
+    handleSearchInput(value);
+  };
   // searching function
-  const handleSearchInput = debounce(
-    (e: React.SyntheticEvent, value: string) => {
-      if (value) {
-        fetchUser(value);
-      } else {
-        setOptions([]);
-      }
-    },
-    300
-  );
+  const handleSearchInput = debounce((value: string) => {
+    if (value) {
+      fetchUser(value);
+    } else {
+      setOptions([]);
+    }
+  }, 300);
 
   // navigate to view profile
   const handleNavigation = (option: any) => {
@@ -64,12 +77,12 @@ const SearchUsers = () => {
       <Autocomplete
         freeSolo
         id="free-solo-2-demo"
-        onInputChange={handleSearchInput}
+        onInputChange={handleInputChange}
         loading={loading}
         disableClearable
         options={options}
-        getOptionLabel={(option) => option.name || ""}
-        renderOption={(props, option) => (
+        getOptionLabel={(option : any) => option.name}
+        renderOption={(option: any) => (
           <Box
             key={option._id}
             onClick={() => handleNavigation(option)}

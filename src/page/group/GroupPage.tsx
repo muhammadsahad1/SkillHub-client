@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import CreateGroup from "../../components/group/CreateGroup";
 import NavBar from "../../components/common/navBar";
 import { motion } from "framer-motion";

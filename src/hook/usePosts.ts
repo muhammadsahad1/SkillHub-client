@@ -21,7 +21,6 @@ import {
   showToastError,
   showToastSuccess,
 } from "../components/common/utilies/toast";
-import { LastPage } from "@mui/icons-material";
 
 // Hook to upload a post and refetch the feed
 const useUploadPost = () => {
@@ -78,7 +77,7 @@ const useDeletePost = () => {
       }
     },
     onError: (error: Error) => {
-      showToastError("Failed to delete post");
+      showToastError(`Failed to delete post${error}`);
     },
   });
 };
@@ -94,7 +93,7 @@ const useEditPost = () => {
       }
     },
     onError: (error: Error) => {
-      showToastError("Failed to edit post");
+      showToastError(`Failed to edit post${error}`);
     },
   });
 };
@@ -110,7 +109,7 @@ const usePostLike = () => {
       }
     },
     onError: (error: Error) => {
-      showToastError("Failed to like post");
+      showToastError(`Failed to like post ${error}`);
     },
   });
 };

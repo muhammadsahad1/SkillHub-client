@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import CheckBoxBtn from "../common/CheckBoxBtn";
 import { accountPrivacy } from "../../API/user";
 import { setAccountPrivacy } from "../../redux/userSlices";

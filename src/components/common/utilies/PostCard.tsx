@@ -134,7 +134,7 @@ const OutlinedCard: React.FC = () => {
             </button>
           ) : (
             <button
-              className="shadow-md text-xs sm:text-sm lg:text-base xl:text-lg sm:w-28 md:w-32 xl:w-40 px-4 sm:px-6 py-2 font-poppins bg-zinc-900 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 tracking-wider"
+              className="shadow-md text-xs sm:text-sm  sm:w-28 md:w-32  px-4 sm:px-6 py-2 font-poppins bg-zinc-900 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 tracking-wider"
               onClick={() => postThougths(thoughts)}
             >
               Post

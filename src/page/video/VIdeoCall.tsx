@@ -1,4 +1,4 @@
-import React from 'react'
+
 import VideoCallComponent from '../../components/videoCall/VideoCallComponent'
 
 const VIdeoCall = () => {

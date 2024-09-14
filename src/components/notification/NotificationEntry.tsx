@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import NotificationsDrawer from "./NotificationsDrawer";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -12,7 +12,6 @@ const NotificationEntry: React.FC<NotificationEntryProps> = ({ onClose }) => {
 
   const { notifications } = useSelector((state : RootState) => state.notifications)
 
-  console.log("notification ==>", notifications);
   return (
     <div>
       <NotificationsDrawer

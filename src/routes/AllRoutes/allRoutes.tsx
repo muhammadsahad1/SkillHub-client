@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import { DotLoader } from "react-spinners";
 import { RouteObject } from "react-router-dom";
-import ViewMembersPage from "../../page/group/ViewMembersPage";
+
 import ReportsRequests from "../../page/admin/ReportsRequests";
 import ProtectedRoute from "../layouts/ProtectedLayout";
 import NotFoundPage from "../../page/NotFoundPage";
@@ -15,27 +15,45 @@ const ProtectLayout = React.lazy(() => import("../protectLayout"));
 
 // Pages - Admin
 const Adminlogin = React.lazy(() => import("../../page/admin/Adminlogn"));
-const AdminDashboard = React.lazy(() => import("../../page/admin/AdminDashboard"));
-const UserManagement = React.lazy(() => import("../../page/admin/UserManagement"));
-const EventsRequests = React.lazy(() => import("../../page/admin/EventsRequests"));
-const VerificationRequestsPage = React.lazy(() => import("../../page/admin/VerificationRequests"));
+const AdminDashboard = React.lazy(
+  () => import("../../page/admin/AdminDashboard")
+);
+const UserManagement = React.lazy(
+  () => import("../../page/admin/UserManagement")
+);
+const EventsRequests = React.lazy(
+  () => import("../../page/admin/EventsRequests")
+);
+const VerificationRequestsPage = React.lazy(
+  () => import("../../page/admin/VerificationRequests")
+);
 
 // Pages - User
 const UserLogin = React.lazy(() => import("../../page/user/UserLogin"));
 const SignUp = React.lazy(() => import("../../page/user/UserSignup"));
 const Home = React.lazy(() => import("../../page/user/Home"));
 const OtpForm = React.lazy(() => import("../../page/user/Otp"));
-const ResetPassword = React.lazy(() => import("../../components/user/resetPassword"));
-const BlockedUserPage = React.lazy(() => import("../../page/user/BlockedUserPage"));
+const ResetPassword = React.lazy(
+  () => import("../../components/user/resetPassword")
+);
+const BlockedUserPage = React.lazy(
+  () => import("../../page/user/BlockedUserPage")
+);
 const SettingsPage = React.lazy(() => import("../../page/user/SettingsPage"));
 // const PrivacyUserPage = React.lazy(() => import("../../page/user/PrivacyUserPage"));
 // const NotificationSettingsPage = React.lazy(() => import("../../page/user/NotificationSettingsPage"));
 const Profile = React.lazy(() => import("../../page/user/profile"));
 const FollowingPage = React.lazy(() => import("../../page/user/FollowingPage"));
 const FollowersPage = React.lazy(() => import("../../page/user/FollowersPage"));
-const OtherProfileViewPage = React.lazy(() => import("../../page/user/OtherProfileViewPage"));
-const OthersFollowingsPage = React.lazy(() => import("../../page/user/OthersFollowingsPage"));
-const OthersFollowersPage = React.lazy(() => import("../../page/user/OthersFollowersPage"));
+const OtherProfileViewPage = React.lazy(
+  () => import("../../page/user/OtherProfileViewPage")
+);
+const OthersFollowingsPage = React.lazy(
+  () => import("../../page/user/OthersFollowingsPage")
+);
+const OthersFollowersPage = React.lazy(
+  () => import("../../page/user/OthersFollowersPage")
+);
 
 // Pages - Chat
 const ChatPage = React.lazy(() => import("../../page/chat/ChatPage"));
@@ -45,26 +63,38 @@ const PostViewPage = React.lazy(() => import("../../page/post/PostViewPage"));
 
 // Pages - Group
 const GroupPage = React.lazy(() => import("../../page/group/GroupPage"));
-const ViewGroupChatPage = React.lazy(() => import("../../page/group/ViewGroupChatPage"));
+const ViewGroupChatPage = React.lazy(
+  () => import("../../page/group/ViewGroupChatPage")
+);
 
 // Pages - Event
 const EventsPage = React.lazy(() => import("../../page/event/EventsPage"));
-const EventRegisterPage = React.lazy(() => import("../../page/event/EventRegisterPage"));
-const EventMeeting = React.lazy(() => import("../../page/eventMeeting/EventMeeting"));
-const EventSuccessPage = React.lazy(() => import("../../page/event/EventResterdSuccess"));
+const EventRegisterPage = React.lazy(
+  () => import("../../page/event/EventRegisterPage")
+);
+const EventMeeting = React.lazy(
+  () => import("../../page/eventMeeting/EventMeeting")
+);
+const EventSuccessPage = React.lazy(
+  () => import("../../page/event/EventResterdSuccess")
+);
 
 // Define application routes
 const routes: RouteObject[] = [
   {
-    path : "*",
-    element : (
-      <NotFoundPage/>
-    )
+    path: "*",
+    element: <NotFoundPage />,
   },
   {
     path: "/",
     element: (
-      <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center inset-0 fixed z-50">
+            <DotLoader />
+          </div>
+        }
+      >
         <Home />
       </Suspense>
     ),
@@ -72,7 +102,13 @@ const routes: RouteObject[] = [
   {
     path: "/blockedUser",
     element: (
-      <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center inset-0 fixed z-50">
+            <DotLoader />
+          </div>
+        }
+      >
         <BlockedUserPage />
       </Suspense>
     ),
@@ -80,7 +116,13 @@ const routes: RouteObject[] = [
   {
     path: "auth/",
     element: (
-      <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center inset-0 fixed z-50">
+            <DotLoader />
+          </div>
+        }
+      >
         <PublicLayout />
       </Suspense>
     ),
@@ -88,7 +130,13 @@ const routes: RouteObject[] = [
       {
         path: "userLogin",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <UserLogin />
           </Suspense>
         ),
@@ -96,7 +144,13 @@ const routes: RouteObject[] = [
       {
         path: "resetPassword",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <ResetPassword />
           </Suspense>
         ),
@@ -104,7 +158,13 @@ const routes: RouteObject[] = [
       {
         path: "userSignup",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <SignUp />
           </Suspense>
         ),
@@ -112,7 +172,13 @@ const routes: RouteObject[] = [
       {
         path: "otp",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <OtpForm />
           </Suspense>
         ),
@@ -122,7 +188,13 @@ const routes: RouteObject[] = [
   {
     path: "auth/",
     element: (
-      <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center inset-0 fixed z-50">
+            <DotLoader />
+          </div>
+        }
+      >
         <ProtectLayout />
       </Suspense>
     ),
@@ -130,7 +202,13 @@ const routes: RouteObject[] = [
       {
         path: "viewProfile",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <Profile />
           </Suspense>
         ),
@@ -138,7 +216,13 @@ const routes: RouteObject[] = [
       {
         path: "settings",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <SettingsPage />
           </Suspense>
         ),
@@ -146,7 +230,13 @@ const routes: RouteObject[] = [
       {
         path: "privacySettings",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <PrivacyInformation />
           </Suspense>
         ),
@@ -154,7 +244,13 @@ const routes: RouteObject[] = [
       {
         path: "notificationSettings",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <NotificationSettings />
           </Suspense>
         ),
@@ -162,7 +258,13 @@ const routes: RouteObject[] = [
       {
         path: "followings",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <FollowingPage />
           </Suspense>
         ),
@@ -170,7 +272,13 @@ const routes: RouteObject[] = [
       {
         path: "followers",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <FollowersPage />
           </Suspense>
         ),
@@ -178,7 +286,13 @@ const routes: RouteObject[] = [
       {
         path: "OtherProfileView/:userId",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <OtherProfileViewPage />
           </Suspense>
         ),
@@ -186,7 +300,13 @@ const routes: RouteObject[] = [
       {
         path: "OthersFollowings/:userId",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <OthersFollowingsPage />
           </Suspense>
         ),
@@ -194,7 +314,13 @@ const routes: RouteObject[] = [
       {
         path: "OthersFollowers/:userId",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <OthersFollowersPage />
           </Suspense>
         ),
@@ -202,7 +328,13 @@ const routes: RouteObject[] = [
       {
         path: "chat",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <ChatPage />
           </Suspense>
         ),
@@ -210,7 +342,13 @@ const routes: RouteObject[] = [
       {
         path: "post/:postId",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <PostViewPage />
           </Suspense>
         ),
@@ -218,7 +356,13 @@ const routes: RouteObject[] = [
       {
         path: "events",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <EventsPage />
           </Suspense>
         ),
@@ -226,7 +370,13 @@ const routes: RouteObject[] = [
       {
         path: "event/:eventId",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <EventRegisterPage />
           </Suspense>
         ),
@@ -234,7 +384,13 @@ const routes: RouteObject[] = [
       {
         path: "meeting/",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <EventMeeting />
           </Suspense>
         ),
@@ -242,7 +398,13 @@ const routes: RouteObject[] = [
       {
         path: "event/registered/success",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <EventSuccessPage />
           </Suspense>
         ),
@@ -250,7 +412,13 @@ const routes: RouteObject[] = [
       {
         path: "groups",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <GroupPage />
           </Suspense>
         ),
@@ -258,25 +426,30 @@ const routes: RouteObject[] = [
       {
         path: "groupChat/:groupId",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <ViewGroupChatPage />
           </Suspense>
         ),
       },
-      {
-        path :"group/viewMembers",
-        element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
-            <ViewMembersPage />
-          </Suspense>
-        ),
-      }
     ],
-  },{
+  },
+  {
     path: "admin/login",
     element: (
       <ProtectedRoute>
-        <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center inset-0 fixed z-50">
+              <DotLoader />
+            </div>
+          }
+        >
           <Adminlogin />
         </Suspense>
       </ProtectedRoute>
@@ -285,16 +458,27 @@ const routes: RouteObject[] = [
   {
     path: "admin/",
     element: (
-      <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center inset-0 fixed z-50">
+            <DotLoader />
+          </div>
+        }
+      >
         <AdminLayout />
       </Suspense>
     ),
     children: [
-      
       {
         path: "dashboard",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <AdminDashboard />
           </Suspense>
         ),
@@ -302,7 +486,13 @@ const routes: RouteObject[] = [
       {
         path: "ums",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <UserManagement />
           </Suspense>
         ),
@@ -310,7 +500,13 @@ const routes: RouteObject[] = [
       {
         path: "events",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <EventsRequests />
           </Suspense>
         ),
@@ -318,19 +514,31 @@ const routes: RouteObject[] = [
       {
         path: "verification-requests",
         element: (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
             <VerificationRequestsPage />
           </Suspense>
         ),
       },
       {
-        path : "reports",
-        element :  (
-          <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
-            <ReportsRequests/>
+        path: "reports",
+        element: (
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center inset-0 fixed z-50">
+                <DotLoader />
+              </div>
+            }
+          >
+            <ReportsRequests />
           </Suspense>
         ),
-      }
+      },
     ],
   },
 ];

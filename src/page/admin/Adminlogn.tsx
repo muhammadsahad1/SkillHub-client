@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { DotLoader } from "react-spinners";
@@ -23,7 +22,7 @@ const Adminlogin = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<any>({
     mode: "onBlur",
   });
 

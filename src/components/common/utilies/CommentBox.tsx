@@ -131,39 +131,56 @@ import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
 import { useState } from "react";
 import { useAddComment } from "../../../hook/usePosts";
 import { showToastError } from "./toast";
+import { useNotifyUser } from "../../../hook/useNotifyUser";
+import useGetUser from "../../../hook/getUser";
+import { useSocket } from "../../../hook/useSocket";
 
 interface CommentBoxProps {
   postId: string;
-  userId: string;
-  comments: any[];
+
   onClose: () => void;
-  // openCommentMenu: (event: React.MouseEvent<HTMLElement>) => void;
-  // isCommentMenuOpen: boolean;
-  // handleCommentMenuClose: () => void;
-  // deletingComment: (commentId: string) => void;
-  // handleEditComment: (commentId: string, newComment: string) => void;
 }
 
 export default function CommentBox({ postId, onClose }: CommentBoxProps) {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [comment, setComment] = useState<string>("");
   const [isValid, setValid] = useState<boolean>(true);
   const addCommentMutation = useAddComment();
+  const user = useGetUser()
+  const  { socket } = useSocket()
 
   const handleAddComment = async () => {
     try {
       const result = await addCommentMutation.mutateAsync({ postId, comment });
-      if (result.success) {
-        onClose();
 
+      if (result.success) {
+        socket?.emit("comment", {
+          senderId: user.id,
+          receiverId: result?.comment?.postOwnerId,
+          type : "comment",
+          message: `${user.name} comment on your post`,
+          link: `/auth/post/${postId}`,
+        });
+        // creating notification and sending to user in realTime
+        await useNotifyUser(
+          user.id,
+          result?.comment?.postOwnerId,
+          "comment",
+          `${user.name} comment on you post`,
+          `/auth/post/${postId}`
+        );
+
+        onClose();
+        setComment("");
+      } else {
+        showToastError("An error occurred while uploading the comment.");
       }
-    } catch (error) {
-      showToastError("An error occurred while uploading the comment.");
-    }
+    }catch (error: any) {
+    console.error("Error in handleAddComment:", error);
+    showToastError("An error occurred while uploading the comment.");
+  }
   };
 
   const handleSetComment = (
@@ -202,12 +219,7 @@ export default function CommentBox({ postId, onClose }: CommentBoxProps) {
           flex: "auto",
         }}
       >
-        <IconButton
-          color="default"
-          onClick={(event) => setAnchorEl(event.currentTarget)}
-        >
-          {/* Add icon if needed */}
-        </IconButton>
+
         <Button
           sx={{ ml: "auto" }}
           onClick={handleAddComment}

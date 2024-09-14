@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { fetchGroups, joinGroup } from "../../API/group";
 import { IGroup } from "../../@types/groupType";
-import { Eye, MessageCircle, UserPlus } from "lucide-react";
+import { MessageCircle, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useGetUser from "../../hook/getUser";
 

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import  { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getMyFollowings, unFollow } from "../../API/user";
 import useGetUser from "../../hook/getUser";
 import { User } from "../../@types/allTypes";
-import toast from "react-hot-toast";
 import { FaUserAlt } from "react-icons/fa";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 

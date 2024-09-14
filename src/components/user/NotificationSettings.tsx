@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+
 import CheckBoxBtn from "../common/CheckBoxBtn";
 import { showNotification } from "../../API/user";
 import { useDispatch } from "react-redux";

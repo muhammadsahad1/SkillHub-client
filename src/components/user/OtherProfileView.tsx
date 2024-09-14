@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   followApi,
-  getOthersPosts,
   getOtherUserDetails,
   unFollow,
 } from "../../API/user";
@@ -27,7 +26,6 @@ interface OtherProfileViewProps {
 
 const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   userId,
-  profileImageUrl,
   coverImageUrl,
 }) => {
   const [userDetails, setUserDetails] = useState<User | null>(null);
@@ -36,7 +34,6 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   const [isMeOnlyFollowing, setIsMeOnlyFollowing] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
-console.log("useD =>",userDetails)
   const currentUser = useGetUser();
   const { socket } = useSocket();
 
@@ -54,7 +51,7 @@ console.log("useD =>",userDetails)
         setIsMeOnlyFollowing(true);
       }
 
-      setIsPrivate(result.user.accountPrivacy);
+      setIsPrivate(result?.user?.accountPrivacy);
       setUserDetails(result.user);
     } catch (error: any) {
       showToastError(error.message);
@@ -113,7 +110,7 @@ console.log("useD =>",userDetails)
 
   const handleUnfollow = async () => {
     try {
-      if (isLoading) return; // Prevent multiple clicks
+      if (isLoading) return;
       setLoading(true);
       setIsConnected(false);
       const result = await unFollow(userId, currentUser.id);
@@ -148,8 +145,6 @@ console.log("useD =>",userDetails)
       followThisUser();
     }
   };
-
-  console.log("userIIIDD =>",userId)
 
   return (
     <div className="w-full min-h-screen bg-gray-100">
@@ -194,7 +189,6 @@ console.log("useD =>",userDetails)
               content={getFollowButtonText()}
               onClick={handleFollowToggle}
               isLoading={isLoading}
-              
             />
           </div>
           {userDetails ? (
@@ -220,11 +214,17 @@ console.log("useD =>",userDetails)
                 <>
                   <p className="text-zinc-900 font-semibold mb-3">
                     <span className="text-zinc-700">
-                      {userDetails?.followers?.length} followers
+                      {userDetails?.followers?.length}{" "}
+                      <Link to={`/auth/OthersFollowers/${userId}`}>
+                        followers
+                      </Link>
                     </span>
                     <span className="text-zinc-700">
                       {" "}
-                      | {userDetails?.following?.length} followings
+                      | {userDetails?.following?.length}{" "}
+                      <Link to={`/auth/OthersFollowings/${userId}`}>
+                        followings
+                      </Link>
                     </span>
                   </p>
                   <p className="text-gray-800 font-poppins text-center md:text-left px-4 md:px-0 mb-4">
@@ -262,7 +262,11 @@ console.log("useD =>",userDetails)
               )}
             </div>
           ) : (
-            <p>Loading...</p>
+            <div className="mt-32 text-center">
+              <h2 className="text-gray-800 font-poppins font-bold">
+                No profile details
+              </h2>
+            </div>
           )}
           <div className="my-6">
             <OthersProfilePostsActivity userId={userId} />

@@ -53,7 +53,6 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
   const [speaker, setSpeaker] = useState("");
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | ArrayBuffer>("");
-  const [accessLink, setAccessLink] = useState("");
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [currency, setCurrency] = useState<string>("USD");

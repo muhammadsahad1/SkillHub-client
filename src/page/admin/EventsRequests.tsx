@@ -1,4 +1,3 @@
-import React from "react";
 import EventsRequestsComponent  from '../../components/admin/EventsRequest/EventsRequests'
 import SideBar from "../../components/admin/layouts/SideBar";
 

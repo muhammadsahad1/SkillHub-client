@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getOthersPosts } from "../../../API/user";
 import OthersPostGrid from "./OthersPostGrid";
 
@@ -25,10 +25,9 @@ const OthersProfilePostsActivity = ({
     return <div>No posts available</div>;
   }
 
-  console.log("res ====>", posts);
   return (
     <div className="flex justify-center mb-20">
-      {/* <PostTypeSelector selectedType={postType} onTypeChange={setPostType} /> */}
+      
       <OthersPostGrid posts={posts} />
     </div>
   );

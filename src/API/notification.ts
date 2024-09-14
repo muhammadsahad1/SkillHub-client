@@ -51,7 +51,7 @@ export const getNotifications = async () => {
 export const markNotificationAsRead = async (notificationId: string) => {
   try {
     console.log("Sending request to mark as read:", notificationId);
-    const response = await Api.post(userRoutes.notificationMarkAsRead, {notificationId})
+     await Api.post(userRoutes.notificationMarkAsRead, {notificationId})
   } catch (error: any) {
     if (error.response) {
       return error.response.data;

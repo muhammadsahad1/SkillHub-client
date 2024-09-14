@@ -6,12 +6,10 @@ import Typography from "@mui/material/Typography";
 import { IuserSkillCardProps } from "../user/UsersRelatedSkill";
 import noProfile from "../../assets/nonProfile.jpg";
 import { useNavigate } from "react-router-dom";
-import IconButton from "@mui/material/IconButton";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-const OutlinedCard: React.FC<{ users : IuserSkillCardProps[]}> = ({ users }) => {
-  console.log("users ==>",users)
+const OutlinedCard: React.FC<{ users: IuserSkillCardProps[] }> = ({
+  users,
+}) => {
   const navigate = useNavigate();
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
@@ -20,6 +18,7 @@ const OutlinedCard: React.FC<{ users : IuserSkillCardProps[]}> = ({ users }) => 
       const scrollPosition = scrollRef.current.scrollLeft;
       const pageWidth = scrollRef.current.clientWidth;
       const currentPage = Math.round(scrollPosition / pageWidth);
+      return currentPage;
       // Update current page or any other logic based on scroll position
     }
   };

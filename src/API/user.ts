@@ -2,7 +2,6 @@ import { FollowParams, userFormData } from "../@types/user";
 import { IVerifyCreateUser } from "../@types/createUser";
 import Api from "../services/axios";
 import userRoutes from "../services/endpoints/userEndpoints";
-import { User } from "../@types/allTypes";
 import { verifyRequest } from "../components/user/profile/ProfessionalAccountModal";
 
 // HERE USER EACH API REQUEST
@@ -335,7 +334,6 @@ export const followApi = async ({
 export const getMyFollowings = async () => {
   try {
     const response = await Api.get(userRoutes.getMyFollowings);
-    console.log("ress=>", response.data);
     return response.data;
   } catch (error: any) {
     if (error.response) {
@@ -349,7 +347,7 @@ export const getMyFollowings = async () => {
 };
 // unFollow
 export const unFollow = async (
-  toUnFollowId: string | undefined,
+  toUnFollowId: undefined | string,
   fromFollowerId: string | undefined
 ) => {
   try {
@@ -420,7 +418,7 @@ export const followBack = async (toFollowId: string) => {
   }
 };
 
-export const otherFollowers = async (userId: string) => {
+export const otherFollowers = async (userId: string | undefined) => {
   try {
     const response = await Api.get(userRoutes.othersFollowers, {
       params: {
@@ -440,10 +438,8 @@ export const otherFollowers = async (userId: string) => {
   }
 };
 
-export const othersFollowings = async (userId: string) => {
+export const othersFollowings = async (userId: string | undefined) => {
   try {
-    console.log("userId ==>", userId);
-
     const response = await Api.get(userRoutes.othersFollowings, {
       params: {
         userId: userId,

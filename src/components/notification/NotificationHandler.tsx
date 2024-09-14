@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useSocket } from "../../hook/useSocket";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";

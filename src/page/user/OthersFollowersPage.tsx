@@ -1,4 +1,3 @@
-import React from "react";
 import NavBar from "../../components/common/navBar";
 import OtherProfileFollowers from "../../components/user/OtherProfileFollowers";
 import { useParams } from "react-router-dom";

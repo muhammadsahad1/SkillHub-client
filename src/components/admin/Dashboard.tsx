@@ -1,4 +1,4 @@
-import React, { useEffect, useState, forwardRef, memo } from "react";
+import { useEffect, useState, forwardRef, memo } from "react";
 import {
   BarChart,
   Bar,

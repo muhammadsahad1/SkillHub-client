@@ -1,4 +1,3 @@
-import React from "react";
 import OutlinedCard from "../common/utilies/PostCard";
 import { motion } from "framer-motion";
 

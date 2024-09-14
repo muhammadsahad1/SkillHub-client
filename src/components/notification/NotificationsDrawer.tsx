@@ -21,7 +21,7 @@ export interface Notification {
 type NotificationType = "follow" | "like" | "comment" | "chat" | "verifyRequestAccepted" | "verifyRequestRejected" | "ReportAction";
 
 interface NotificationsDrawerProps {
-  notifications: Notification[];
+  notifications: any[];
   onClose: () => void;
 }
 
