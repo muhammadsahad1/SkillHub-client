@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import SideBar from "./SideBar";
 import ChatComponent from "./ChatCompontent";
+import { useLocation } from 'react-router-dom'
 
 export type SideBarHandle = {
   fetchChatUsers: () => Promise<void>;
@@ -10,6 +11,15 @@ const ChatBody = () => {
   const sideBarRef = useRef<SideBarHandle>(null);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 640);
+
+
+  
+const location = useLocation()
+
+const userId = location?.state?.userId;
+console.log("LL =>",location.state)
+console.log("userId ==>",userId)
+
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640);
@@ -34,11 +44,11 @@ const ChatBody = () => {
   return (
     <div className="flex h-full">
       {(!selectedUser || !isMobile) && (
-        <div className="w-full sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6">
+        <div className="w-full sm:w-1/2 md:w-1/2 lg:w-1/5 xl:w-1/6">
           <SideBar ref={sideBarRef} onSelectUser={handleSelectedUser} />
         </div>
       )}
-      {selectedUser ? (
+      {selectedUser || userId ? (
         <div className="w-full sm:w-2/3 md:w-3/4 lg:w-4/5 xl:w-5/6">
           <ChatComponent
             onNewMessage={handleNewMessage}

@@ -49,7 +49,7 @@ const AccountInformation = () => {
         <p className="font-montserrat">Update your personal details below</p>
         
         <div className="mt-8 cursor-pointer">
-          {currentUser.picture?.imageUrl ? (
+          {typeof currentUser.picture?.imageUrl === "string" ? (
             <img
               src={currentUser.picture?.imageUrl}
               alt=""
@@ -135,7 +135,7 @@ const AccountInformation = () => {
             Update Profile
             
           </button>
-          <EditProfileModal isOpen={isModalOpen} isRequestClose={closeModal} />
+          <EditProfileModal isOpen={isModalOpen} onRequestClose={closeModal} />
         </div>
       </div>
     </div>

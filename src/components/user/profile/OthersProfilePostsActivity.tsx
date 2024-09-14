@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { getOthersPosts } from "../../../API/user";
 import OthersPostGrid from "./OthersPostGrid";
 
-const OthersProfilePostsActivity = ({ userId }: { userId: string }) => {
+const OthersProfilePostsActivity = ({
+  userId,
+}: {
+  userId: string | undefined;
+}) => {
   const [posts, setPosts] = useState();
   const fetchProfilePosts = async () => {
     try {

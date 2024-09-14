@@ -32,7 +32,7 @@ const UserLogin: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<any>({
     mode: "onChange",
   });
 
@@ -120,7 +120,7 @@ const UserLogin: React.FC = () => {
           <img src={sideImg} className="mb-4" />
           <div className="flex justify-center md:mt-8 ">
             <button
-              className="rounded-full w-1/2 sm:min-2xl md:w-full border-2  border-zinc-900 text-zinc-900 font-bold p-2 hover:bg-zinc-950 hover:text-zinc-100"
+              className="rounded-full w-full sm:min-2xl md:w-full border-2  border-zinc-900 text-zinc-900 font-bold p-2 hover:bg-zinc-950 hover:text-zinc-100"
               onClick={() => navigate("/auth/userSignup")}
             >
               Create account
@@ -168,7 +168,7 @@ const UserLogin: React.FC = () => {
           </form>
           <div className="flex justify-center items-center mt-3">
             <button
-              className="rounded-full w-1/2 sm:max-xl: md:w-full border-2 text-sm border-zinc-900 text-zinc-900 font-semibold p-2 hover:bg-zinc-950 hover:text-zinc-100"
+              className="rounded-full w-full sm:max-xl: md:w-full border-2 text-sm border-zinc-900 text-zinc-900 font-semibold p-2 hover:bg-zinc-950 hover:text-zinc-100"
               onClick={openModal}
             >
               Forgot Password?

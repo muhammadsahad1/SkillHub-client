@@ -9,7 +9,7 @@ import useGetUser from "../../hook/getUser";
 const PrivacyInformation = () => {
   const dispatch = useDispatch();
   const currentUser = useGetUser();
-  const [isPrivate, setIsPrivate] = useState(false); // Initialize with a default value
+  const [isPrivate, setIsPrivate] = useState<boolean | undefined>(false); // Initialize with a default value
 
   console.log("current user ", currentUser);
 

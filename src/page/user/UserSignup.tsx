@@ -77,7 +77,7 @@ const SignUp: React.FC = () => {
           />
           <div className="flex justify-center mt-4 md:mt-8">
             <button
-              className="rounded-full w-1/2 sm:min-2xl md:w-full border-2  border-zinc-900 text-zinc-900 font-bold p-2 hover:bg-zinc-950 hover:text-zinc-100"
+              className="rounded-full w-full sm:min-2xl md:w-full border-2  border-zinc-900 text-zinc-900 font-bold p-2 hover:bg-zinc-950 hover:text-zinc-100"
               onClick={() => navigate("/auth/userLogin")}
             >
               Log in here

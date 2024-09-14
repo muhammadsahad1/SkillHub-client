@@ -8,6 +8,7 @@ import PopUpModal from "../common/utilies/Modal";
 
 const FollowersLists = () => {
   const [followers, setFollowers] = useState<User[]>([]);
+  const [selectedFollowerId, setSelectedFollowerId] = useState<string | null>(null);
   const [isOpen, setOpenModal] = useState<boolean>(false);
   const currentUser = useGetUser();
 
@@ -22,20 +23,21 @@ const FollowersLists = () => {
     fetchFollowers();
   }, []);
 
-
-  //To Remove the follower
-  const handleRemove = async (toRemoveId: string) => {
-    try {
-      setOpenModal(false)
-      const result = await removeFollower(toRemoveId);
-      if (result.success) {
-        setFollowers((prevFollowers) =>
-          prevFollowers.filter((follower) => follower._id != toRemoveId)
-        );
-        showToastSuccess("Removed follower");
+  // To Remove the follower
+  const handleRemove = async () => {
+    if (selectedFollowerId) {
+      try {
+        setOpenModal(false);
+        const result = await removeFollower(selectedFollowerId);
+        if (result.success) {
+          setFollowers((prevFollowers) =>
+            prevFollowers.filter((follower) => follower._id !== selectedFollowerId)
+          );
+          showToastSuccess("Removed follower");
+        }
+      } catch (error: any) {
+        showToastError(error.message);
       }
-    } catch (error: any) {
-      showToastError(error.message);
     }
   };
 
@@ -52,12 +54,14 @@ const FollowersLists = () => {
     }
   };
 
-  // for modal
-  const openModal = async () => {
+  // Open modal with specific follower ID
+  const openModal = (followerId: string) => {
+    setSelectedFollowerId(followerId);
     setOpenModal(true);
   };
 
-  const closeModal = async () => {
+  const closeModal = () => {
+    setSelectedFollowerId(null);
     setOpenModal(false);
   };
 
@@ -65,7 +69,7 @@ const FollowersLists = () => {
     <div className="max-w-6xl mx-auto p-4 mt-28">
       <h2 className="text-xl font-semibold mb-4">People who followed you</h2>
       <div className="space-y-4">
-        {followers.map((follower) => (
+        {followers.map((follower : any) => (
           <div
             key={follower._id}
             className="flex items-center justify-between p-4 bg-white shadow rounded-lg"
@@ -90,13 +94,14 @@ const FollowersLists = () => {
               {follower?.isFollowingBack ? (
                 <button
                   className="font-semibold px-3 py-1 rounded-md bg-gray-300 text-gray-700  hover:bg-gray-400"
-                  onClick={openModal}
+                  onClick={() => openModal(follower._id)}
                 >
                   Remove
                 </button>
               ) : (
-                <button className="shadow-[inset_0_0_0_2px_#616467]  text-black px-3 py-1  rounded-md tracking-widest  font-bold bg-transparent hover:bg-[#18181b] hover:text-white dark:text-neutral-200 transition duration-200"
-                onClick={()=>handleFollowBack(follower._id)}
+                <button
+                  className="shadow-[inset_0_0_0_2px_#616467]  text-black px-3 py-1  rounded-md tracking-widest  font-bold bg-transparent hover:bg-[#18181b] hover:text-white dark:text-neutral-200 transition duration-200"
+                  onClick={() => handleFollowBack(follower._id)}
                 >
                   Follow
                 </button>
@@ -104,7 +109,7 @@ const FollowersLists = () => {
               <PopUpModal
                 isOpen={isOpen}
                 isClose={closeModal}
-                onConfirm={() => handleRemove(follower._id)}
+                onConfirm={handleRemove}
                 title="Confirm Removal"
                 content="Are you sure you want to remove this follower?"
                 confirmText="Yes, Remove"

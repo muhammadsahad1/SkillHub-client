@@ -298,7 +298,7 @@ export const getSkillRelatedUsers = async (currentUserSkill: string) => {
   }
 };
 // get the Other userDetails
-export const getOtherUserDetails = async (userId: string) => {
+export const getOtherUserDetails = async (userId: string | undefined) => {
   try {
     const response = await Api.get(userRoutes.getUserDetails, {
       params: { userId: userId },
@@ -349,7 +349,7 @@ export const getMyFollowings = async () => {
 };
 // unFollow
 export const unFollow = async (
-  toUnFollowId: string,
+  toUnFollowId: string | undefined,
   fromFollowerId: string | undefined
 ) => {
   try {
@@ -386,6 +386,7 @@ export const myFollowers = async () => {
 // remove follower from followers list
 export const removeFollower = async (toRemoveId: string) => {
   try {
+    console.log("rmoevId =>",toRemoveId)
     const response = await Api.post(userRoutes.removeFollower, {
       toRemoveId: toRemoveId,
     });
@@ -462,7 +463,7 @@ export const othersFollowings = async (userId: string) => {
 };
 
 // getOthers posts
-export const getOthersPosts = async (userId: string) => {
+export const getOthersPosts = async (userId: string | undefined) => {
   try {
     const result = await Api.get(userRoutes.getOthersPosts, {
       params: {

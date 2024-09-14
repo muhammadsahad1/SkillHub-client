@@ -8,8 +8,9 @@ import {
   Grid,
   FormHelperText,
 } from "@mui/material";
-import { UploadFile } from "@mui/icons-material"; // Optional, for file upload icon
+import { UploadFile } from "@mui/icons-material";
 import { eventValidation } from "../../utils/validation";
+import { BarLoader } from "react-spinners"; // For the loader
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 
 const style = {
@@ -17,9 +18,9 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "90vw", // Responsive width
+  width: "90vw",
   maxWidth: 800,
-  height: "80vh", // Fixed height to avoid scrolling
+  height: "80vh",
   bgcolor: "background.paper",
   borderRadius: 2,
   boxShadow: 24,
@@ -38,7 +39,7 @@ const formContainerStyle = {
 interface CreateEventModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (eventData: FormData) => void; // Function to handle form submission
+  onSubmit: (eventData: FormData) => Promise<void>; // Make onSubmit return a Promise to handle async operations
 }
 
 const CreateEventModal: React.FC<CreateEventModalProps> = ({
@@ -53,10 +54,10 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
   const [duration, setDuration] = useState("");
   const [speaker, setSpeaker] = useState("");
   const [bannerFile, setBannerFile] = useState<File | null>(null);
-  const [bannerPreview, setBannerPreview] = useState<string | ArrayBuffer>(""); // Store image preview URL
+  const [bannerPreview, setBannerPreview] = useState<string | ArrayBuffer>("");
   const [category, setCategory] = useState("");
-  const [price, setPrice] = useState<number>(0); // Add price state
-  const [currency, setCurrency] = useState<string>("USD"); // Add currency state
+  const [price, setPrice] = useState<number>(0);
+  const [currency, setCurrency] = useState<string>("USD");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -72,15 +73,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
     }
   };
 
-  const logFormData = (formData: FormData) => {
-    const data = {};
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
-    console.log("FormData:", data);
-  };
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validationErrors = eventValidation(
       title,
       description,
@@ -94,6 +87,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
     );
 
     if (Object.keys(validationErrors).length === 0) {
+      setLoading(true); // Start loading
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
@@ -107,10 +101,16 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
       if (bannerFile) {
         formData.append("bannerFile", bannerFile);
       }
-      logFormData(formData);
-      onSubmit(formData);
-
-      onClose();
+      
+      try {
+        await onSubmit(formData);
+        showToastSuccess("Event created successfully!");
+      } catch (error) {
+        showToastError("Failed to create event.");
+      } finally {
+        setLoading(false); // End loading
+        onClose();
+      }
     } else {
       setErrors(validationErrors);
     }
@@ -119,6 +119,11 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box sx={style}>
+        {loading && (
+          <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
+            <BarLoader color="black" />
+          </div>
+        )}
         <Typography variant="h6" component="h2" sx={{ fontWeight: "bold" }}>
           Create a New Event
         </Typography>
@@ -269,6 +274,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
           sx={{ mt: 3 }}
           fullWidth
           onClick={handleSubmit}
+          disabled={loading}
         >
           Create Event
         </Button>

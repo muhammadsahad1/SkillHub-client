@@ -4,7 +4,6 @@ import userRoutes from "../services/endpoints/userEndpoints";
 // ================================ Group API ========================= \\
 export const createGroup = async (groupData: FormData) => {
   try {
-
     const response = await Api.post(userRoutes.createGroup, groupData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -126,8 +125,6 @@ export const updateOnlineStatus = async (
   status: boolean
 ) => {
   try {
-    console.log("called");
-
     const response = await Api.post(userRoutes.updateStatus, {
       groupId,
       userId,
@@ -160,7 +157,10 @@ export const reportPost = async (postId: string, reason: string) => {
   }
 };
 
-export const leaveGroup = async (userId: string, groupId: string | undefined) => {
+export const leaveGroup = async (
+  userId: string,
+  groupId: string | undefined
+) => {
   try {
     const response = await Api.post(userRoutes.leaveGroup, { userId, groupId });
     return response.data;

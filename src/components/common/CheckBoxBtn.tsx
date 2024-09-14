@@ -1,7 +1,7 @@
 import React from "react";
 import { Field, Switch } from "@headlessui/react";
 
-const CheckBoxBtn = ({ label, isChecked,  onChange }) => {
+const CheckBoxBtn = ({ label, isChecked,  onChange }  : any) => {
   return (
     <Field className=" flex justify-between mt-10">
       <label className="font-bold text-zinc-600">{label}</label>

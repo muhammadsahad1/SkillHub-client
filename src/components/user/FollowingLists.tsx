@@ -46,7 +46,7 @@ const FollowingLists = () => {
       <h2 className="text-xl font-semibold mb-4">People you followed</h2>
       <div className="space-y-4">
         {followings && followings.length > 0 ? (
-          followings.map((following) => (
+          followings.map((following : any) => (
             <div
               key={following?._id}
               className="flex items-center justify-between p-4 bg-white shadow round"

@@ -78,6 +78,8 @@ const ChatComponent = ({ onNewMessage, handleBackClick }: OnNewMessage) => {
   const lastMessageRef = useRef<HTMLDivElement>(null);
 
   const userId = location?.state?.userId;
+  console.log("LL =>",location.state)
+  console.log("userId ==>",userId)
   //access the userId from url in route
 
   useEffect(() => {

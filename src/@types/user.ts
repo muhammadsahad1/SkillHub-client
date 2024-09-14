@@ -6,6 +6,6 @@ export interface userFormData {
 }
 
 export interface FollowParams {
-  toFollowingId: string;
+  toFollowingId: string | undefined;
   fromFollowerId: string | undefined;
 }

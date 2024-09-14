@@ -82,7 +82,7 @@ const ViewProfile: React.FC = () => {
     setCoverImgModalOpen(true);
   };
 
-  console.log("userCurr =>",currentUser.picture?.imageUrl)
+  console.log("userCurr =>", currentUser.picture?.imageUrl);
   // here api calling to backend
   const handleChangeCoverImg = async (imageFile: File) => {
     try {
@@ -138,7 +138,8 @@ const ViewProfile: React.FC = () => {
               />
             </button>
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
-              {typeof currentUser?.picture?.imageUrl ===  "string" && currentUser?.picture?.imageUrl != '' ? (
+              {typeof currentUser?.picture?.imageUrl === "string" &&
+              currentUser?.picture?.imageUrl != "" ? (
                 <img
                   src={currentUser?.picture?.imageUrl}
                   alt={`${currentUser.name}'s profile`}
@@ -155,11 +156,11 @@ const ViewProfile: React.FC = () => {
           </div>
           <div className="relative p-8">
             <button
-              className="absolute right-4 top-4 border-2 rounded-xl flex items-center border-gray-800 text-gray-800 font-poppins font-bold p-2 hover:bg-gray-900 hover:text-white"
+              className="absolute right-9 top-4 border-2 rounded-xl flex items-center border-gray-800 text-gray-800 font-poppins font-bold p-2 hover:bg-gray-900 hover:text-white"
               onClick={openEditModal}
             >
-              <BiEdit className="mr-2" />
-              Edit Profile
+              <BiEdit className="mr-2 size-7" />
+              Edit
             </button>
             <EditProfileModal isOpen={isOpen} onRequestClose={closeModal} />
             <CoverImageModal
@@ -171,11 +172,11 @@ const ViewProfile: React.FC = () => {
             {currentUser.profile ? (
               <div className="flex flex-col items-center md:items-start mt-6">
                 <div className="flex ">
-                  <h1 className="text-3xl font-poppins font-bold text-gray-800 mb-2 me-2">
+                  <h1 className="mt-3 text-3xl font-poppins font-bold text-gray-800 mb-2 me-2">
                     {currentUser?.name || "User Name"}
                   </h1>
                   {currentUser.isProfessional && (
-                    <HiCheckBadge className="text-zinc-800" size={28} />
+                    <HiCheckBadge className="text-zinc-800 mt-3" size={28} />
                   )}
                 </div>
                 {currentUser?.isProfessional && (
@@ -235,10 +236,14 @@ const ViewProfile: React.FC = () => {
                       </button>
                     </Link>
                   </div>
+                  {/* sm:px-6 sm:py-3 sm:text-base
+                    md:px-8 md:py-4 md:text-lg
+                      lg:px-10 lg:py-5 lg:text-xl" */}
                   <div className="flex justify-end">
                     <button
                       onClick={openModal}
-                      className="shadow-[inset_0_0_0_2px_#09090b] text-black px-4 py-2 rounded-md tracking-widest font-bold font-poppins  bg-transparent hover:bg-[#09090b] hover:text-white dark:text-neutral-200 transition duration-200"
+                      className="ms-4 shadow-[inset_0_0_0_2px_#09090b] border-gray-800 text-gray-800 px-4 py-2 rounded-md tracking-widest font-bold font-poppins bg-transparent hover:bg-gray-900 hover:text-white
+                        "
                     >
                       Create a post
                     </button>

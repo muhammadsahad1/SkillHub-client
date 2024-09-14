@@ -8,6 +8,7 @@ import { viewPost } from "../../API/post";
 
 const PostDetails = () => {
   const { postId } = useParams<{ postId: string }>();
+  console.log("ID ==>",postId)
   const [onePost,setPost] = useState<any>([])
   // const { data: post, isLoading, isError } = useViewPost(postId as string);
   const viewPostt = async (postId: string) => {

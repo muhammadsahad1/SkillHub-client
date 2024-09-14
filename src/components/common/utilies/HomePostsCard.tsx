@@ -109,7 +109,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
     const queryClient = useQueryClient();
 
     useEffect(() => {
-      const isUserLiked = post.likes.includes(user.id);
+      const isUserLiked = post.likes.includes(user.id as string);
       setLiked(isUserLiked);
       setLikeCount(post.likes.length);
     }, [post.likes, user.id]);
@@ -128,10 +128,6 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
     const handleMenuClose = () => {
       setAnchorEl(null);
     };
-
-    // const handleMenuClose2 = () => {
-    //   setAnchorE2(null);
-    // };
 
     const handleDelete = async () => {
       try {
@@ -164,7 +160,6 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
         id: commentId,
         text: commentText,
       });
-      console.log("prev ==>", commentBeingEdited);
 
       setCommentEditModalOpen(true);
       handleCommentMenuClose();
@@ -289,14 +284,6 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
       setAnchorE2(null);
     };
 
-    // const handleCommentEditModalClose = () => {
-    //   setCommentEditModalOpen(false);
-    // };
-
-    // const handleCaptionEditModelOpen = () => {
-    //   setEditCaptionModal(true)
-    // };
-
     // // for view the one post
     const handlePostDetaileView = async () => {
       navigate(`/auth/post/${post._id}`);
@@ -314,7 +301,6 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
 
     const handlePostReport = async (reason: string | undefined) => {
       try {
-        console.log("resong ===?", reason);
         const result = await reportPost(post._id as string, reason as string);
         if (result.success) {
           showToastSuccess("Report requested");
@@ -326,8 +312,6 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
       } catch (error) {}
     };
 
-    console.log("post ==>", post);
-
     return (
       <Card
         sx={{
@@ -338,7 +322,6 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
           boxShadow: 2,
           marginBottom: 2,
           borderRadius: 4,
-          height: 600,
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -348,13 +331,19 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
         <CardHeader
           avatar={
             <Link to={`auth/OtherProfileView/${post?.userId}`}>
-              {post.isProfessional && <LuBadgeCheck />}
               <Avatar src={post?.userImageUrl} />
             </Link>
           }
           title={
-            <Typography variant="subtitle1" fontWeight="bold">
+            <Typography
+              variant="subtitle1"
+              fontWeight="bold"
+              sx={{ display: "flex", alignItems: "center" }}
+            >
               {post?.userName}
+              {post.isProfessional && (
+                <LuBadgeCheck style={{ marginLeft: 8 }} />
+              )}
             </Typography>
           }
           subheader={
@@ -624,8 +613,13 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
         </Modal>
 
         {/*report request modal */}
-          <PopUpModal isOpen={isReportModelOpen} isClose={handleReportModelClose} onConfirm={handlePostReport} content="Report Post" title="Are you sure do you want report ?"/>
-
+        <PopUpModal
+          isOpen={isReportModelOpen}
+          isClose={handleReportModelClose}
+          onConfirm={handlePostReport}
+          content="Report Post"
+          title="Are you sure do you want report ?"
+        />
 
         {/* post delte modal*/}
         <PopUpModal

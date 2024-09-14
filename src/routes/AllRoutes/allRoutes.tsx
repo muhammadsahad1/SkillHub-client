@@ -4,6 +4,9 @@ import { RouteObject } from "react-router-dom";
 import ViewMembersPage from "../../page/group/ViewMembersPage";
 import ReportsRequests from "../../page/admin/ReportsRequests";
 import ProtectedRoute from "../layouts/ProtectedLayout";
+import NotFoundPage from "../../page/NotFoundPage";
+import PrivacyInformation from "../../components/user/PrivacyInformation";
+import NotificationSettings from "../../components/user/NotificationSettings";
 
 // Layouts
 const AdminLayout = React.lazy(() => import("../layouts/AdminLayout"));
@@ -25,8 +28,8 @@ const OtpForm = React.lazy(() => import("../../page/user/Otp"));
 const ResetPassword = React.lazy(() => import("../../components/user/resetPassword"));
 const BlockedUserPage = React.lazy(() => import("../../page/user/BlockedUserPage"));
 const SettingsPage = React.lazy(() => import("../../page/user/SettingsPage"));
-const PrivacyUserPage = React.lazy(() => import("../../page/user/PrivacyUserPage"));
-const NotificationSettingsPage = React.lazy(() => import("../../page/user/NotificationSettingsPage"));
+// const PrivacyUserPage = React.lazy(() => import("../../page/user/PrivacyUserPage"));
+// const NotificationSettingsPage = React.lazy(() => import("../../page/user/NotificationSettingsPage"));
 const Profile = React.lazy(() => import("../../page/user/profile"));
 const FollowingPage = React.lazy(() => import("../../page/user/FollowingPage"));
 const FollowersPage = React.lazy(() => import("../../page/user/FollowersPage"));
@@ -52,6 +55,12 @@ const EventSuccessPage = React.lazy(() => import("../../page/event/EventResterdS
 
 // Define application routes
 const routes: RouteObject[] = [
+  {
+    path : "*",
+    element : (
+      <NotFoundPage/>
+    )
+  },
   {
     path: "/",
     element: (
@@ -138,7 +147,7 @@ const routes: RouteObject[] = [
         path: "privacySettings",
         element: (
           <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
-            <PrivacyUserPage />
+            <PrivacyInformation />
           </Suspense>
         ),
       },
@@ -146,7 +155,7 @@ const routes: RouteObject[] = [
         path: "notificationSettings",
         element: (
           <Suspense fallback={<div className="flex justify-center items-center inset-0 fixed z-50"><DotLoader /></div>}>
-            <NotificationSettingsPage />
+            <NotificationSettings />
           </Suspense>
         ),
       },

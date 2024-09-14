@@ -20,7 +20,7 @@ import { useNotifyUser } from "../../hook/useNotifyUser";
 import NotificationHandler from "../notification/NotificationHandler";
 
 interface OtherProfileViewProps {
-  userId: string;
+  userId: string | undefined;
   profileImageUrl: string;
   coverImageUrl: string;
 }
@@ -148,6 +148,8 @@ console.log("useD =>",userDetails)
       followThisUser();
     }
   };
+
+  console.log("userIIIDD =>",userId)
 
   return (
     <div className="w-full min-h-screen bg-gray-100">

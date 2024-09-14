@@ -18,28 +18,32 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 800,
+  width: "90%", // Set width to 90% for better mobile responsiveness
+  maxWidth: 800, // Max width for larger screens
   maxHeight: "80vh",
   bgcolor: "background.paper",
   borderRadius: 2,
   boxShadow: 24,
   p: 4,
   overflowY: "auto",
+  '@media (max-width: 600px)': { // Media query for small screens
+    width: "100%",
+    p: 2,
+  },
 };
 
 interface EventEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   eventData?: any;
-  onUpdated: (pageNumber : number) => void; // Callback function to trigger refetch in parent component
+  onUpdated: (pageNumber: number) => void; // Callback function to trigger refetch in parent component
 }
-
 
 const EventEditModal: React.FC<EventEditModalProps> = ({
   isOpen,
   onClose,
   eventData,
-  onUpdated
+  onUpdated,
 }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -115,15 +119,14 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
       }
       setLoading(true);
       try {
-        // Call the API to create or update the event
         const result = await createEvent(formData);
         if (result.success) {
           showToastSuccess(result.message);
-          onUpdated(1)
+          onUpdated(1);
         } else {
           showToastError(result.message);
         }
-        onClose()
+        onClose();
       } catch (error) {
         showToastError("An error occurred while saving the event.");
       }
@@ -137,12 +140,10 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box sx={style}>
-        {/* Optional: Add loading spinner */}
         <Typography variant="h6" component="h2" sx={{ fontWeight: "bold" }}>
           {eventData ? "Edit Event" : "Create a New Event"}
         </Typography>
         <Grid container spacing={2} sx={{ mt: 2 }}>
-          {/* Form Fields */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -167,7 +168,7 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
               required
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
               type="date"
@@ -180,7 +181,7 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
               required
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
               type="time"
@@ -193,7 +194,7 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
               required
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
               type="number"
@@ -205,7 +206,7 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
               required
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
               label="Speaker"
@@ -216,7 +217,7 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
               required
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
               type="number"
@@ -228,7 +229,7 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
               required
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
               label="Currency"
@@ -269,8 +270,8 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
                 }}
               />
             )}
-            {errors.banner && (
-              <FormHelperText error>{errors.banner}</FormHelperText>
+            {errors.bannerFile && (
+              <FormHelperText error>{errors.bannerFile}</FormHelperText>
             )}
           </Grid>
           <Grid item xs={12}>
@@ -279,18 +280,28 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
               label="Category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              error={!!errors.category}
+              helperText={errors.category}
+              required
             />
           </Grid>
         </Grid>
-        <Button
-          variant="contained"
-          sx={{ mt: 3 }}
-          fullWidth
-          onClick={handleSubmit}
-          disabled={loading}
-        >
-          {eventData ? "Update Event" : "Create Event"}
-        </Button>
+        <Grid container justifyContent="flex-end" spacing={2} sx={{ mt: 2 }}>
+          <Grid item>
+            <Button onClick={onClose} variant="outlined">
+              Cancel
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              onClick={handleSubmit}
+              variant="contained"
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save"}
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
     </Modal>
   );

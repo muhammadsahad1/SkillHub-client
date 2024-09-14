@@ -45,12 +45,13 @@ const FeedPostsLists = () => {
   }
 
   if (!data || !data.pages.flatMap((page) => page.posts).length) {
-  return  <div className="mb-11 mt-5 text-center">
-    <h2 className="text-gray-800 font-poppins font-bold">
-      No post available
-    </h2>
-  </div>
-
+    return (
+      <div className="mb-11 mt-5 text-center">
+        <h2 className="text-gray-800 font-poppins font-bold">
+          No post available
+        </h2>
+      </div>
+    );
   }
 
   return (
@@ -64,6 +65,7 @@ const FeedPostsLists = () => {
             ref={index === arr.length - 1 ? lastPostElementRef : null}
           />
         ))}
+
       {isFetching && (
         <Box
           sx={{

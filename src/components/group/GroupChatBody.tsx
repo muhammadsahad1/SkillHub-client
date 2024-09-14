@@ -44,7 +44,6 @@ const GroupChatBody: React.FC = () => {
       if (result) {
         setGroup(result);
         if (result.skills) {
-          console.log("skills", result.skills);
           setSkills(result.skills);
         }
         // Emit the joinGroup event
@@ -133,7 +132,6 @@ const GroupChatBody: React.FC = () => {
       };
     }
   }, [socket]);
-  console.log("groupSkills", groupSkills);
 
   useEffect(() => {
     if (lastMessageRef.current) {
@@ -141,7 +139,6 @@ const GroupChatBody: React.FC = () => {
     }
   }, [messages]);
 
-  console.log("grp =>", group);
   const handleSearchPeople = (value: string) => {
     setSearchUser(value);
     const members = group?.members;
@@ -205,7 +202,7 @@ const GroupChatBody: React.FC = () => {
                 onClick={() => {
                   logedUser.id !== member.userId
                     ? navigate(`/auth/OtherProfileView/${member.userId}`)
-                    : navigate('/auth/viewProfile');
+                    : navigate("/auth/viewProfile");
                 }}
                 key={member?.userId || member?.userId}
                 className="flex items-center p-3 hover:bg-gray-200 transition-colors cursor-pointer"

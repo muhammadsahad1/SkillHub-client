@@ -4,7 +4,7 @@ import { forgotPassword } from "../../../API/user";
 import toast from "react-hot-toast";
 import { validateEmail } from "../../../utils/validation";
 import { useForm } from "react-hook-form";
-import { DotLoader } from "react-spinners";
+import { BarLoader, DotLoader } from "react-spinners";
 import fogotimage from "../../../assets/forgot.webp";
 
 interface forgotPassowordPops {
@@ -37,16 +37,20 @@ const ForgotPasswordModal: React.FC<forgotPassowordPops> = ({
   isOpen,
   inRequestClose,
 }) => {
+
+  const [isLoading,setLoading] = useState<boolean>(false)
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<any>({
     mode: "onChange",
   });
 
   const onsubmit = async (email: string) => {
     try {
+      setLoading(true)
       const response = await forgotPassword(email);
 
       if (response.success) {
@@ -55,6 +59,7 @@ const ForgotPasswordModal: React.FC<forgotPassowordPops> = ({
       } else {
         toast.error(response.message);
       }
+      setLoading(false)
     } catch (error) {
       toast.success("An error occurred. Please try again later.");
     }
@@ -68,6 +73,11 @@ const ForgotPasswordModal: React.FC<forgotPassowordPops> = ({
       style={customModalStyle}
     >
       <div className="w-auto ">
+      {isLoading && (
+          <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
+            <BarLoader color="black" />
+          </div>
+        )}
         <div className="flex justify-center">
           <img src={fogotimage} className="w-24" />
         </div>

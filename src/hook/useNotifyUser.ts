@@ -3,7 +3,7 @@ import { showToastError } from "../components/common/utilies/toast";
 
 export const useNotifyUser = async (
   senderId: string | undefined,
-  receiverId: string,
+  receiverId: string | undefined,
   type: string,
   message: string,
   link?: string | undefined 

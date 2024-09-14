@@ -96,14 +96,15 @@ const OutlinedCard: React.FC = () => {
             component="div"
             className="flex justify-between space-x-3"
           >
-            {typeof currentUser.picture?.imageUrl === "string" && currentUser.picture?.imageUrl != "" ? (
+            {typeof currentUser.picture?.imageUrl === "string" &&
+            currentUser.picture?.imageUrl != "" ? (
               <img
                 src={currentUser.picture?.imageUrl}
                 alt=""
                 className="w-12 h-12 rounded-full object-cover"
               />
             ) : (
-              <CgProfile className="w-12 h-12 rounded-full object-cover"/>
+              <CgProfile className="w-12 h-12 rounded-full object-cover" />
             )}
 
             <input
@@ -118,7 +119,7 @@ const OutlinedCard: React.FC = () => {
         <CardActions sx={{ justifyContent: "flex-end", padding: "16px" }}>
           {currentUser?.isProfessional && (
             <button
-              className="shadow-md text-xs sm:text-sm  md:px-2 sm:w-28 md:w-32 lg:px-2 px-4 sm:px-6 py-2 font-poppins bg-zinc-900 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 tracking-wider"
+              className="shadow-md text-xs sm:text-md  md:px-2 sm:w-32 md:w-32 lg:px-2 px-4 sm:px-4 py-2 font-poppins bg-zinc-900 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 tracking-wider"
               onClick={handleEventModal}
             >
               Create Events

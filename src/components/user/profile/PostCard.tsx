@@ -26,7 +26,13 @@ import {
 } from "@mui/icons-material";
 import { HiDotsCircleHorizontal } from "react-icons/hi";
 
-import { useDeleteComment, useDeletePost, useEditComment, useEditPost, usePostLike } from "../../../hook/usePosts";
+import {
+  useDeleteComment,
+  useDeletePost,
+  useEditComment,
+  useEditPost,
+  usePostLike,
+} from "../../../hook/usePosts";
 import useGetUser from "../../../hook/getUser";
 import { showToastError } from "../../common/utilies/toast";
 import CommentBox from "../../common/utilies/CommentBox";
@@ -76,10 +82,10 @@ const formatDate = (dateString: string) => {
   }).format(date);
 };
 
-const PostCard: React.FC<PostCardProps> = ({ post }) => {
+const PostCard: React.FC<PostCardProps> = ({ post }: any) => {
   const user = useGetUser();
-  const navigate = useNavigate()
-  const { socket} = useSocket()
+  const navigate = useNavigate();
+  const { socket } = useSocket();
   const { mutate: deletePost } = useDeletePost();
   const { mutate: editPost } = useEditPost();
   const { mutate: postLike } = usePostLike();
@@ -105,16 +111,14 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const [captionBeingEdit, setCaptionBeingEdit] = useState<{
     id: string;
     text: string;
-  } | null >(null);
-  
-  const isCommentMenuOpen = Boolean(commentAnchorEl);
+  } | null>(null);
 
+  const isCommentMenuOpen = Boolean(commentAnchorEl);
 
   useEffect(() => {
     const isUserLiked = post?.likes?.includes(user?.id as string);
     setLiked(isUserLiked);
     setLikeCount(post?.likes?.length);
-    
   }, [post.likes, user.id]);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -136,9 +140,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
   const handleEdit = () => {
     setCaptionBeingEdit({
-      id : post._id,
-      text : post.caption,
-    })
+      id: post._id,
+      text: post.caption,
+    });
     setEditModalOpen(true);
     handleMenuClose();
   };
@@ -169,14 +173,13 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       showToastError("Error updating post");
     }
   };
-// handling the post like
+  // handling the post like
   const handlePostLike = async () => {
     try {
-
       const wasLiked = !isLiked;
       await postLike(post._id);
       setLiked(wasLiked);
-  
+
       // Check if the current user is not the owner of the post
       if (wasLiked && user.id !== post.userId) {
         // Emit socket event for liking the post
@@ -187,7 +190,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           message: `${user.name} liked your post`,
           link: `/auth/post/${post._id}`,
         });
-  
+
         // Create a new notification for the post like
         await useNotifyUser(
           user.id,
@@ -197,7 +200,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           `/auth/post/${post._id}`
         );
       }
-  
+
       // Update like count
       setLikeCount((prevCount) => {
         const newCount = wasLiked ? prevCount + 1 : prevCount - 1;
@@ -255,319 +258,325 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     handleMenuClose();
   };
 
-  // for view the one post 
+  // for view the one post
   const handlePostDetaileView = async () => {
-      navigate(`/auth/post/${post._id}`)
-  }
+    navigate(`/auth/post/${post._id}`);
+  };
 
-  
+  // width: "100%",
+  // maxWidth: "800px",
+  // margin: "auto",
+  // marginTop: 3,
+  // boxShadow: 2,
+  // marginBottom: 2,
+  // borderRadius: 4,
+  // height: 600,
+  // display: "flex",
+  // flexDirection: "column",
+  // justifyContent: "space-between",
+
   return (
     <Card
-    sx={{
-      maxWidth: 800,
-      margin: "auto",
-      marginTop: 3,
-      boxShadow: 2,
-      marginBottom: 2,
-    }}
-  >
-    <CardHeader
-      avatar={
-        <Link to={`auth/OtherProfileView/${post?.userId}`}>
-          <Avatar src={user?.picture?.imageUrl} />
-        </Link>
-      }
-      title={
-        <Typography variant="subtitle1" fontWeight="bold">
-          {post?.userName}
-        </Typography>
-      }
-      subheader={
-        post.createdAt ? (
-          <Typography variant="body2" color="text.secondary">
-            {formatDate(post.createdAt)}
+      sx={{
+        maxWidth: 800,
+        margin: "auto",
+        marginTop: 3,
+        boxShadow: 2,
+        marginBottom: 2,
+        borderRadius: 4,
+      }}
+    >
+      <CardHeader
+        avatar={
+          <Link to={`auth/OtherProfileView/${post?.userId}`}>
+            <Avatar src={user?.picture?.imageUrl} />
+          </Link>
+        }
+        title={
+          <Typography variant="subtitle1" fontWeight="bold">
+            {post?.userName}
           </Typography>
-        ) : null
-      }
-      action={
-        post.userId === user.id ? (
-          <IconButton onClick={handleMenuClick}>
-            <MoreVertIcon />
-          </IconButton>
-        ) : null
-      }
-    />
-    <CardContent>
-      {post?.caption && (
-        <Typography variant="body2" color="text.secondary" paragraph>
-          {post?.caption}
-        </Typography>
-      )}
-      {post?.imageUrl && (
+        }
+        subheader={
+          post.createdAt ? (
+            <Typography variant="body2" color="text.secondary">
+              {formatDate(post.createdAt)}
+            </Typography>
+          ) : null
+        }
+        action={
+          post.userId === user.id ? (
+            <IconButton onClick={handleMenuClick}>
+              <MoreVertIcon />
+            </IconButton>
+          ) : null
+        }
+      />
+      <CardContent>
+        {post?.caption && (
+          <Typography variant="body2" color="text.secondary" paragraph>
+            {post?.caption}
+          </Typography>
+        )}
+        {post?.imageUrl && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              mb: 2,
+              p: 0,
+              m: 0,
+              overflow: "hidden",
+              height: { xs: 250, sm: 400 }, // Using MUI's breakpoints
+              width: "100%",
+            }}
+          >
+            {post.type === "video" ? (
+              <Box
+                component="video"
+                src={post?.imageUrl}
+                controls
+                sx={{
+                  width: "100%",
+                  objectFit: "cover",
+                  height: { xs: 250, sm: 400 }, // Responsive heights based on screen size
+                }}
+              />
+            ) : (
+              <Box
+                component="img"
+                src={post?.imageUrl}
+                alt="Post content"
+                sx={{
+                  width: "100%",
+                  objectFit: "cover",
+                  height: { xs: 250, sm: 400 }, // Responsive heights based on screen size
+                }}
+              />
+            )}
+          </Box>
+        )}
+      </CardContent>
+
+      <CardActions className="bg-zinc-100 flex justify-between py-1">
         <Box
           sx={{
             display: "flex",
-            justifyContent: "center",
-            mb: 2,
-            p: 0,
-            m: 0,
-            overflow: "hidden",
-            height: 400,
+            justifyContent: "space-between",
             width: "100%",
-            "@media (max-width: 600px)": {
-              maxWidth: "100%",
-            },
           }}
         >
-          {post.type === "video" ? (
-            <video
-              src={post?.imageUrl}
-              controls
-              style={{
-                width: "100%",
-                objectFit: "cover",
-                "@media (max-width: 600px)": {
-                  height: 250,
-                },
-                "@media (min-width: 600px)": {
-                  height: 400,
-                },
-              }}
-            />
-          ) : (
-            <img
-              src={post?.imageUrl}
-              alt="Post content"
-              style={{
-                width: "100%",
-                objectFit: "cover",
-                "@media (max-width: 600px)": {
-                  height: 250,
-                },
-                "@media (min-width: 600px)": {
-                  height: 400,
-                },
-              }}
-            />
-          )}
-        </Box>
-      )}
-    </CardContent>
-
-    <CardActions className="bg-zinc-100 flex justify-between py-1">
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "100%",
-        }}
-      >
-        <ActionButton
-          onClick={handlePostLike}
-          sx={{
-            color: isLiked ? "#007BFF" : "#18181b",
-            backgroundColor: isLiked ? "#E3F2FD" : "transparent",
-            "&:hover": {
-              backgroundColor: isLiked ? "#BBDEFB" : "#d0d0d0",
-              color: isLiked ? "#007BFF" : "#000",
-            },
-          }}
-        >
-          <LikeIcon sx={{ mr: 0.5 }} />
-          {likeCount} Likes
-        </ActionButton>
-        <ActionButton onClick={commentClose}>
-          <CommentIcon sx={{ mr: 0.5, color: "black" }} />
-          <p className="text-zinc-800">{post?.comments?.length} Comments</p>
-        </ActionButton>
-      </Box>
-    </CardActions>
-
-    {/* Comment Section */}
-    {isCommentBoxOpen && (
-      <Box
-        sx={{
-          padding: "8px 16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        {post?.comments?.map((comment: any) => (
-          <Box
-            key={comment._id}
+          <ActionButton
+            onClick={handlePostLike}
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
+              color: isLiked ? "#007BFF" : "#18181b",
+              backgroundColor: isLiked ? "#E3F2FD" : "transparent",
+              "&:hover": {
+                backgroundColor: isLiked ? "#BBDEFB" : "#d0d0d0",
+                color: isLiked ? "#007BFF" : "#000",
+              },
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Avatar
-                alt={comment.userName}
-                src={comment?.userImageUrl}
-                sx={{ width: 30, height: 30 }}
-              />
-              <Box>
-                <Typography
-                  variant="body2"
-                  sx={{ fontWeight: "bold", color: "#333" }}
-                >
-                  {comment.userName}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#555" }}>
-                  {comment.comment}
-                </Typography>
-              </Box>
-            </Box>
-            {comment.userId === user.id && (
-              <IconButton onClick={openMiniModal}>
-                <HiDotsCircleHorizontal />
-              </IconButton>
-            )}
-            <Menu
-              anchorEl={commentAnchorEl}
-              open={isCommentMenuOpen}
-              onClose={handleCommentMenuClose}
-              PaperProps={{
-                elevation: 1,
-                sx: {
-                  width: "150px",
-                  bgcolor: "background.paper",
-                },
+            <LikeIcon sx={{ mr: 0.5 }} />
+            {likeCount} Likes
+          </ActionButton>
+          <ActionButton onClick={commentClose}>
+            <CommentIcon sx={{ mr: 0.5, color: "black" }} />
+            <p className="text-zinc-800">{post?.comments?.length} Comments</p>
+          </ActionButton>
+        </Box>
+      </CardActions>
+
+      {/* Comment Section */}
+      {isCommentBoxOpen && (
+        <Box
+          sx={{
+            padding: "8px 16px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          {post?.comments?.map((comment: any) => (
+            <Box
+              key={comment._id}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              <MenuItem onClick={() => handleEditModal(comment)}>
-                Edit
-              </MenuItem>
-              <MenuItem
-                onClick={() => deletingComment(comment._id, post._id)}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Avatar
+                  alt={comment.userName}
+                  src={comment?.userImageUrl}
+                  sx={{ width: 30, height: 30 }}
+                />
+                <Box>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: "bold", color: "#333" }}
+                  >
+                    {comment.userName}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "#555" }}>
+                    {comment.comment}
+                  </Typography>
+                </Box>
+              </Box>
+              {comment.userId === user.id && (
+                <IconButton onClick={openMiniModal}>
+                  <HiDotsCircleHorizontal />
+                </IconButton>
+              )}
+              <Menu
+                anchorEl={commentAnchorEl}
+                open={isCommentMenuOpen}
+                onClose={handleCommentMenuClose}
+                PaperProps={{
+                  elevation: 1,
+                  sx: {
+                    width: "150px",
+                    bgcolor: "background.paper",
+                  },
+                }}
               >
-                Delete
-              </MenuItem>
-            </Menu>
+                <MenuItem onClick={() => handleEditModal(comment)}>
+                  Edit
+                </MenuItem>
+                <MenuItem
+                  onClick={() => deletingComment(comment._id, post._id)}
+                >
+                  Delete
+                </MenuItem>
+              </Menu>
+            </Box>
+          ))}
+          <CommentBox
+            postId={post._id}
+            onClose={commentClose}
+            userId={""}
+            comments={[]}
+          />
+        </Box>
+      )}
+
+      {/* Post Edit Modal */}
+      <Modal open={isEditModalOpen} onClose={handleModalClose}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            borderRadius: 2,
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Edit Post
+          </Typography>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            value={captionBeingEdit?.text || ""}
+            onChange={(e) => {
+              if (captionBeingEdit) {
+                setCaptionBeingEdit({
+                  ...captionBeingEdit,
+                  text: e.target.value,
+                });
+              }
+            }}
+            sx={{ mt: 2 }}
+          />
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Button onClick={handleModalClose} sx={{ mr: 1 }}>
+              Cancel
+            </Button>
+            <Button variant="contained" color="primary" onClick={handleSave}>
+              Save
+            </Button>
           </Box>
-        ))}
-        <CommentBox postId={post._id} onClose={commentClose}/>
-      </Box>
-    )}
-
-    {/* Post Edit Modal */}
-    <Modal open={isEditModalOpen} onClose={handleModalClose}>
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 400,
-          bgcolor: "background.paper",
-          borderRadius: 2,
-          boxShadow: 24,
-          p: 4,
-        }}
-      >
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Edit Post
-        </Typography>
-        <TextField
-          fullWidth
-          multiline
-          rows={4}
-           value={captionBeingEdit?.text || ""}
-          onChange={(e) => {
-            if (captionBeingEdit) {
-              setCaptionBeingEdit({
-                ...captionBeingEdit,
-                text: e.target.value,
-              });
-            }
-          }}
-          sx={{ mt: 2 }}
-        />
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-          <Button onClick={handleModalClose} sx={{ mr: 1 }}>
-            Cancel
-          </Button>
-          <Button variant="contained" color="primary" onClick={handleSave}>
-            Save
-          </Button>
         </Box>
-      </Box>
-    </Modal>
+      </Modal>
 
-    {/* Comment Edit Modal */}
-    <Modal
-      open={isCommentEditModalOpen}
-      onClose={handleCommentEditModalClose}
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 400,
-          bgcolor: "background.paper",
-          borderRadius: 2,
-          boxShadow: 24,
-          p: 4,
-        }}
+      {/* Comment Edit Modal */}
+      <Modal
+        open={isCommentEditModalOpen}
+        onClose={handleCommentEditModalClose}
       >
-        <Typography id="comment-edit-modal-title" variant="h6" component="h2">
-          Edit Comment
-        </Typography>
-        <TextField
-          label="Comment"
-          multiline
-          rows={4}
-          fullWidth
-          value={commentBeingEdited?.text || ""}
-          onChange={(e) => {
-            if (commentBeingEdited) {
-              setCommentBeingEdited({
-                ...commentBeingEdited,
-                text: e.target.value,
-              });
-            }
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            borderRadius: 2,
+            boxShadow: 24,
+            p: 4,
           }}
-          sx={{ mt: 2 }}
-        />
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-          <Button onClick={handleCommentEditModalClose} sx={{ mr: 1 }}>
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleEditComment}
-          >
-            Save
-          </Button>
+        >
+          <Typography id="comment-edit-modal-title" variant="h6" component="h2">
+            Edit Comment
+          </Typography>
+          <TextField
+            label="Comment"
+            multiline
+            rows={4}
+            fullWidth
+            value={commentBeingEdited?.text || ""}
+            onChange={(e) => {
+              if (commentBeingEdited) {
+                setCommentBeingEdited({
+                  ...commentBeingEdited,
+                  text: e.target.value,
+                });
+              }
+            }}
+            sx={{ mt: 2 }}
+          />
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Button onClick={handleCommentEditModalClose} sx={{ mr: 1 }}>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleEditComment}
+            >
+              Save
+            </Button>
+          </Box>
         </Box>
-      </Box>
-    </Modal>
+      </Modal>
 
-    {/* Post Options Menu */}
-    <Menu
-      anchorEl={anchorEl}
-      open={Boolean(anchorEl)}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleEdit}>Edit</MenuItem>
-      <MenuItem onClick={handleDeleteModalOpen}>Delete</MenuItem>
-      <MenuItem onClick={handlePostDetaileView}>view Post</MenuItem>
-    </Menu>
+      {/* Post Options Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleEdit}>Edit</MenuItem>
+        <MenuItem onClick={handleDeleteModalOpen}>Delete</MenuItem>
+        <MenuItem onClick={handlePostDetaileView}>view Post</MenuItem>
+      </Menu>
 
-    {/* Post Delete Modal */}
-    <PopUpModal
-      isOpen={isDeleteModalOpen}
-      isClose={closeDeleteModal}
-      onConfirm={handleDelete}
-      title="Are you sure you want to delete this post?"
-      content={""}
-    />
-  </Card>
+      {/* Post Delete Modal */}
+      <PopUpModal
+        isOpen={isDeleteModalOpen}
+        isClose={closeDeleteModal}
+        onConfirm={handleDelete}
+        title="Are you sure you want to delete this post?"
+        content={""}
+      />
+    </Card>
   );
 };
 

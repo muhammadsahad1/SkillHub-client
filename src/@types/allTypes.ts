@@ -6,6 +6,8 @@ export interface User {
   id?: string;
   name: string;
   email: string;
+  showNotification?: boolean;
+  accountPrivacy ?: boolean | undefined
   role?: string;
   blocked?: boolean;
   isRequested?: boolean;

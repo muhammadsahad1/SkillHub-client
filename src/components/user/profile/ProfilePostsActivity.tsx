@@ -3,10 +3,8 @@ import PostGrid from "./PostGrid";
 import { useGetMyPosts } from "../../../hook/usePosts";
 
 const ProfilePostsActivity = () => {
-  const [postType, setPostType] = useState<string>("all");
-  // const { posts, isLoading } = useProfilePosts<string>(postType);
+  
   const { data: posts, isLoading, isError } = useGetMyPosts();
-  console.log("data ==> in  viewProfile", posts);
 
   if (isLoading) {
     return (
@@ -47,7 +45,9 @@ const ProfilePostsActivity = () => {
       </div>
     );
   }
-  console.log("res ====>", posts);
+
+  
+
   return (
     <div className="flex justify-center mb-20">
       <PostGrid posts={posts} />

@@ -7,7 +7,7 @@ interface User {
   name: string;
 }
 
-const ZegoVideoCall: React.FC<{ event: IEvent | null; currentUser: User }> = ({ event, currentUser }) => {
+const ZegoVideoCall: React.FC<{ event: IEvent ; currentUser: User }> = ({ event, currentUser }) => {
   useEffect(() => {
     const initZegoUIKit = async () => {
       try {
@@ -34,10 +34,10 @@ const ZegoVideoCall: React.FC<{ event: IEvent | null; currentUser: User }> = ({ 
             mode: ZegoUIKitPrebuilt.GroupCall, // Use GroupCall mode for group video calls
           },
           showScreenSharingButton: true,
-          showParticipantsButton: true,
-          showSettingsButton: true,
-          showMicButton: true,
-          showCameraButton: true,
+          // showParticipantsButton: true,
+          // showSettingsButton: true,
+          // showMicButton: true,
+          // showCameraButton: true,
         });
       } catch (error) {
         console.error("Failed to initialize ZEGOCLOUD UI Kit:", error);
