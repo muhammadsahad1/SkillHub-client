@@ -1,6 +1,5 @@
 import { Stack, Typography, Divider } from "@mui/material";
 
-
 const TimeLine = () => {
   return (
     <Stack direction="row" alignItems="center" justifyContent="space-between">
