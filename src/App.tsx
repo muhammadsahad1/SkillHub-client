@@ -48,6 +48,7 @@ function App() {
 
 const ConditionalVideoCallComponent = () => {
   const { isCallRequested, isCallAccepted } = useVideoCall();
+  console.log(isCallRequested , isCallAccepted)
   if (isCallRequested || isCallAccepted) {
     return <VideoCallComponent />;
   }
