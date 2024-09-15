@@ -195,7 +195,7 @@ const UserLogin: React.FC = () => {
               />
               <hr className="underline"></hr>
             </div>
-            <button><Link to={'admin/login'}>Admin</Link></button>
+            <button className="text-zinc-100 bg-zinc-900 p-2 "><Link to={'/admin/login'}>Admin</Link></button>
             
           </div>
         </div>
