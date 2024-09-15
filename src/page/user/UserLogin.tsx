@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { validateEmail, validatePassword } from "../../utils/validation";
 import sideImg from "../../assets/fix login.png";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { userLogin } from "../../API/user";
 import { useDispatch } from "react-redux";
@@ -195,6 +195,8 @@ const UserLogin: React.FC = () => {
               />
               <hr className="underline"></hr>
             </div>
+            <button><Link to={'admin/login'}>Admin</Link></button>
+            
           </div>
         </div>
       </div>
