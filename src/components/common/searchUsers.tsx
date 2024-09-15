@@ -21,6 +21,7 @@ const SearchUsers = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  // Fetch users function with loading state
   const fetchUser = async (query: string) => {
     setLoading(true);
     try {
@@ -35,28 +36,29 @@ const SearchUsers = () => {
     }
   };
 
+  // Debounced search input handler
+  const handleSearchInput = debounce((value: string) => {
+    if (value) {
+      fetchUser(value);
+    } else {
+      setOptions([]); 
+    }
+  }, 300);
+
+  // Handle input change for autocomplete
   const handleInputChange = (
     _event: React.SyntheticEvent,
     value: string,
     _reason: AutocompleteInputChangeReason
   ) => {
-    // Use the debounced search function
     handleSearchInput(value);
   };
-  // searching function
-  const handleSearchInput = debounce((value: string) => {
-    if (value) {
-      fetchUser(value);
-    } else {
-      setOptions([]);
-    }
-  }, 300);
 
-  // navigate to view profile
-  const handleNavigation = (option: any) => {
-    navigate(`/auth/OtherProfileView/${option?._id}`, {
+  // Navigate to user profile on selection
+  const handleNavigation = (option: Option) => {
+    navigate(`/auth/OtherProfileView/${option._id}`, {
       state: {
-        profileImageUrl: option?.profileImageUrl,
+        profileImageUrl: option.profileImageUrl,
       },
     });
   };
@@ -69,7 +71,7 @@ const SearchUsers = () => {
         border: 0,
         borderColor: "gray",
         borderRadius: 50,
-        width: "250px", // Set the desired width
+        width: "250px",
         height: "45px",
         backgroundColor: "#fff",
       }}
@@ -81,44 +83,46 @@ const SearchUsers = () => {
         loading={loading}
         disableClearable
         options={options}
-        getOptionLabel={(option : any) => option.name}
-        renderOption={(option: any) => (
-          <Box
-            key={option._id}
-            onClick={() => handleNavigation(option)}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              padding: "8px 16px",
-
-              "&:hover": {
-                backgroundColor: "#f0f0f0",
-                cursor: "pointer",
-              },
-            }}
-          >
-            <Avatar
-              src={option.profileImageUrl}
-              alt={option.name}
-              sx={{ width: 40, height: 40, marginRight: 2 }}
-            />
+        getOptionLabel={(option: any) => option.name}
+        renderOption={(props, option: any) => {
+          console.log("Option data:", option); // Debugging to ensure correct data
+          return (
             <Box
+              component="li"
+              {...props}
+              key={option._id}
+              onClick={() => handleNavigation(option)}
               sx={{
                 display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
+                alignItems: "center",
+                padding: "8px 16px",
+                "&:hover": {
+                  backgroundColor: "#f0f0f0",
+                  cursor: "pointer",
+                },
               }}
             >
-              <Typography
-                variant="subtitle1"
-                component="div"
-                color="text.primary"
+              {/* Avatar for user's profile image */}
+              <Avatar
+                src={option.profileImageUrl}
+                alt={option.name}
+                sx={{ width: 40, height: 40, marginRight: 2 }}
+              />
+              {/* User name display */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
               >
-                {option.name}
-              </Typography>
+                <Typography variant="subtitle1" component="div" color="text.primary">
+                  {option.name}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-        )}
+          );
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -127,7 +131,7 @@ const SearchUsers = () => {
               ...params.InputProps,
               type: "search",
               sx: {
-                width: "250px", // Set the desired width
+                width: "250px",
                 height: "45px",
                 border: 2,
                 borderRadius: "50px",

@@ -74,6 +74,7 @@ const Adminlogin = () => {
           <h2 className="font-bold font-poppins text-2xl md:text-4xl text-zinc-900 text-center mb-5">
             Welcome Admin!
           </h2>
+          
           <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-2 md:mb-1 w-full lg:mb-3">
               <label

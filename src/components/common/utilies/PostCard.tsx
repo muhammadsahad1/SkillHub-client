@@ -127,7 +127,7 @@ const OutlinedCard: React.FC = () => {
           )}
           {!isThoughts ? (
             <button
-              className="shadow-md text-xs sm:text-sm  sm:w-28 md:w-32 md:px-2  px-4 sm:px-6 py-2 font-poppins bg-zinc-900 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 tracking-wider"
+              className="shadow-md text-xs sm:text-md  md:px-2 sm:w-32 md:w-32 lg:px-2  px-4 sm:px-6 py-2 font-poppins bg-zinc-900 text-white rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 tracking-wider"
               onClick={openModal}
             >
               Media
