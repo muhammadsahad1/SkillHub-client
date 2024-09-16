@@ -3,8 +3,7 @@ import adminRoutes from "../services/endpoints/adminEndpoints";
 
 export const adminLogin = async (email: string, password: string) => {
   try {
-    console.log("api call");
-
+    
     const response = await Api.post(adminRoutes.login, {
       email: email,
       password: password,
