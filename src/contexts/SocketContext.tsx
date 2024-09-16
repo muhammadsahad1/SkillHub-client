@@ -14,9 +14,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
   useEffect(() => {
     console.log(import.meta.env.VITE_BASE_URL)
-    //initialize the socket with url of backend
-    const newSocket = io(`${import.meta.env.VITE_BASE_URL}`,{
-      query : { userId : currentUser.id}
+    // Initialize the socket with the backend URL
+    const newSocket = io(import.meta.env.VITE_BASE_URL, {
+      query: { userId: currentUser.id },
+      transports: ['websocket'],  // Force WebSocket transport
+      withCredentials: true,      // Use credentials if needed
     });
     setSocket(newSocket);
     //calling the connect event for connect to server
