@@ -13,6 +13,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const currentUser = useGetUser()
 
   useEffect(() => {
+    console.log(import.meta.env.VITE_BASE_URL)
     //initialize the socket with url of backend
     const newSocket = io(`${import.meta.env.VITE_BASE_URL}`,{
       query : { userId : currentUser.id}
