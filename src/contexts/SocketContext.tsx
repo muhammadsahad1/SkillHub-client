@@ -13,17 +13,20 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const currentUser = useGetUser()
 
   useEffect(() => {
-    console.log(import.meta.env.VITE_BASE_URL)
+    console.log(import.meta.env.VITE_BASE_URL);
     
     // Initialize the socket with the backend URL
     const newSocket = io(import.meta.env.VITE_BASE_URL, {
-      query: { userId: currentUser.id }, // Force WebSocket transport
-      withCredentials: true,      // Use credentials if needed
+      query: { userId: currentUser.id }, 
+      withCredentials: true,            
+      transports: ['websocket'],         
     });
+    
     setSocket(newSocket);
-    //calling the connect event for connect to server
+    
+    // Listen to the connect event
     newSocket.on("connect", () => {
-      console.log("client connected to server ===> ID ===> ", newSocket.id);
+      console.log("Client connected to server, Socket ID:", newSocket.id);
       setConnected(true); 
     });
     //cleaner function for clean the unnessary mount
