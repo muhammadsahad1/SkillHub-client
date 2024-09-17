@@ -13,11 +13,13 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const currentUser = useGetUser();
 
   useEffect(() => {
-    const socketUrl = import.meta.env.VITE_BASE_URL.replace(/^http/, 'ws');
-    const newSocket = io(socketUrl, {
-      query: { userId: currentUser.id }, 
+    console.log(import.meta.env.VITE_BASE_URL);
+
+    // Initialize the socket with the backend URL
+    const newSocket = io("https://justingeorge.site/socket.io/", {
+      query: { userId: currentUser.id },
       withCredentials: true,
-      transports: ['websocket'],
+      transports: ["websocket"],
     });
 
     setSocket(newSocket);
