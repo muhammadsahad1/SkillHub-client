@@ -10,36 +10,34 @@ interface SocketProviderProps {
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [connected, setConnected] = useState(false);
-  const currentUser = useGetUser()
+  const currentUser = useGetUser();
 
   useEffect(() => {
-    console.log(import.meta.env.VITE_BASE_URL);
-    
-    // Initialize the socket with the backend URL
-    const newSocket = io(import.meta.env.VITE_BASE_URL, {
+    const socketUrl = import.meta.env.VITE_BASE_URL.replace(/^http/, 'ws');
+    const newSocket = io(socketUrl, {
       query: { userId: currentUser.id }, 
-      withCredentials: true,            
-      transports: ['websocket'],         
+      withCredentials: true,
+      transports: ['websocket'],
     });
-    
+
     setSocket(newSocket);
-    
+
     // Listen to the connect event
     newSocket.on("connect", () => {
       console.log("Client connected to server, Socket ID:", newSocket.id);
-      setConnected(true); 
+      setConnected(true);
     });
     //cleaner function for clean the unnessary mount
     return () => {
       newSocket.close();
     };
-  }, []);
+  }, [currentUser.id]);
 
   if (!connected) {
     console.log("not connecteddd run");
-    
+
     return null; // Or some loading indicator
-  } 
+  }
 
   return (
     <SocketContext.Provider value={{ socket }}>
