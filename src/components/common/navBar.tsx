@@ -41,7 +41,7 @@ const NavBar: React.FC = () => {
   useEffect(() => {
     dispatch(deleteUser());
   }, []);
-
+  
   const toggleProfileDropdown = () => {
     setDropDownOpen(!isDropDownOpen);
   };
