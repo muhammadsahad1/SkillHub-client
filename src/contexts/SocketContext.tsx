@@ -19,7 +19,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     const newSocket = io("https://justingeorge.site/socket.io/", {
       query: { userId: currentUser.id },
       withCredentials: true,
-      transports: ["websocket"],
     });
 
     setSocket(newSocket);
