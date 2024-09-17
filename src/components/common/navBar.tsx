@@ -38,7 +38,7 @@ const NavBar: React.FC = () => {
   );
 
   const loggedInUser = useGetUser();
-  
+
   const toggleProfileDropdown = () => {
     setDropDownOpen(!isDropDownOpen);
   };
@@ -56,10 +56,9 @@ const NavBar: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchNotifications() as any);
-  }, [dispatch]);
+  }, [loggedInUser.id]);
 
   useEffect(() => {
-    console.log("Fetching profile image");
     getProfileImage();
   }, [loggedInUser.picture?.imageUrl]);
 
