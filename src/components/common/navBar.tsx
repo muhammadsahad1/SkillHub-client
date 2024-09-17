@@ -55,7 +55,9 @@ const NavBar: React.FC = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchNotifications() as any);
+    if (loggedInUser.id) {
+      dispatch(fetchNotifications() as any);
+    }
   }, [loggedInUser.id]);
 
   useEffect(() => {

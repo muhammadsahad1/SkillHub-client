@@ -34,7 +34,6 @@ export const sendNotification = async (
 export const getNotifications = async () => {
   try {
     const response = await Api.get(userRoutes.notification);
-    console.log("res from backend for notification list ===>", response.data);
     return response.data;
   } catch (error : any) {
     if (error.response) {
