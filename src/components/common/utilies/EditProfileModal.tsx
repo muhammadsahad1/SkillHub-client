@@ -124,6 +124,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       "profileImageInput"
     ) as HTMLInputElement;
     const file = fileInput.files?.[0];
+    console.log("file ==>",file)
 
     const formData = new FormData();
     formData.append("name", data.name);
