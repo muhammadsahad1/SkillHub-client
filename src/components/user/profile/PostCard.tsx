@@ -414,6 +414,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }: any) => {
                   <HiDotsCircleHorizontal />
                 </IconButton>
               )}
+
               <Menu
                 anchorEl={commentAnchorEl}
                 open={isCommentMenuOpen}
@@ -463,7 +464,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }: any) => {
             fullWidth
             multiline
             rows={4}
-            value={captionBeingEdit}
+            value={editedCaption}
             onChange={(e) => setEditedCaption(e.target.value)}
             sx={{ mt: 2 }}
           />

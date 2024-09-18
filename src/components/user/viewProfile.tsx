@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useGetUser from "../../hook/getUser";
-import {  profileImage } from "../../API/user";
+import { profileImage } from "../../API/user";
 import {
   setFollowingsFollowersCount,
   setUserImages,
@@ -100,15 +100,6 @@ const ViewProfile: React.FC = () => {
               />
             )}
 
-            {/* <button
-              className="absolute right-5 top-5 bg-transparent border rounded-full border-gray-800 p-2 hover:bg-gray-900"
-              onClick={handleCoverImage}
-            >
-              <TbCameraPlus
-                size={32}
-                className="text-gray-800 bg-transparent rounded-full p-1 transition duration-100 hover:text-white hover:bg-gray-900"
-              />
-            </button> */}
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
               {typeof currentUser?.picture?.imageUrl === "string" &&
               currentUser?.picture?.imageUrl != "" ? (
@@ -203,9 +194,7 @@ const ViewProfile: React.FC = () => {
                       </button>
                     </Link>
                   </div>
-                  {/* sm:px-6 sm:py-3 sm:text-base
-                    md:px-8 md:py-4 md:text-lg
-                      lg:px-10 lg:py-5 lg:text-xl" */}
+
                   <div className="flex justify-end">
                     <button
                       onClick={openModal}
