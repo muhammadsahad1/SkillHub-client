@@ -161,8 +161,11 @@ const PostCard: React.FC<PostCardProps> = ({ post }: any) => {
 
   const handleSave = async () => {
     try {
-      await editPost({ id: post._id, caption: editedCaption });
-      setEditModalOpen(false);
+      if (captionBeingEdit && captionBeingEdit.text.trim() !== "") {
+        await editPost({ id: post._id, caption: editedCaption });
+        post.caption = captionBeingEdit?.text;
+        setEditModalOpen(false);
+      }
     } catch (error) {
       console.error("Error updating post:", error);
       showToastError("Error updating post");
