@@ -112,28 +112,24 @@ const NavBar: React.FC = () => {
         <div className="hidden md:flex items-center space-x-4">
           <Link
             to="/"
-            className={` text-zinc-900 font-bold hover:text-gray-600 ${isActive(
-              "/"
-            )}`}
+            className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive("/")}`}
           >
             Home
           </Link>
           <Link
             to="/auth/events"
-            className={` text-zinc-900 font-bold hover:text-gray-600 ${isActive(
-              "/auth/events"
-            )}`}
+            className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive("/auth/events")}`}
           >
             Explore
           </Link>
-          <Link
-            to="/auth/groups"
-            className={` text-zinc-900 font-bold hover:text-gray-600 ${isActive(
-              "/auth/groups"
-            )}`}
-          >
-            Groups
-          </Link>
+          {loggedInUser?.id && (
+            <Link
+              to="/auth/groups"
+              className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive("/auth/groups")}`}
+            >
+              Groups
+            </Link>
+          )}
           <Link to="/auth/chat">
             <TbMessageDots size={32} className="cursor-pointer" />
           </Link>
@@ -153,9 +149,7 @@ const NavBar: React.FC = () => {
               className="profile-icon-btn"
               onClick={toggleProfileDropdown}
             >
-              {loggedInUser &&
-              typeof loggedInUser?.picture?.imageUrl === "string" &&
-              loggedInUser?.picture?.imageUrl != "" ? (
+              {loggedInUser && loggedInUser?.picture?.imageUrl ? (
                 <img
                   src={loggedInUser?.picture?.imageUrl}
                   className="w-11 h-11 object-cover rounded-full"
@@ -167,7 +161,7 @@ const NavBar: React.FC = () => {
             {isDropDownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-50">
                 <ul className="py-1">
-                  {loggedInUser.profile || loggedInUser.email ? (
+                  {loggedInUser?.profile || loggedInUser?.email ? (
                     <>
                       <li>
                         <Link
@@ -231,28 +225,24 @@ const NavBar: React.FC = () => {
           <SearchUsers />
           <Link
             to="/"
-            className={` text-zinc-900 font-bold hover:text-gray-600 ${isActive(
-              "/"
-            )}`}
+            className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive("/")}`}
           >
             Home
           </Link>
           <Link
             to="/auth/events"
-            className={` text-zinc-900 font-bold hover:text-gray-600 ${isActive(
-              "/auth/events"
-            )}`}
+            className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive("/auth/events")}`}
           >
             Explore
           </Link>
-          <Link
-            to="/auth/groups"
-            className={` text-zinc-900 font-bold hover:text-gray-600 ${isActive(
-              "/auth/groups"
-            )}`}
-          >
-            Groups
-          </Link>
+          {loggedInUser?.id && (
+            <Link
+              to="/auth/groups"
+              className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive("/auth/groups")}`}
+            >
+              Groups
+            </Link>
+          )}
           <Link to="/auth/chat">
             <TbMessageDots size={32} className="cursor-pointer" />
           </Link>
@@ -284,7 +274,7 @@ const NavBar: React.FC = () => {
             {isDropDownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-50">
                 <ul className="py-1">
-                  {loggedInUser.profile || loggedInUser.email ? (
+                  {loggedInUser?.profile || loggedInUser?.email ? (
                     <>
                       <li>
                         <Link
@@ -348,7 +338,6 @@ const NavBar: React.FC = () => {
           <NotificationEntry onClose={toggleNotificationsDropdown} />
         </div>
       )}
-
       {isProfessionalModalOpen && <ProfessionalAccountModal />}
     </nav>
   );
