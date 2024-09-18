@@ -55,10 +55,10 @@ const NavBar: React.FC = () => {
   };
 
   useEffect(() => {
-    if (loggedInUser.id) {
+    if (loggedInUser.email != "") {
       dispatch(fetchNotifications() as any);
     }
-  }, [loggedInUser.id]);
+  }, [loggedInUser.email]);
 
   useEffect(() => {
     getProfileImage();
