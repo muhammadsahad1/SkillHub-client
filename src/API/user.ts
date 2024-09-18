@@ -156,7 +156,7 @@ export const changePassword = async (
 export const createProfile = async (userProfile: FormData) => {
   try {
     console.log("called create profile =");
-    
+
     const response = await Api.post(userRoutes.createProfile, userProfile, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -386,7 +386,7 @@ export const myFollowers = async () => {
 // remove follower from followers list
 export const removeFollower = async (toRemoveId: string) => {
   try {
-    console.log("rmoevId =>",toRemoveId)
+    console.log("rmoevId =>", toRemoveId);
     const response = await Api.post(userRoutes.removeFollower, {
       toRemoveId: toRemoveId,
     });
