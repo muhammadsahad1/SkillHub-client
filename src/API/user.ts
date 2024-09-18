@@ -155,6 +155,8 @@ export const changePassword = async (
 // Create Profile
 export const createProfile = async (userProfile: FormData) => {
   try {
+    console.log("called create profile =");
+    
     const response = await Api.post(userRoutes.createProfile, userProfile, {
       headers: {
         "Content-Type": "multipart/form-data",
