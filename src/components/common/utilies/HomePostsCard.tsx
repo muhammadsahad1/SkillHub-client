@@ -163,6 +163,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
           post.caption = captionBeingEdit?.text;
           setEditModalOpen(false);
         }
+        
       } catch (error) {
         console.error("Error updating post:", error);
         showToastError("Error updating post");
