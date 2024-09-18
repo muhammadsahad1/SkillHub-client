@@ -95,7 +95,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
     } | null>(null);
     console.log(commentBeingEdited);
 
-    const [captionBeingEdit, setCaptionBeingEdit] = useState<{
+      const [captionBeingEdit, setCaptionBeingEdit] = useState<{
       id: string;
       text: string;
     } | null>(null);
