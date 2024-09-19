@@ -1,8 +1,8 @@
 // validation user SignUp & login
-
 export const validateUsername = (username: string) => {
   const minLength = 3;
-  const usernameRegex = /^[A-Za-z\s]+$/; // Allow letters and spaces
+  // Updated regex to allow letters, numbers, and spaces
+  const usernameRegex = /^[A-Za-z0-9\s]+$/; 
 
   if (!username) {
     return "Username is required";
@@ -13,7 +13,7 @@ export const validateUsername = (username: string) => {
   }
 
   if (!usernameRegex.test(username)) {
-    return "Username should only contain letters and spaces";
+    return "Username should only contain letters, numbers, and spaces";
   }
 
   // Check for leading or trailing spaces
@@ -23,6 +23,7 @@ export const validateUsername = (username: string) => {
 
   return true;
 };
+
 
 export const validateEmail = (email: string) => {
   // Regular expression for validating the general structure of an email address
