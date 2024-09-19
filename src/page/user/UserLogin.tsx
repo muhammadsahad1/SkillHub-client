@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { validateEmail, validatePassword } from "../../utils/validation";
 import sideImg from "../../assets/fix login.png";
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { userLogin } from "../../API/user";
 import { useDispatch } from "react-redux";
