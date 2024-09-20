@@ -37,26 +37,27 @@ const VerificationRequests = () => {
           ? "Your verification request has been approved."
           : "Your verification request has been rejected.";
 
-       await updateRequestStatus(reqId, status);
-      // to create the notification and send it
-      if (status === "Approved") {
-        socket?.emit("verifyRequest", {
-          senderId: admin.id,
-          receiverId: userId,
-          type: "verifyRequestAccepted",
-          message: message,
-        });
-        await useNotifyUser(admin.id, userId, "verifyRequestAccepted", message);
-      } else {
-        socket?.emit("verifyRequest", {
-          senderId: admin.id,
-          receiverId: userId,
-          type: "verifyRequestRejected",
-          message: message,
-        });
-        await useNotifyUser(admin.id, userId, "verifyRequestRejected", message);
-      }
+      // Update the request status in the local state without calling the API again
+      setRequests((prevRequests) =>
+        prevRequests.map((req : any) =>
+          req._id === reqId ? { ...req, status } : req
+        )
+      );
 
+      await updateRequestStatus(reqId, status);
+
+      // Emit the socket event and notify the user
+      const notificationType =
+        action === "accept" ? "verifyRequestAccepted" : "verifyRequestRejected";
+
+      socket?.emit("verifyRequest", {
+        senderId: admin.id,
+        receiverId: userId,
+        type: notificationType,
+        message,
+      });
+
+      await useNotifyUser(admin.id, userId, notificationType, message);
     } catch (error) {
       console.error(error);
     }
@@ -141,22 +142,26 @@ const VerificationRequests = () => {
                     </a>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                    <button
-                      onClick={() =>
-                        handleAction(request?.userId, request?._id, "accept")
-                      }
-                      className="text-indigo-600 hover:text-indigo-900 mr-2"
-                    >
-                      Accept
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleAction(request?.userId, request._id, "reject")
-                      }
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Reject
-                    </button>
+                    {request.status === "Pending" && (
+                      <>
+                        <button
+                          onClick={() =>
+                            handleAction(request?.userId, request?._id, "accept")
+                          }
+                          className="text-indigo-600 hover:text-indigo-900 mr-2"
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleAction(request?.userId, request._id, "reject")
+                          }
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}
