@@ -141,6 +141,7 @@ interface OtherProfileViewProps {
 //       followThisUser();
 //     }
 //   };
+
 const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   userId,
   coverImageUrl,
@@ -153,17 +154,17 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   const currentUser = useGetUser();
   const { socket } = useSocket();
 
+  // Fetch user details only once on mount
   const fetchUserDetails = async () => {
     try {
       const result = await getOtherUserDetails(userId);
       const isFollowing = result?.user?.following.includes(currentUser.id);
       const meFollowing = result?.user?.followers.includes(currentUser.id);
 
-      // Initialize state based on fetched data
+      setUserDetails(result.user);
       setIsConnected(isFollowing && meFollowing);
       setIsFollowBack(isFollowing && !meFollowing);
       setIsMeOnlyFollowing(!isFollowing && meFollowing);
-      setUserDetails(result.user);
     } catch (error: any) {
       showToastError(error.message);
     }
@@ -181,43 +182,39 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
     };
   }, [userId, currentUser.id, socket]);
 
+  // Follow user with optimistic UI update
   const followThisUser = async () => {
     try {
       if (!socket || isLoading) return;
       setLoading(true);
 
-      const result = await followApi({
+      await followApi({
         toFollowingId: userId,
         fromFollowerId: currentUser.id,
       });
 
-      if (result.success === "successfully update the following") {
-        // Update state locally
-        setIsConnected(true);
-        setIsFollowBack(false);
-        setIsMeOnlyFollowing(false);
+      // Optimistically update state
+      setIsConnected(true);
+      setIsFollowBack(false);
+      setIsMeOnlyFollowing(false);
 
-        // Update followers count locally
-        setUserDetails((prevDetails) => {
-          if (!prevDetails) return prevDetails;
-          return {
-            ...prevDetails,
-            followers: [...prevDetails.followers, currentUser.id],
-          };
-        });
+      // Notify user
+      socket.emit("follow", {
+        senderId: currentUser.id,
+        receiverId: userId,
+        type: "follow",
+        message: `${currentUser?.name} has started following you.`,
+        link: `/auth/OtherProfileView/${currentUser.id}`,
+      });
 
-        socket.emit("follow", {
-          senderId: currentUser.id,
-          receiverId: userId,
-          type: "follow",
-          message: `${currentUser?.name} has started following you.`,
-          link: `/auth/OtherProfileView/${currentUser.id}`,
-        });
-
-        showToastSuccess("Followed");
-      } else {
-        showToastError("Follow failed");
-      }
+      showToastSuccess("Followed");
+      await useNotifyUser(
+        currentUser.id,
+        userId,
+        "follow",
+        `${currentUser?.name} has started following you.`,
+        `/auth/OtherProfileView/${currentUser.id}`
+      );
     } catch (error: any) {
       showToastError(error.message);
     } finally {
@@ -225,34 +222,23 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
     }
   };
 
+  // Unfollow user with optimistic UI update
   const handleUnfollow = async () => {
     try {
       if (isLoading) return;
       setLoading(true);
 
-      const result = await unFollow(userId, currentUser.id);
-      if (result.success) {
-        // Update state locally
-        if (isConnected) {
-          setIsConnected(false);
-          setIsFollowBack(true); // Now you can follow back
-        } else if (isMeOnlyFollowing) {
-          setIsMeOnlyFollowing(false);
-        }
+      await unFollow(userId, currentUser.id);
 
-        // Update followers count locally
-        setUserDetails((prevDetails) => {
-          if (!prevDetails) return prevDetails;
-          return {
-            ...prevDetails,
-            followers: prevDetails.followers.filter(
-              (followerId: any) => followerId !== currentUser.id
-            ),
-          };
-        });
-
-        showToastSuccess("Unfollowed");
+      // Optimistically update state
+      if (isConnected) {
+        setIsConnected(false);
+        setIsFollowBack(true);
+      } else if (isMeOnlyFollowing) {
+        setIsMeOnlyFollowing(false);
       }
+
+      showToastSuccess("Unfollowed");
     } catch (error: any) {
       showToastError(error.message);
     } finally {
@@ -261,15 +247,10 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   };
 
   const getFollowButtonText = () => {
-    if (isConnected) {
-      return "Connected";
-    } else if (isFollowBack) {
-      return "Follow Back";
-    } else if (isMeOnlyFollowing) {
-      return "Following";
-    } else {
-      return "Follow";
-    }
+    if (isConnected) return "Connected";
+    if (isFollowBack) return "Follow Back";
+    if (isMeOnlyFollowing) return "Following";
+    return "Follow";
   };
 
   const handleFollowToggle = () => {
