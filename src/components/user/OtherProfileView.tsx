@@ -151,6 +151,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   const [isFollowBack, setIsFollowBack] = useState<boolean>(false);
   const [isMeOnlyFollowing, setIsMeOnlyFollowing] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [isPrivate, setIsPrivate] = useState<boolean>(false); // Add this line
   const currentUser = useGetUser();
   const { socket } = useSocket();
 
@@ -162,6 +163,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       const meFollowing = result?.user?.followers.includes(currentUser.id);
 
       setUserDetails(result.user);
+      setIsPrivate(result.user.isPrivate); // Set isPrivate from userDetails
       setIsConnected(isFollowing && meFollowing);
       setIsFollowBack(isFollowing && !meFollowing);
       setIsMeOnlyFollowing(!isFollowing && meFollowing);
@@ -181,7 +183,6 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       }
     };
   }, [userId, currentUser.id, socket]);
-
   // Follow user with optimistic UI update
   const followThisUser = async () => {
     try {
