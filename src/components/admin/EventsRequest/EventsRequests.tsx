@@ -16,7 +16,19 @@ const EventsRequestsComponent = () => {
   const handleAction = async (requestId: string, status: string) => {
     try {
       const action = status === "Accept" ? "Approved" : "Rejected";
+
+      console.log("requ43es ==>",requests)
+
       await changeEventStatus(requestId, action);
+
+      setRequests((prevRequests) =>
+        prevRequests.map((request) =>
+          request._id === requestId
+            ? { ...request, approvalStatus: action }
+            : request
+        )
+      );
+
       // if (result.success) {
       //   fetchEventRequests();
       // }
