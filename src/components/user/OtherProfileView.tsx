@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { followApi, getOtherUserDetails, unFollow } from "../../API/user";
+import {
+  followApi,
+  getOtherUserDetails,
+  unFollow,
+} from "../../API/user";
 import NavBar from "../common/navBar";
 import { Link } from "react-router-dom";
 import bgImage from "../../assets/sideImage.png";
@@ -20,128 +24,6 @@ interface OtherProfileViewProps {
   coverImageUrl: string;
 }
 
-// const OtherProfileView: React.FC<OtherProfileViewProps> = ({
-//   userId,
-//   coverImageUrl,
-// }) => {
-//   const [userDetails, setUserDetails] = useState<User | null>(null);
-//   const [isConnected, setIsConnected] = useState<boolean>(false);
-//   const [isFollowBack, setIsFollowBack] = useState<boolean>(false);
-//   const [isMeOnlyFollowing, setIsMeOnlyFollowing] = useState<boolean>(false);
-//   const [isLoading, setLoading] = useState<boolean>(false);
-//   const [isPrivate, setIsPrivate] = useState<boolean>(false);
-//   const currentUser = useGetUser();
-//   const { socket } = useSocket();
-
-//   const fetchUserDetails = async () => {
-//     try {
-//       const result = await getOtherUserDetails(userId);
-//       const isFollowing = result?.user?.following.includes(currentUser.id);
-//       const meFollowing = result?.user?.followers.includes(currentUser.id);
-
-//       if (isFollowing && meFollowing) {
-//         setIsConnected(true);
-//       } else if (isFollowing) {
-//         setIsFollowBack(true);
-//       } else if (meFollowing) {
-//         setIsMeOnlyFollowing(true);
-//       }
-
-//       setIsPrivate(result?.user?.accountPrivacy);
-//       setUserDetails(result.user);
-//     } catch (error: any) {
-//       showToastError(error.message);
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (userId) {
-//       fetchUserDetails();
-//     }
-
-//     return () => {
-//       if (socket) {
-//         socket.off("follow");
-//       }
-//     };
-//   }, [userId, currentUser.id, socket]);
-
-//   const followThisUser = async () => {
-//     try {
-//       if (!socket || isLoading) return; // Prevent multiple clicks
-//       setLoading(true);
-//       const result = await followApi({
-//         toFollowingId: userId,
-//         fromFollowerId: currentUser.id,
-//       });
-
-//       if (result.success === "successfully update the following") {
-//         fetchUserDetails();
-//         socket.emit("follow", {
-//           senderId: currentUser.id,
-//           receiverId: userId,
-//           type: "follow",
-//           message: `${currentUser?.name} has started following you.`,
-//           link: `/auth/OtherProfileView/${currentUser.id}`,
-//         });
-
-//         showToastSuccess("Followed");
-
-//         await useNotifyUser(
-//           currentUser.id,
-//           userId,
-//           "follow",
-//           `${currentUser?.name} has started following you.`,
-//           `/auth/OtherProfileView/${currentUser.id}`
-//         );
-//       } else {
-//         showToastError("Follow failed");
-//       }
-//     } catch (error: any) {
-//       showToastError(error.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleUnfollow = async () => {
-//     try {
-//       if (isLoading) return;
-//       setLoading(true);
-//       setIsConnected(false);
-//       const result = await unFollow(userId, currentUser.id);
-//       if (result.success) {
-//         fetchUserDetails();
-//         showToastSuccess("Unfollowed");
-//         setIsMeOnlyFollowing(false);
-//       }
-//     } catch (error: any) {
-//       showToastError(error.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-//   // to get the correct follow btn based on follow system
-//   const getFollowButtonText = () => {
-//     if (isConnected) {
-//       return "Connected";
-//     } else if (isFollowBack) {
-//       return "Follow Back";
-//     } else if (isMeOnlyFollowing) {
-//       return "Following";
-//     } else {
-//       return "Follow";
-//     }
-//   };
-
-//   const handleFollowToggle = () => {
-//     if (isMeOnlyFollowing || isConnected) {
-//       handleUnfollow();
-//     } else {
-//       followThisUser();
-//     }
-//   };
-
 const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   userId,
   coverImageUrl,
@@ -151,22 +33,26 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   const [isFollowBack, setIsFollowBack] = useState<boolean>(false);
   const [isMeOnlyFollowing, setIsMeOnlyFollowing] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [isPrivate, setIsPrivate] = useState<boolean>(false); // Add this line
+  const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const currentUser = useGetUser();
   const { socket } = useSocket();
 
-  // Fetch user details only once on mount
   const fetchUserDetails = async () => {
     try {
       const result = await getOtherUserDetails(userId);
       const isFollowing = result?.user?.following.includes(currentUser.id);
       const meFollowing = result?.user?.followers.includes(currentUser.id);
 
+      if (isFollowing && meFollowing) {
+        setIsConnected(true);
+      } else if (isFollowing) {
+        setIsFollowBack(true);
+      } else if (meFollowing) {
+        setIsMeOnlyFollowing(true);
+      }
+
+      setIsPrivate(result?.user?.accountPrivacy);
       setUserDetails(result.user);
-      setIsPrivate(result.user.isPrivate); // Set isPrivate from userDetails
-      setIsConnected(isFollowing && meFollowing);
-      setIsFollowBack(isFollowing && !meFollowing);
-      setIsMeOnlyFollowing(!isFollowing && meFollowing);
     } catch (error: any) {
       showToastError(error.message);
     }
@@ -183,39 +69,38 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       }
     };
   }, [userId, currentUser.id, socket]);
-  // Follow user with optimistic UI update
+
   const followThisUser = async () => {
     try {
-      if (!socket || isLoading) return;
+      if (!socket || isLoading) return; // Prevent multiple clicks
       setLoading(true);
-
-      await followApi({
+      const result = await followApi({
         toFollowingId: userId,
         fromFollowerId: currentUser.id,
       });
 
-      // Optimistically update state
-      setIsConnected(true);
-      setIsFollowBack(false);
-      setIsMeOnlyFollowing(false);
+      if (result.success === "successfully update the following") {
+        fetchUserDetails();
+        socket.emit("follow", {
+          senderId: currentUser.id,
+          receiverId: userId,
+          type: "follow",
+          message: `${currentUser?.name} has started following you.`,
+          link: `/auth/OtherProfileView/${currentUser.id}`,
+        });
 
-      // Notify user
-      socket.emit("follow", {
-        senderId: currentUser.id,
-        receiverId: userId,
-        type: "follow",
-        message: `${currentUser?.name} has started following you.`,
-        link: `/auth/OtherProfileView/${currentUser.id}`,
-      });
+        showToastSuccess("Followed");
 
-      showToastSuccess("Followed");
-      await useNotifyUser(
-        currentUser.id,
-        userId,
-        "follow",
-        `${currentUser?.name} has started following you.`,
-        `/auth/OtherProfileView/${currentUser.id}`
-      );
+        await useNotifyUser(
+          currentUser.id,
+          userId,
+          "follow",
+          `${currentUser?.name} has started following you.`,
+          `/auth/OtherProfileView/${currentUser.id}`
+        );
+      } else {
+        showToastError("Follow failed");
+      }
     } catch (error: any) {
       showToastError(error.message);
     } finally {
@@ -223,35 +108,34 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
     }
   };
 
-  // Unfollow user with optimistic UI update
   const handleUnfollow = async () => {
     try {
       if (isLoading) return;
       setLoading(true);
-
-      await unFollow(userId, currentUser.id);
-
-      // Optimistically update state
-      if (isConnected) {
-        setIsConnected(false);
-        setIsFollowBack(true);
-      } else if (isMeOnlyFollowing) {
+      setIsConnected(false);
+      const result = await unFollow(userId, currentUser.id);
+      if (result.success) {
+        fetchUserDetails();
+        showToastSuccess("Unfollowed");
         setIsMeOnlyFollowing(false);
       }
-
-      showToastSuccess("Unfollowed");
     } catch (error: any) {
       showToastError(error.message);
     } finally {
       setLoading(false);
     }
   };
-
+  // to get the correct follow btn based on follow system
   const getFollowButtonText = () => {
-    if (isConnected) return "Connected";
-    if (isFollowBack) return "Follow Back";
-    if (isMeOnlyFollowing) return "Following";
-    return "Follow";
+    if (isConnected) {
+      return "Connected";
+    } else if (isFollowBack) {
+      return "Follow Back";
+    } else if (isMeOnlyFollowing) {
+      return "Following";
+    } else {
+      return "Follow";
+    }
   };
 
   const handleFollowToggle = () => {
