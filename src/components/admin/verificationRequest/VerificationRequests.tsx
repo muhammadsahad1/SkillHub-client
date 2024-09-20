@@ -44,6 +44,7 @@ const VerificationRequests = () => {
         )
       );
 
+      // Call the API to update the status in the backend
       await updateRequestStatus(reqId, status);
 
       // Emit the socket event and notify the user
@@ -142,30 +143,23 @@ const VerificationRequests = () => {
                     </a>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                    {request.status !== "Approved" && (
-                      <>
-                        <button
-                          onClick={() =>
-                            handleAction(
-                              request?.userId,
-                              request?._id,
-                              "accept"
-                            )
-                          }
-                          className="text-indigo-600 hover:text-indigo-900 mr-2"
-                        >
-                          Accept
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleAction(request?.userId, request._id, "reject")
-                          }
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          Reject
-                        </button>
-                      </>
-                    )}
+                    {/* Always show both Accept and Reject buttons for admin to change status */}
+                    <button
+                      onClick={() =>
+                        handleAction(request?.userId, request?._id, "accept")
+                      }
+                      className="text-indigo-600 hover:text-indigo-900 mr-2"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleAction(request?.userId, request._id, "reject")
+                      }
+                      className="text-red-600 hover:text-red-900"
+                    >
+                      Reject
+                    </button>
                   </td>
                 </tr>
               ))}
