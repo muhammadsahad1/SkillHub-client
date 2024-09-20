@@ -39,7 +39,7 @@ const VerificationRequests = () => {
 
       // Update the request status in the local state without calling the API again
       setRequests((prevRequests) =>
-        prevRequests.map((req : any) =>
+        prevRequests.map((req: any) =>
           req._id === reqId ? { ...req, status } : req
         )
       );
@@ -142,11 +142,15 @@ const VerificationRequests = () => {
                     </a>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                    {request.status === "Pending" && (
+                    {request.status !== "Approved" && (
                       <>
                         <button
                           onClick={() =>
-                            handleAction(request?.userId, request?._id, "accept")
+                            handleAction(
+                              request?.userId,
+                              request?._id,
+                              "accept"
+                            )
                           }
                           className="text-indigo-600 hover:text-indigo-900 mr-2"
                         >

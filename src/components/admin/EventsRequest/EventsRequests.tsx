@@ -16,10 +16,10 @@ const EventsRequestsComponent = () => {
   const handleAction = async (requestId: string, status: string) => {
     try {
       const action = status === "Accept" ? "Approved" : "Rejected";
-      const result = await changeEventStatus(requestId, action);
-      if (result.success) {
-        fetchEventRequests();
-      }
+      await changeEventStatus(requestId, action);
+      // if (result.success) {
+      //   fetchEventRequests();
+      // }
     } catch (error) {}
   };
 
