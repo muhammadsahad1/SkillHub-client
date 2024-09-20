@@ -10,7 +10,6 @@ import {
   Fade,
 } from "@mui/material";
 import VideocamIcon from "@mui/icons-material/Videocam";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import { BiPaperPlane } from "react-icons/bi";
 import EmojiPicker from "emoji-picker-react";
