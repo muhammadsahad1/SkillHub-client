@@ -195,7 +195,6 @@ const UserLogin: React.FC = () => {
               />
               <hr className="underline"></hr>
             </div>
-            
           </div>
         </div>
       </div>

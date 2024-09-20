@@ -11,7 +11,6 @@ const VerificationRequests = () => {
   const admin = useGetUser();
   const { socket } = useSocket();
   const [requests, setRequests] = useState<Request[]>([]);
-  console.log("requestsss ==>", requests);
 
   const loadVerificationRequests = async () => {
     try {
@@ -38,7 +37,7 @@ const VerificationRequests = () => {
           ? "Your verification request has been approved."
           : "Your verification request has been rejected.";
 
-      const result = await updateRequestStatus(reqId, status);
+       await updateRequestStatus(reqId, status);
       // to create the notification and send it
       if (status === "Approved") {
         socket?.emit("verifyRequest", {
@@ -57,9 +56,7 @@ const VerificationRequests = () => {
         });
         await useNotifyUser(admin.id, userId, "verifyRequestRejected", message);
       }
-      if (result.success) {
-        loadVerificationRequests();
-      }
+
     } catch (error) {
       console.error(error);
     }
@@ -86,23 +83,47 @@ const VerificationRequests = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
               <tr className="bg-zinc-950">
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">#</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Due Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">Proof Link</th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-200 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
+                  #
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
+                  Email
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
+                  Due Date
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider">
+                  Proof Link
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-200 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {requests?.map((request: any, index) => (
                 <tr key={request._id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#{index + 1}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{request?.fullName}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{request?.email}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    #{index + 1}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {request?.fullName}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {request?.email}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(request.status)}`}>
+                    <span
+                      className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(
+                        request.status
+                      )}`}
+                    >
                       {request?.status}
                     </span>
                   </td>
@@ -110,13 +131,32 @@ const VerificationRequests = () => {
                     {new Date(request.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <a href={request?.proofLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                    <a
+                      href={request?.proofLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline"
+                    >
                       View Proof
                     </a>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                    <button onClick={() => handleAction(request?.userId, request?._id, "accept")} className="text-indigo-600 hover:text-indigo-900 mr-2">Accept</button>
-                    <button onClick={() => handleAction(request?.userId, request._id, "reject")} className="text-red-600 hover:text-red-900">Reject</button>
+                    <button
+                      onClick={() =>
+                        handleAction(request?.userId, request?._id, "accept")
+                      }
+                      className="text-indigo-600 hover:text-indigo-900 mr-2"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleAction(request?.userId, request._id, "reject")
+                      }
+                      className="text-red-600 hover:text-red-900"
+                    >
+                      Reject
+                    </button>
                   </td>
                 </tr>
               ))}
