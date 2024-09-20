@@ -77,8 +77,7 @@ const ChatComponent = ({ onNewMessage, handleBackClick }: OnNewMessage) => {
   const lastMessageRef = useRef<HTMLDivElement>(null);
 
   const userId = location?.state?.userId;
-  console.log("LL =>",location.state)
-  console.log("userId ==>",userId)
+
   //access the userId from url in route
 
   useEffect(() => {
@@ -353,11 +352,7 @@ const ChatComponent = ({ onNewMessage, handleBackClick }: OnNewMessage) => {
             >
               <VideocamIcon sx={{ color: "#151719" }} />
             </IconButton>
-            <IconButton
-              sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}
-            >
-              <MoreVertIcon sx={{ color: "#151719" }} />
-            </IconButton>
+    
           </Box>
         ) : null}
       </Box>

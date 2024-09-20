@@ -153,7 +153,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   };
 
   const handleCloseModal = () => {
+    
     onRequestClose();
+
   };
 
   return (

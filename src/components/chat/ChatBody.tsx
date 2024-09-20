@@ -17,8 +17,6 @@ const ChatBody = () => {
 const location = useLocation()
 
 const userId = location?.state?.userId;
-console.log("LL =>",location.state)
-console.log("userId ==>",userId)
 
 
   useEffect(() => {
