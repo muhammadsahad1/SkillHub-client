@@ -252,9 +252,12 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       const result = await unFollow(userId, currentUser.id);
       if (result.success) {
         // Update state locally without refetching user details
-        setIsConnected(false);
-        setIsFollowBack(false);
-        setIsMeOnlyFollowing(false);
+        if (isConnected) {
+          setIsConnected(false);
+          setIsFollowBack(true);
+        } else if (isMeOnlyFollowing) {
+          setIsMeOnlyFollowing(false);
+        }
 
         // Update the followers/following count locally
         setUserDetails((prevDetails) => {
@@ -262,7 +265,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
           return {
             ...prevDetails,
             followers: prevDetails.followers.filter(
-              (followerId : any) => followerId !== currentUser.id
+              (followerId: any) => followerId !== currentUser.id
             ),
           };
         });
@@ -295,7 +298,6 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       followThisUser();
     }
   };
-
 
   return (
     <div className="w-full min-h-screen bg-gray-100">
