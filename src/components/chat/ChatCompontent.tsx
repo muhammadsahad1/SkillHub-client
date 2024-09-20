@@ -137,17 +137,6 @@ const ChatComponent = ({ onNewMessage, handleBackClick }: OnNewMessage) => {
       setImage(file);
       const previewUrl = URL.createObjectURL(file);
 
-      // const tempMsbId = new Date().getTime().toString();
-
-      // // let newMessage = {
-      // //   _id: tempMsbId,
-      // //   senderId: sender.id,
-      // //   receiverId: userId,
-      // //   message: " ",
-      // //   mediaUrl: previewUrl,
-      // //   createAt: new Date().toISOString(),
-      // // };
-
       setImagePrev(previewUrl);
       setPrevModal(true);
     }
@@ -350,9 +339,8 @@ const ChatComponent = ({ onNewMessage, handleBackClick }: OnNewMessage) => {
               // here requesting to call the people
               onClick={() => handleCall(userId, user?.name)}
             >
-              <VideocamIcon sx={{ color: "#151719" }} />
+              <VideocamIcon sx={{ color: "#151719", me: "5px" }} />
             </IconButton>
-    
           </Box>
         ) : null}
       </Box>
