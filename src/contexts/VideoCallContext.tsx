@@ -28,7 +28,6 @@ const videoCallContext = createContext<VideoCallContextProps | undefined>(
 export const VideoCallProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  console.log("children ==>", children);
 
   const [isCallRequested, setIsCallRequested] = useState<boolean>(false);
   const [isCallAccepted, setIsCallAccepted] = useState<boolean>(false);

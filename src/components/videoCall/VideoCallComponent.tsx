@@ -9,7 +9,6 @@ const ZEGOCLOUD_APP_ID = import.meta.env.VITE_ZEGO_APP_ID;
 const ZEGOCLOUD_APP_SECRET = import.meta.env.VITE_ZEGO_SERVER_SECRET;
 
 const VideoCallComponent = () => {
-  console.log("VideoCallComponent is rendered");
 
   const {
     isCallAccepted,
