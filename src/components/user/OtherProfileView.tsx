@@ -122,17 +122,17 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
     }
   };
   // to get the correct follow btn based on follow system
-  const getFollowButtonText = () => {
-    if (isConnected) {
-      return "Following";
-    } else if (isFollowBack) {
-      return "Follow Back";
-    } else if (isMeOnlyFollowing) {
-      return "Following";
-    } else {
-      return "Follow";
-    }
-  };
+  // const getFollowButtonText = () => {
+  //   if (isConnected) {
+  //     return "Following";
+  //   } else if (isFollowBack) {
+  //     return "Follow Back";
+  //   } else if (isMeOnlyFollowing) {
+  //     return "Following";
+  //   } else {
+  //     return "Follow";
+  //   }
+  // };
 
   const handleFollowToggle = () => {
     if (isMeOnlyFollowing || isConnected) {
