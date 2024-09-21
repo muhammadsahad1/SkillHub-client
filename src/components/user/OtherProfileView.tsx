@@ -114,6 +114,14 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
         // Update state locally
         setIsFollowingEachOther(false);
         setIsFollowingThem(false);
+
+        if (isFollowingMe) {
+          // They are still following me, so show "Follow Back"
+          setIsFollowingMe(true);
+        } else {
+          setIsFollowingMe(false);
+        }
+
         showToastSuccess("Unfollowed");
       }
     } catch (error: any) {
