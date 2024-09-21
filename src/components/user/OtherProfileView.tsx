@@ -25,15 +25,14 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   coverImageUrl,
 }) => {
   const [userDetails, setUserDetails] = useState<User | null>(null);
-  const [isConnected, setIsConnected] = useState<boolean>(false); // both follow each other
-  const [isFollowBack, setIsFollowBack] = useState<boolean>(false); // they follow you, but you don't follow them
-  const [isMeOnlyFollowing, setIsMeOnlyFollowing] = useState<boolean>(false); // you follow them, but they don't follow you
-  const [isLoading, setLoading] = useState<boolean>(false); // for loading state on follow button
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [isFollowBack, setIsFollowBack] = useState<boolean>(false);
+  const [isMeOnlyFollowing, setIsMeOnlyFollowing] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const currentUser = useGetUser();
   const { socket } = useSocket();
 
-  // Fetch user details (once on mount or when userId changes)
   const fetchUserDetails = async () => {
     try {
       const result = await getOtherUserDetails(userId);
@@ -42,20 +41,10 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
 
       if (isFollowing && meFollowing) {
         setIsConnected(true);
-        setIsFollowBack(false);
-        setIsMeOnlyFollowing(false);
       } else if (isFollowing) {
         setIsFollowBack(true);
-        setIsConnected(false);
-        setIsMeOnlyFollowing(false);
       } else if (meFollowing) {
         setIsMeOnlyFollowing(true);
-        setIsConnected(false);
-        setIsFollowBack(false);
-      } else {
-        setIsConnected(false);
-        setIsFollowBack(false);
-        setIsMeOnlyFollowing(false);
       }
 
       setIsPrivate(result?.user?.accountPrivacy);
@@ -77,7 +66,6 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
     };
   }, [userId, currentUser.id, socket]);
 
-  // Handle follow action
   const followThisUser = async () => {
     try {
       if (!socket || isLoading) return; // Prevent multiple clicks
@@ -88,12 +76,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       });
 
       if (result.success === "successfully update the following") {
-        // Instead of re-fetching user details, update the state locally
-        setIsConnected(!isFollowBack); // If you were supposed to follow back, now you're connected
-        setIsFollowBack(false); // You followed back, so no need for follow back
-        setIsMeOnlyFollowing(false); // You're connected, no more "only me following"
-
-        // Notify the followed user
+        fetchUserDetails();
         socket.emit("follow", {
           senderId: currentUser.id,
           receiverId: userId,
@@ -121,17 +104,16 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
     }
   };
 
-  // Handle unfollow action
   const handleUnfollow = async () => {
     try {
       if (isLoading) return;
       setLoading(true);
-      setIsConnected(false); // Unfollowed, so not connected anymore
+      setIsConnected(false);
       const result = await unFollow(userId, currentUser.id);
       if (result.success) {
+        fetchUserDetails();
         showToastSuccess("Unfollowed");
-        setIsMeOnlyFollowing(false); // You no longer follow them
-        setIsFollowBack(true); // Now it's their turn to follow back
+        setIsMeOnlyFollowing(false);
       }
     } catch (error: any) {
       showToastError(error.message);
@@ -139,8 +121,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       setLoading(false);
     }
   };
-
-  // Logic for determining the follow button text
+  // to get the correct follow btn based on follow system
   const getFollowButtonText = () => {
     if (isConnected) {
       return "Connected";
@@ -153,7 +134,6 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
     }
   };
 
-  // Toggle follow/unfollow logic
   const handleFollowToggle = () => {
     if (isMeOnlyFollowing || isConnected) {
       handleUnfollow();
@@ -161,7 +141,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       followThisUser();
     }
   };
-  
+
   return (
     <div className="w-full min-h-screen bg-gray-100">
       <NavBar />
@@ -263,19 +243,33 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                         {userDetails.country}
                       </p>
                     </div>
+                    <div className="flex items-center space-x-2">
+                      <p className="text-gray-800 font-poppins font-semibold">
+                        City:
+                      </p>
+                      <p className="text-gray-800 font-poppins">
+                        {userDetails.states}
+                      </p>
+                    </div>
                   </div>
                 </>
               ) : (
-                <p className="text-gray-600 font-poppins mt-2 text-center">
-                  This account is private. Follow to see the details.
-                </p>
+                <p className="text-center">This account is private.</p>
               )}
             </div>
           ) : (
-            <h1 className="font-poppins font-bold">Loading...</h1>
+            <div className="mt-32 text-center">
+              <h2 className="text-gray-800 font-poppins font-bold">
+                No profile details
+              </h2>
+            </div>
           )}
+          <div className="my-6">
+            <OthersProfilePostsActivity userId={userId} />
+          </div>
         </div>
       </div>
+      <NotificationHandler />
     </div>
   );
 };
