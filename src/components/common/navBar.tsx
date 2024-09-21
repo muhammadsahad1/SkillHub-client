@@ -280,7 +280,7 @@ const NavBar: React.FC = () => {
             >
               {loggedInUser && loggedInUser?.picture?.imageUrl ? (
                 <img
-                  src={loggedInUser?.picture?.imageUrl}
+                  src={loggedInUser.picture.imageUrl}
                   className="w-11 h-11 object-cover rounded-full"
                 />
               ) : (
