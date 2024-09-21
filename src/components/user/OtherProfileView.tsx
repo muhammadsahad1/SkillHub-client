@@ -182,7 +182,15 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
         <div className="relative p-8">
           <div className="flex justify-end items-center mb-6">
             <Button
-              content={getFollowButtonText()}
+              content={
+                isMeOnlyFollowing && isFollowBack
+                  ? "Following"
+                  : isMeOnlyFollowing
+                  ? "Following"
+                  : isFollowBack
+                  ? "Follow back"
+                  : "Follow"
+              }
               onClick={handleFollowToggle}
               isLoading={isLoading}
             />
