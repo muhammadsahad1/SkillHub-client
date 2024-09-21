@@ -25,7 +25,8 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   coverImageUrl,
 }) => {
   const [userDetails, setUserDetails] = useState<User | null>(null);
-  const [followStatus, setFollowStatus] = useState<'not_following' | 'following' | 'connected'>('not_following');
+  const [isOtherUserFollowingMe, setIsOtherUserFollowingMe] = useState<boolean>(false);
+  const [amIFollowingOtherUser, setAmIFollowingOtherUser] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const currentUser = useGetUser();
@@ -34,19 +35,14 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   const fetchUserDetails = async () => {
     try {
       const result = await getOtherUserDetails(userId);
-      const isFollowing = result?.user?.following.includes(currentUser.id);
-      const meFollowing = result?.user?.followers.includes(currentUser.id);
-
-      if (isFollowing && meFollowing) {
-        setFollowStatus('connected');
-      } else if (meFollowing) {
-        setFollowStatus('following');
-      } else {
-        setFollowStatus('not_following');
-      }
-
-      setIsPrivate(result?.user?.accountPrivacy);
       setUserDetails(result.user);
+      setIsPrivate(result?.user?.accountPrivacy);
+      
+      const otherUserFollowingMe = result?.user?.following.includes(currentUser.id);
+      const meFollowingOtherUser = result?.user?.followers.includes(currentUser.id);
+      
+      setIsOtherUserFollowingMe(otherUserFollowingMe);
+      setAmIFollowingOtherUser(meFollowingOtherUser);
     } catch (error: any) {
       showToastError(error.message);
     }
@@ -74,7 +70,9 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       });
 
       if (result.success === "successfully update the following") {
-        setFollowStatus(prevStatus => prevStatus === 'not_following' ? 'following' : 'connected');
+        setAmIFollowingOtherUser(true);
+        showToastSuccess("Followed");
+
         socket.emit("follow", {
           senderId: currentUser.id,
           receiverId: userId,
@@ -82,8 +80,6 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
           message: `${currentUser?.name} has started following you.`,
           link: `/auth/OtherProfileView/${currentUser.id}`,
         });
-
-        showToastSuccess("Followed");
 
         await useNotifyUser(
           currentUser.id,
@@ -108,7 +104,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       setLoading(true);
       const result = await unFollow(userId, currentUser.id);
       if (result.success) {
-        setFollowStatus('not_following');
+        setAmIFollowingOtherUser(false);
         showToastSuccess("Unfollowed");
       }
     } catch (error: any) {
@@ -119,27 +115,26 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   };
 
   const getFollowButtonText = () => {
-    switch (followStatus) {
-      case 'connected':
-        return "Connected";
-      case 'following':
-        return "Following";
-      case 'not_following':
-        return "Follow";
-      default:
-        return "Follow";
+    if (amIFollowingOtherUser && isOtherUserFollowingMe) {
+      return "Connected";
+    } else if (amIFollowingOtherUser) {
+      return "Following";
+    } else if (isOtherUserFollowingMe) {
+      return "Follow Back";
+    } else {
+      return "Follow";
     }
   };
 
   const handleFollowToggle = () => {
-    if (followStatus === 'following' || followStatus === 'connected') {
+    if (amIFollowingOtherUser) {
       handleUnfollow();
     } else {
       followThisUser();
     }
   };
 
-  const canViewProfile = !isPrivate || followStatus === 'connected' || followStatus === 'following';
+  const canViewProfile = !isPrivate || amIFollowingOtherUser;
 
   return (
     <div className="w-full min-h-screen bg-gray-100">
@@ -185,7 +180,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
               onClick={handleFollowToggle}
               isLoading={isLoading}
             />
-            {followStatus === 'connected' && (
+            {amIFollowingOtherUser && isOtherUserFollowingMe && (
               <Link to="/auth/chat" state={{ userId: userId }}>
                 <AiFillMessage
                   className="message-icon"
