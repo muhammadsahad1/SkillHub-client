@@ -76,7 +76,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       });
 
       if (result.success === "successfully update the following") {
-        fetchUserDetails();
+        // fetchUserDetails();
         socket.emit("follow", {
           senderId: currentUser.id,
           receiverId: userId,
@@ -111,7 +111,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       setIsConnected(false);
       const result = await unFollow(userId, currentUser.id);
       if (result.success) {
-        fetchUserDetails();
+        // fetchUserDetails();
         showToastSuccess("Unfollowed");
         setIsMeOnlyFollowing(false);
       }
@@ -124,7 +124,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   // to get the correct follow btn based on follow system
   const getFollowButtonText = () => {
     if (isConnected) {
-      return "Connected";
+      return "Following";
     } else if (isFollowBack) {
       return "Follow Back";
     } else if (isMeOnlyFollowing) {
