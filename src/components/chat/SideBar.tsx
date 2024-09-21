@@ -10,6 +10,7 @@ import {
   Avatar,
   Badge,
 } from "@mui/material";
+import { Person as PersonIcon } from "@mui/icons-material";
 import React, {
   useEffect,
   useState,
@@ -44,12 +45,6 @@ const SideBar = forwardRef<SideBarHandle, SideBarProps>((props, ref) => {
   const fetchChatUsers = async () => {
     try {
       const result = await getConversationsUsers();
-      // const sortedResultByRecentlyChat = result.sort((a: any, b: any) => {
-      //   const dateA = new Date(a.lastMessageTime).getTime();
-      //   const dateB = new Date(b.lastMessageTime).getTime();
-
-      //   return dateB - dateA;
-      // });
       setChatUsers(result);
     } catch (error) {}
   };
@@ -250,10 +245,16 @@ const SideBar = forwardRef<SideBarHandle, SideBarProps>((props, ref) => {
                         } // Hide badge if message is read
                       ></Badge>
                       <ListItemAvatar>
-                        <Avatar
-                          alt={person.user.name}
-                          src={person.user.profileImageUrl}
-                        />
+                        {person.user?.profileImageUrl ? (
+                          <Avatar
+                            alt={person.user?.name}
+                            src={person.user?.profileImageUrl} // Use the profile image URL if available
+                          />
+                        ) : (
+                          <Avatar>
+                            <PersonIcon />
+                          </Avatar>
+                        )}
                       </ListItemAvatar>
                       <ListItemText
                         primary={
