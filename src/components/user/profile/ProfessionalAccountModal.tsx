@@ -12,7 +12,7 @@ import { verifityRequesting } from "../../../API/user";
 import useGetUser from "../../../hook/getUser";
 import { showToastSuccess } from "../../common/utilies/toast";
 import { BarLoader } from "react-spinners";
-import {  setIsRequest } from "../../../redux/userSlices";
+import { setIsRequest } from "../../../redux/userSlices";
 import { useDispatch } from "react-redux";
 
 // Styles for the modal
@@ -21,7 +21,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 700,
+  width: { xs: "90%", sm: "600px", md: "700px" },
   bgcolor: "background.paper",
   borderRadius: 2,
   boxShadow: 24,
@@ -106,13 +106,13 @@ const ProfessionalAccountModal: React.FC = () => {
     setFirstModalOpen(false);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
-  };
+  },[]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,6 +126,13 @@ const ProfessionalAccountModal: React.FC = () => {
     if (result.success) {
       dispatch(setIsRequest(true));
       showToastSuccess("Verification request submitted successfully.");
+      setFormData({
+        fullName: "",
+        profession: "",
+        company: "",
+        website: "",
+        proofLink: "",
+      });
     }
     setLoading(false);
     handleClose();

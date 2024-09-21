@@ -289,7 +289,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
 
     const handlePostReport = async (reason: string | undefined) => {
       try {
-        const result = await reportPost(post._id as string, reason as string);
+        const result = await reportPost(post?._id as string, reason as string);
         if (result.success) {
           showToastSuccess("Report requested");
           setReportModelOpen(false);
@@ -342,7 +342,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
             ) : null
           }
           action={
-            post.userId === user.id ? (
+            post?.userId === user?.id ? (
               <IconButton onClick={openMiniPostModel}>
                 <MoreVertIcon />
               </IconButton>
@@ -403,7 +403,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
                 textAlign: post.type === "thoughts" ? "center" : "left",
               }}
             >
-              {post.caption}
+              {post?.caption}
             </Typography>
           )}
 
@@ -423,7 +423,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
                 },
               }}
             >
-              {post.type === "video" ? (
+              {post?.type === "video" ? (
                 <video
                   src={post?.postImageUrl}
                   controls
@@ -515,7 +515,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
                     </Typography>
                   </Box>
                 </Box>
-                {comment.userId === user.id && (
+                {comment?.userId === user.id && (
                   <IconButton onClick={openMiniModal}>
                     <HiDotsCircleHorizontal />
                   </IconButton>

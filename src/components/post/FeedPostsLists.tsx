@@ -56,11 +56,11 @@ const FeedPostsLists = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      {data.pages
-        .flatMap((page) => page.posts)
+      {data?.pages
+        .flatMap((page) => page?.posts)
         .map((post: IPost, index, arr) => (
           <HomePostCard
-            key={post._id}
+            key={post?._id}
             post={post}
             ref={index === arr.length - 1 ? lastPostElementRef : null}
           />
