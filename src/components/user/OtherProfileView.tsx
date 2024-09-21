@@ -25,8 +25,10 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   coverImageUrl,
 }) => {
   const [userDetails, setUserDetails] = useState<User | null>(null);
-  const [isOtherUserFollowingMe, setIsOtherUserFollowingMe] = useState<boolean>(false);
-  const [amIFollowingOtherUser, setAmIFollowingOtherUser] = useState<boolean>(false);
+  const [isOtherUserFollowingMe, setIsOtherUserFollowingMe] =
+    useState<boolean>(false);
+  const [amIFollowingOtherUser, setAmIFollowingOtherUser] =
+    useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const currentUser = useGetUser();
@@ -37,10 +39,14 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       const result = await getOtherUserDetails(userId);
       setUserDetails(result.user);
       setIsPrivate(result?.user?.accountPrivacy);
-      
-      const otherUserFollowingMe = result?.user?.following.includes(currentUser.id);
-      const meFollowingOtherUser = result?.user?.followers.includes(currentUser.id);
-      
+
+      const otherUserFollowingMe = result?.user?.following.includes(
+        currentUser.id
+      );
+      const meFollowingOtherUser = result?.user?.followers.includes(
+        currentUser.id
+      );
+
       setIsOtherUserFollowingMe(otherUserFollowingMe);
       setAmIFollowingOtherUser(meFollowingOtherUser);
     } catch (error: any) {
@@ -74,11 +80,11 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
         showToastSuccess("Followed");
 
         socket.emit("follow", {
-          senderId: currentUser.id,
-          receiverId: userId,
-          type: "follow",
-          message: `${currentUser?.name} has started following you.`,
-          link: `/auth/OtherProfileView/${currentUser.id}`,
+          senderId: currentUser?.id as string,
+          receiverId: userId as string,
+          type: "follow" as string,
+          message: `${currentUser?.name} has started following you.` as string,
+          link: `/auth/OtherProfileView/${currentUser.id}` as string,
         });
 
         await useNotifyUser(
@@ -249,7 +255,10 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                   </div>
                 </>
               ) : (
-                <p className="text-center mt-4">This account is private. Follow to see their posts and activity.</p>
+                <p className="text-center mt-4">
+                  This account is private. Follow to see their posts and
+                  activity.
+                </p>
               )}
             </div>
           ) : (
