@@ -50,10 +50,12 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("curr =>",currentUser.picture?.imageUrl)
     // Show user's current profile image if available, else show noProfile
-    if (currentUser?.picture?.imageUrl) {
-      setImagePreview(currentUser.picture.imageUrl);
+    if (
+      typeof currentUser.picture?.imageUrl === "string" &&
+      currentUser.picture?.imageUrl != ""
+    ) {
+      setImagePreview(currentUser.picture?.imageUrl);
     } else {
       setImagePreview(noProfile);
     }
@@ -124,7 +126,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       "profileImageInput"
     ) as HTMLInputElement;
     const file = fileInput.files?.[0];
-    console.log("file ==>",file)
+    console.log("file ==>", file);
 
     const formData = new FormData();
     formData.append("name", data.name);
@@ -153,9 +155,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   };
 
   const handleCloseModal = () => {
-    
     onRequestClose();
-
   };
 
   return (
@@ -321,7 +321,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             </div>
 
             <div className="flex justify-end">
-            <button
+              <button
                 type="button"
                 onClick={handleCloseModal}
                 className="px-4 py-2 mr-2 bg-gray-800 text-white rounded-md"
