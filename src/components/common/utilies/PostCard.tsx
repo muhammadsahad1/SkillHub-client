@@ -11,6 +11,7 @@ import { postingThoughts } from "../../../API/conversation";
 import { showToastError, showToastSuccess } from "./toast";
 import EventModal from "../../event/EventModal";
 import { CgProfile } from "react-icons/cg";
+import { Link } from "react-router-dom";
 
 const OutlinedCard: React.FC = () => {
   const [isOpen, setModalOpen] = useState<boolean>(false);
@@ -96,16 +97,18 @@ const OutlinedCard: React.FC = () => {
             component="div"
             className="flex justify-between space-x-3"
           >
-            {typeof currentUser.picture?.imageUrl === "string" &&
-            currentUser.picture?.imageUrl != "" ? (
-              <img
-                src={currentUser.picture?.imageUrl}
-                alt=""
-                className="w-12 h-12 rounded-full object-cover"
-              />
-            ) : (
-              <CgProfile className="w-12 h-12 rounded-full object-cover" />
-            )}
+            <Link to="/auth/viewProfile">
+              {typeof currentUser.picture?.imageUrl === "string" &&
+              currentUser.picture?.imageUrl != "" ? (
+                <img
+                  src={currentUser.picture?.imageUrl}
+                  alt=""
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+              ) : (
+                <CgProfile className="w-12 h-12 rounded-full object-cover" />
+              )}
+            </Link>
 
             <input
               onChange={handleInputChange}

@@ -112,20 +112,26 @@ const NavBar: React.FC = () => {
         <div className="hidden md:flex items-center space-x-4">
           <Link
             to="/"
-            className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive("/")}`}
+            className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive(
+              "/"
+            )}`}
           >
             Home
           </Link>
           <Link
             to="/auth/events"
-            className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive("/auth/events")}`}
+            className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive(
+              "/auth/events"
+            )}`}
           >
             Explore
           </Link>
           {loggedInUser?.id && (
             <Link
               to="/auth/groups"
-              className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive("/auth/groups")}`}
+              className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive(
+                "/auth/groups"
+              )}`}
             >
               Groups
             </Link>
@@ -225,20 +231,26 @@ const NavBar: React.FC = () => {
           <SearchUsers />
           <Link
             to="/"
-            className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive("/")}`}
+            className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive(
+              "/"
+            )}`}
           >
             Home
           </Link>
           <Link
             to="/auth/events"
-            className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive("/auth/events")}`}
+            className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive(
+              "/auth/events"
+            )}`}
           >
             Explore
           </Link>
           {loggedInUser?.id && (
             <Link
               to="/auth/groups"
-              className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive("/auth/groups")}`}
+              className={`text-zinc-900 font-bold hover:text-gray-600 ${isActive(
+                "/auth/groups"
+              )}`}
             >
               Groups
             </Link>

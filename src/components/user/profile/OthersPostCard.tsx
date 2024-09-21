@@ -257,7 +257,7 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
     >
       <CardHeader
         avatar={
-          <Link to={`auth/OtherProfileView/${post?.userId}`}>
+          <Link to={`/auth/OtherProfileView/${post?.userId}`}>
             <Avatar src={post.profileImageUrl} />
           </Link>
         }
