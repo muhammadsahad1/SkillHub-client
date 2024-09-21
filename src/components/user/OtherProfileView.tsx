@@ -28,6 +28,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
   const [isFollowingEachOther, setIsFollowingEachOther] = useState(false);
   const [isFollowingMe, setIsFollowingMe] = useState(false);
   const [isFollowingThem, setIsFollowingThem] = useState(false);
+  const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [isLoading, setLoading] = useState(false);
   const currentUser = useGetUser();
   const { socket } = useSocket();
@@ -38,7 +39,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
       const result = await getOtherUserDetails(userId);
       const isFollowing = result?.user?.following.includes(currentUser.id);
       const meFollowing = result?.user?.followers.includes(currentUser.id);
-
+      setIsPrivate(result?.user?.accountPrivacy);
       // Set initial follow state based on the fetched data
       setIsFollowingEachOther(isFollowing && meFollowing);
       setIsFollowingMe(isFollowing);
@@ -203,7 +204,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
                   </Link>
                 )}
               </div>
-              {!isPrivate || (isPrivate && isConnected) ? (
+              {!isPrivate || (isPrivate && isFollowingEachOther) ? (
                 <>
                   <p className="text-zinc-900 font-semibold mb-3">
                     <span className="text-zinc-700">
