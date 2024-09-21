@@ -74,7 +74,6 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
         toFollowingId: userId,
         fromFollowerId: currentUser.id,
       });
-
       if (result.success === "successfully update the following") {
         // fetchUserDetails();
         socket.emit("follow", {
