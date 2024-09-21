@@ -257,9 +257,11 @@ const NavBar: React.FC = () => {
               Groups
             </Link>
           )}
-          <Link to="/auth/chat">
-            <TbMessageDots size={32} className="cursor-pointer" />
-          </Link>
+          {loggedInUser.id && (
+            <Link to="/auth/chat">
+              <TbMessageDots size={32} className="cursor-pointer" />
+            </Link>
+          )}
           <div
             onClick={toggleNotificationsDropdown}
             className="cursor-pointer relative"
