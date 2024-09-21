@@ -252,7 +252,12 @@ const SideBar = forwardRef<SideBarHandle, SideBarProps>((props, ref) => {
                           />
                         ) : (
                           <Avatar>
-                            <PersonIcon />
+                            {person.user?.name ? (
+                              person.user.name[0]
+                            ) : (
+                              <PersonIcon />
+                            )}
+                            {/* Use the first letter of the user's name as a fallback */}
                           </Avatar>
                         )}
                       </ListItemAvatar>
