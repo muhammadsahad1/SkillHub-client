@@ -201,147 +201,149 @@ const ChatComponent = ({ onNewMessage, handleBackClick }: OnNewMessage) => {
   };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        height: "100%",
-        borderRadius: 2,
-        marginLeft: 1,
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        boxShadow: "0 0 15px rgba(0,0,0,0.1)",
-      }}
-      className="font-poppins"
-    >
-      {/* Chat Header */}
-      <Box
+    <Fade in={true}>
+      <Paper
         sx={{
-          p: 2,
+          width: "100%",
+          height: "100%",
+          borderRadius: 2,
+          marginLeft: 1,
+          overflow: "hidden",
           display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          backgroundColor: "rgba(255,255,255,0.9)",
-          backdropFilter: "blur(10px)",
-          borderBottom: "1px solid rgba(0,0,0,0.1)",
+          flexDirection: "column",
+          boxShadow: 3,
         }}
+        className="font-poppins"
       >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IoMdArrowRoundBack className="me-4 size-5 cursor-pointer" onClick={handleBackClick} />
-          {user?.profileImageUrl ? (
-            <Avatar
-              src={user?.profileImageUrl}
-              alt="User"
-              sx={{ width: 48, height: 48, cursor: "pointer" }}
-              onClick={() => navigate(`/auth/OtherProfileView/${user._id}`)}
-            />
-          ) : (
-            <Avatar sx={{ width: 48, height: 48, cursor: "pointer" }} />
-          )}
-          <Box sx={{ ml: 2 }}>
-            <Typography variant="subtitle1" color="#151719" fontFamily="Poppins" fontWeight="Bold">
-              {user?.name || "Select a conversation"}
-            </Typography>
-            <Typography variant="body2" color="#151719" sx={{ opacity: 0.7 }}></Typography>
+        {/* Chat Header */}
+        <Box
+          sx={{
+            p: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            backgroundColor: "rgba(255,255,255,0.9)",
+            backdropFilter: "blur(10px)",
+            borderBottom: "1px solid rgba(0,0,0,0.1)",
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IoMdArrowRoundBack className="me-4 size-5 cursor-pointer" onClick={handleBackClick} />
+            {user?.profileImageUrl ? (
+              <Avatar
+                src={user?.profileImageUrl}
+                alt="User"
+                sx={{ width: 48, height: 48, cursor: "pointer" }}
+                onClick={() => navigate(`/auth/OtherProfileView/${user._id}`)}
+              />
+            ) : (
+              <Avatar sx={{ width: 48, height: 48, cursor: "pointer" }} />
+            )}
+            <Box sx={{ ml: 2 }}>
+              <Typography variant="subtitle1" color="#151719" fontFamily="Poppins" fontWeight="Bold">
+                {user?.name || "Select a conversation"}
+              </Typography>
+              <Typography variant="body2" color="#151719" sx={{ opacity: 0.7 }}></Typography>
+            </Box>
           </Box>
+          {user?.name && (
+            <Box>
+              <IconButton
+                sx={{
+                  "&:hover": {
+                    animation: "0.5s ease-in-out pulse",
+                    animationIterationCount: "infinite",
+                  },
+                }}
+                onClick={() => handleCall(userId, user?.name)}
+              >
+                <VideocamIcon />
+              </IconButton>
+            </Box>
+          )}
         </Box>
-        {user?.name && (
-          <Box>
-            <IconButton
-              sx={{
-                "&:hover": {
-                  animation: "0.5s ease-in-out pulse",
-                  animationIterationCount: "infinite",
-                },
-              }}
-              onClick={() => handleCall(userId, user?.name)}
-            >
-              <VideocamIcon />
-            </IconButton>
+
+        {/* Chat Messages */}
+        <Box
+          sx={{
+            flex: 1,
+            p: 2,
+            overflowY: "auto",
+            display: "flex",
+            flexDirection: "column-reverse",
+          }}
+          ref={chatContainerRef}
+        >
+          {chats.map((chat: any, index: number) => (
+            <div key={index} ref={lastMessageRef}>
+              <TimeLine />
+              <Typography variant="body2" color="gray">
+                {formatTime(chat.createAt)}
+              </Typography>
+            </div>
+          ))}
+        </Box>
+
+        {/* Message Input */}
+        <Divider />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            padding: "0.5rem",
+          }}
+        >
+          <InputBase
+            sx={{ flex: 1, ml: 1 }}
+            placeholder="Type a message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          />
+          <IconButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+            <InsertEmoticonIcon />
+          </IconButton>
+          <IconButton
+            sx={{ ml: 1 }}
+            onClick={() => imageUseRef.current?.click()}
+          >
+            <BiImageAdd />
+          </IconButton>
+          <IconButton sx={{ ml: 1 }} onClick={sendMessage}>
+            <BiPaperPlane />
+          </IconButton>
+          <input
+            type="file"
+            ref={imageUseRef}
+            style={{ display: "none" }}
+            onChange={handlePreviewImage}
+            accept="image/*"
+          />
+        </Box>
+
+        {showEmojiPicker && (
+          <Box sx={{ position: "absolute", bottom: 100, right: 20 }}>
+            <EmojiPicker onEmojiClick={onEmojiClick} />
           </Box>
         )}
-      </Box>
 
-      {/* Chat Messages */}
-      <Box
-        sx={{
-          flex: 1,
-          p: 2,
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column-reverse",
-        }}
-        ref={chatContainerRef}
-      >
-        {chats.map((chat: any, index: number) => (
-          <div key={index} ref={lastMessageRef}>
-            <TimeLine/>
-            <Typography variant="body2" color="gray">
-              {formatTime(chat.createAt)}
-            </Typography>
-          </div>
-        ))}
-      </Box>
-
-      {/* Message Input */}
-      <Divider />
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          padding: "0.5rem",
-        }}
-      >
-        <InputBase
-          sx={{ flex: 1, ml: 1 }}
-          placeholder="Type a message..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-        <IconButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
-          <InsertEmoticonIcon />
-        </IconButton>
-        <IconButton
-          sx={{ ml: 1 }}
-          onClick={() => imageUseRef.current?.click()}
-        >
-          <BiImageAdd />
-        </IconButton>
-        <IconButton sx={{ ml: 1 }} onClick={sendMessage}>
-          <BiPaperPlane />
-        </IconButton>
-        <input
-          type="file"
-          ref={imageUseRef}
-          style={{ display: "none" }}
-          onChange={handlePreviewImage}
-          accept="image/*"
-        />
-      </Box>
-
-      {showEmojiPicker && (
-        <Box sx={{ position: "absolute", bottom: 100, right: 20 }}>
-          <EmojiPicker onEmojiClick={onEmojiClick} />
-        </Box>
-      )}
-
-      {/* Image Preview Modal */}
-      <Dialog open={prevModal} onClose={handleCloseModal}>
-        <DialogTitle>Image Preview</DialogTitle>
-        <DialogContent>
-          {imagePreview && <img src={imagePreview} alt="Preview" style={{ width: "100%" }} />}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModal} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={sendImage} color="primary">
-            Send
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+        {/* Image Preview Modal */}
+        <Dialog open={prevModal} onClose={handleCloseModal}>
+          <DialogTitle>Image Preview</DialogTitle>
+          <DialogContent>
+            {imagePreview && <img src={imagePreview} alt="Preview" style={{ width: "100%" }} />}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseModal} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={sendImage} color="primary">
+              Send
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Paper>
+    </Fade>
   );
 };
 
