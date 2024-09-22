@@ -114,32 +114,38 @@ const SideBar = forwardRef<SideBarHandle, SideBarProps>((props, ref) => {
   const handleClick = async (conversationId: string, receiverId: string) => {
     try {
       const selectedUser = chatUsers.find(
-        (users) => users._id === conversationId
+        (user) => user._id === conversationId
       );
 
-      if (selectedUser && (!selectedUser.isRead || sender._id !== receiverId)) {
+      // Check if there are unread messages
+      const hasUnreadMessages =
+        selectedUser && !selectedUser.isRead && sender._id !== receiverId;
+
+      // Only call the API if there are unread messages
+      if (hasUnreadMessages) {
         if (socket) {
           socket.emit("messageRead", {
             conversationId,
             senderId: sender.id,
             receiverId: receiverId,
           });
-          // Update the state immediately
-          setChatUsers((prev) =>
-            prev.map((user) =>
-              user._id === conversationId ? { ...user, isRead: true } : user
-            )
-          );
         }
-        // function to mark message as read
         await markMessageAsRead(conversationId);
-        fetchChatUsers();
       }
+
+      // Update the local state to mark messages as read
+      setChatUsers((prev) =>
+        prev.map((user) =>
+          user._id === conversationId ? { ...user, isRead: true } : user
+        )
+      );
+
       if (props.onSelectUser) {
         props.onSelectUser(receiverId);
       }
-      // onConversationSelect(true)
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error in handleClick:", error);
+    }
   };
 
   // forSearch
