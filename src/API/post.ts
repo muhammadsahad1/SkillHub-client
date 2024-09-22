@@ -145,7 +145,7 @@ export const commentDelete = async ({
   commentId,
   postId,
 }: {
-  commentId: string;
+  commentId: string | undefined;
   postId: string;
 }) => {
   try {
@@ -173,7 +173,7 @@ export const editingComment = async ({
   postId,
   updatedText,
 }: {
-  commentId: string;
+  commentId: string | undefined;
   postId: string;
   updatedText: string;
 }) => {

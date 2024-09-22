@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { followApi, getOtherUserDetails, unFollow } from "../../API/user";
 import NavBar from "../common/navBar";

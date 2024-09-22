@@ -50,6 +50,15 @@ const ActionButton = styled(Button)(({ theme }) => ({
   },
 }));
 
+interface Comment {
+  userId: string;
+  userName: string;
+  comment: string;
+  created_at: Date;
+  _id?: string; // Make _id optional
+  commentedUserProfileUrl?: string; // Make commentedUserProfileUrl optional
+}
+
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat("en-US", {
@@ -90,12 +99,12 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
     const [isCommentEditModalOpen, setCommentEditModalOpen] =
       useState<boolean>(false);
     const [commentBeingEdited, setCommentBeingEdited] = useState<{
-      id: string;
+      id: string | undefined;
       text: string;
     } | null>(null);
     console.log(commentBeingEdited);
 
-      const [captionBeingEdit, setCaptionBeingEdit] = useState<{
+    const [captionBeingEdit, setCaptionBeingEdit] = useState<{
       id: string;
       text: string;
     } | null>(null);
@@ -133,7 +142,6 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
     };
 
     const handleEdit = () => {
-      console.log("called");
       setCaptionBeingEdit({
         id: post._id,
         text: post.caption,
@@ -142,7 +150,10 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
       handleMenuClose();
     };
 
-    const handleEditModal = (commentId: string, commentText: string) => {
+    const handleEditModal = (
+      commentId: string | undefined,
+      commentText: string
+    ) => {
       setCommentBeingEdited({
         id: commentId,
         text: commentText,
@@ -163,7 +174,6 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
           post.caption = captionBeingEdit?.text;
           setEditModalOpen(false);
         }
-        
       } catch (error) {
         console.error("Error updating post:", error);
         showToastError("Error updating post");
@@ -212,7 +222,10 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
       setCommentBoxOpen(!isCommentBoxOpen);
     };
 
-    const deletingComment = async (commentId: string, postId: string) => {
+    const deletingComment = async (
+      commentId: string | undefined,
+      postId: string
+    ) => {
       try {
         await deleteComment({ commentId, postId });
 
@@ -488,7 +501,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
             }}
           >
             <CommentBox postId={post._id} onClose={commentClose} />
-            {post?.comments?.map((comment: any) => (
+            {post?.comments?.map((comment: Comment) => (
               <Box
                 key={comment._id}
                 sx={{
@@ -499,7 +512,7 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Avatar
-                    alt={comment.userName}
+                    alt={comment?.userName}
                     src={comment?.commentedUserProfileUrl}
                     sx={{ width: 30, height: 30 }}
                   />
@@ -508,14 +521,14 @@ const HomePostCard = forwardRef<HTMLDivElement, HomePostCardProps>(
                       variant="body2"
                       sx={{ fontWeight: "bold", color: "#333" }}
                     >
-                      {comment.userName}
+                      {comment?.userName}
                     </Typography>
                     <Typography variant="body2" sx={{ color: "#555" }}>
-                      {comment.comment}
+                      {comment?.comment}
                     </Typography>
                   </Box>
                 </Box>
-                {comment?.userId === user.id && (
+                {comment?.userId === user?.id && (
                   <IconButton onClick={openMiniModal}>
                     <HiDotsCircleHorizontal />
                   </IconButton>

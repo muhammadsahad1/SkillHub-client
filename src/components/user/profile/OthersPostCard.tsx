@@ -35,8 +35,9 @@ import { useSocket } from "../../../hook/useSocket";
 import { showToastError } from "../../common/utilies/toast";
 import { useQueryClient } from "react-query";
 
-interface Comment {
+export interface Comment {
   _id: string;
+  userId: string;
   userName: string;
   userImageUrl: string;
   comment: string;
@@ -45,15 +46,15 @@ interface Comment {
 interface PostCardProps {
   post: {
     _id: string;
-    postUrl: string;
+    postUrl?: string;
     caption: string;
-    createdAt: string;
+    createdAt?: string;
     profileImageUrl?: string;
     userName?: string;
     likes: string[];
-    comments: Comment[];
-    userId: string;
-    type: string;
+    comments?: Comment[];
+    userId?: string;
+    type?: string;
   };
 }
 const ActionButton: React.FC<React.ComponentProps<typeof Button>> = (props) => (
@@ -211,7 +212,7 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
   const handleEdit = () => {
     setCaptionBeingEdit({
       id: post._id,
-      text: post.caption,
+      text: post?.caption,
     });
     setEditModalOpen(true);
     handleMenuClose();
@@ -362,7 +363,8 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
             gap: 2,
           }}
         >
-          {post?.comments?.map((comment: any) => (
+          <CommentBox postId={post._id} onClose={commentClose} />
+          {post?.comments?.map((comment: Comment) => (
             <Box
               key={comment._id}
               sx={{
@@ -373,7 +375,7 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Avatar
-                  alt={comment.userName}
+                  alt={comment?.userName}
                   src={comment?.userImageUrl}
                   style={{ width: 30, height: 30 }}
                 />
@@ -382,14 +384,14 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
                     variant="body2"
                     sx={{ fontWeight: "bold", color: "#333" }}
                   >
-                    {comment.userName}
+                    {comment?.userName}
                   </Typography>
                   <Typography variant="body2" sx={{ color: "#555" }}>
-                    {comment.comment}
+                    {comment?.comment}
                   </Typography>
                 </Box>
               </Box>
-              {comment.userId === user.id && (
+              {comment?.userId === user?.id && (
                 <IconButton onClick={openMiniModal}>
                   <HiDotsCircleHorizontal />
                 </IconButton>
@@ -417,7 +419,6 @@ const OthersPostCard: React.FC<PostCardProps> = ({ post }) => {
               </Menu>
             </Box>
           ))}
-          <CommentBox postId={post._id} onClose={commentClose} />
         </Box>
       )}
       <Modal open={isEditModalOpen} onClose={handleModalClose}>
