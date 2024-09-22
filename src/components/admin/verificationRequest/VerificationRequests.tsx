@@ -7,10 +7,10 @@ import { useNotifyUser } from "../../../hook/useNotifyUser";
 import useGetUser from "../../../hook/getUser";
 import { useSocket } from "../../../hook/useSocket";
 
-const VerificationRequests = () => {
+const VerificationRequests : React.FC = () => {
   const admin = useGetUser();
   const { socket } = useSocket();
-  const [requests, setRequests] = useState<Request[]>([]);
+  const [requests, setRequests] = useState<string[]>([]);
 
   const loadVerificationRequests = async () => {
     try {
@@ -110,7 +110,7 @@ const VerificationRequests = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {requests?.map((request: any, index) => (
-                <tr key={request._id}>
+                <tr key={request?._id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     #{index + 1}
                   </td>
@@ -130,7 +130,7 @@ const VerificationRequests = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(request.createdAt).toLocaleDateString()}
+                    {new Date(request?.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <a

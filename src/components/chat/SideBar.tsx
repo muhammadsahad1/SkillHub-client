@@ -113,26 +113,31 @@ const SideBar = forwardRef<SideBarHandle, SideBarProps>((props, ref) => {
 
   const handleClick = async (conversationId: string, receiverId: string) => {
     try {
-      if (socket) {
-        socket.emit("messageRead", {
-          conversationId,
-          senderId: sender.id,
-          receiverId: receiverId,
-        });
-        // Update the state immediately
-        setChatUsers((prev) =>
-          prev.map((user) =>
-            user._id === conversationId ? { ...user, isRead: true } : user
-          )
-        );
-      }
+      const selectedUser = chatUsers.find(
+        (users) => users._id === conversationId
+      );
 
+      if (selectedUser && (!selectedUser.isRead || sender._id !== receiverId)) {
+        if (socket) {
+          socket.emit("messageRead", {
+            conversationId,
+            senderId: sender.id,
+            receiverId: receiverId,
+          });
+          // Update the state immediately
+          setChatUsers((prev) =>
+            prev.map((user) =>
+              user._id === conversationId ? { ...user, isRead: true } : user
+            )
+          );
+        }
+        // function to mark message as read
+        await markMessageAsRead(conversationId);
+        fetchChatUsers();
+      }
       if (props.onSelectUser) {
         props.onSelectUser(receiverId);
       }
-      // function to mark message as read
-      await markMessageAsRead(conversationId);
-      fetchChatUsers();
       // onConversationSelect(true)
     } catch (error) {}
   };

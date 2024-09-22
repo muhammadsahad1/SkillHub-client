@@ -124,10 +124,10 @@ const Dashboard = () => {
         setGroupsCount(groupsCount);
 
         const mergedData = mergeAnalyticsData(
-          analyticsData.postData,
-          analyticsData.groupData,
-          analyticsData.eventData,
-          analyticsData.userData
+          analyticsData?.postData,
+          analyticsData?.groupData,
+          analyticsData?.eventData,
+          analyticsData?.userData
         );
         setChartData(mergedData);
       } else {
@@ -159,13 +159,13 @@ const Dashboard = () => {
             <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center">
               <h2 className="text-sm font-medium text-gray-500 mb-2">Posts</h2>
               <p className="text-2xl sm:text-3xl font-bold text-gray-800">
-                {postsCount.toLocaleString()}
+                {postsCount?.toLocaleString()}
               </p>
             </div>
             <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center">
               <h2 className="text-sm font-medium text-gray-500 mb-2">Groups</h2>
               <p className="text-2xl sm:text-3xl font-bold text-gray-800">
-                {groupsCount.toLocaleString()}
+                {groupsCount?.toLocaleString()}
               </p>
             </div>
             <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center">
@@ -177,7 +177,7 @@ const Dashboard = () => {
             <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center">
               <h2 className="text-sm font-medium text-gray-500 mb-2">Users</h2>
               <p className="text-2xl sm:text-3xl font-bold text-gray-800">
-                {usersCount.toLocaleString()}
+                {usersCount?.toLocaleString()}
               </p>
             </div>
           </div>

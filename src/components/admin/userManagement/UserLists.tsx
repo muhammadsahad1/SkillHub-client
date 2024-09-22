@@ -47,7 +47,7 @@ const UserList: React.FC = () => {
         const response = await blockUser(id);
         if (response.success) {
           setUsers((prevUsers) =>
-            prevUsers.map((user: any) =>
+            prevUsers.map((user: User) =>
               user._id === id
                 ? { ...user, blocked: !currentBlockedStatus }
                 : user
@@ -113,19 +113,19 @@ const UserList: React.FC = () => {
               {users.map((user: User) => (
                 <tr key={user?._id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {user.name}
+                    {user?.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
-                    {user.email}
+                    {user?.email}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm hidden lg:table-cell">
-                    {user.role}
+                    {user?.role}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm hidden lg:table-cell">
-                    {user.skill}
+                    {user?.skill}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm hidden xl:table-cell">
-                    {user.country}
+                    {user?.country}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm hidden xl:table-cell">
                     {formatDate(user?.created_at)}
