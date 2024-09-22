@@ -275,7 +275,7 @@ const ChatComponent = ({ onNewMessage, handleBackClick }: OnNewMessage) => {
       >
         {chats.map((chat: any, index: number) => (
           <div key={index} ref={lastMessageRef}>
-            <TimeLine chat={chat} />
+            <TimeLine/>
             <Typography variant="body2" color="gray">
               {formatTime(chat.createAt)}
             </Typography>
