@@ -91,7 +91,7 @@ const EventsRequestsComponent = () => {
 
   const renderActions = (item: IEventRequets) => (
     <div>
-      {item.eventStatus === "Completed" || "Ongoing" ? (
+      {item.eventStatus === "Completed" ? (
         <span className="text-gray-400">No Actions (Completed)</span>
       ) : (
         <>
