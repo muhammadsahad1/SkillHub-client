@@ -280,23 +280,23 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
             )}
           </Grid>
           <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="category-select-label">Category</InputLabel>
-                <Select
-                  labelId="category-select-label"
-                  id="category-select"
-                  value={category}
-                  label="Category"
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  {skillLists.map((skill) => (
-                    <MenuItem key={skill} value={skill}>
-                      {skill}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+            <FormControl fullWidth>
+              <InputLabel id="category-select-label">Category</InputLabel>
+              <Select
+                labelId="category-select-label"
+                id="category-select"
+                value={category}
+                label="Category"
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                {skillLists.map((skill) => (
+                  <MenuItem key={skill} value={skill}>
+                    {skill}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
         </Grid>
         <Grid container justifyContent="flex-end" spacing={2} sx={{ mt: 2 }}>
           <Grid item>
