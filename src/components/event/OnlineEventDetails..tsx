@@ -1,9 +1,12 @@
-
 import { format, isToday } from "date-fns";
 import { IEvent } from "../../@types/events";
 import { Clock, Calendar, User, Tag } from "lucide-react";
 
-const OnlineEventDetails = ({ eventDetails }: { eventDetails: IEvent | undefined }) => {
+const OnlineEventDetails = ({
+  eventDetails,
+}: {
+  eventDetails: IEvent | undefined;
+}) => {
   if (!eventDetails) return null;
 
   const eventDate = new Date(eventDetails.date);

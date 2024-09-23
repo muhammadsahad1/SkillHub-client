@@ -29,8 +29,8 @@ const EventsRequestsComponent = () => {
       const action = status === "Accept" ? "Approved" : "Rejected";
       const message =
         status === "Accept"
-          ? "Your verification request has been approved."
-          : "Your verification request has been rejected.";
+          ? "Your event verification request has been approved."
+          : "Your event verification request has been rejected.";
 
       setRequests((prevRequests) =>
         prevRequests.map((request) =>

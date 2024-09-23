@@ -192,12 +192,14 @@ const EventPost = React.forwardRef<HTMLDivElement, EventsPostProps>(
                 >
                   Join Meeting
                 </button>
-                <button
-                  className="text-sm text-white bg-gray-600 hover:bg-gray-700 py-1 px-3 rounded transition duration-300"
-                  onClick={handleEditEventModal}
-                >
-                  Edit
-                </button>
+                {event.eventStatus != "Completed" && (
+                  <button
+                    className="text-sm text-white bg-gray-600 hover:bg-gray-700 py-1 px-3 rounded transition duration-300"
+                    onClick={handleEditEventModal}
+                  >
+                    Edit
+                  </button>
+                )}
               </div>
             )}
             {isRegistered && event.eventStatus !== "Completed" && (
