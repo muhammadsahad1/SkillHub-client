@@ -26,7 +26,8 @@ const style = {
   boxShadow: 24,
   p: 4,
   overflowY: "auto",
-  '@media (max-width: 600px)': { // Media query for small screens
+  "@media (max-width: 600px)": {
+    // Media query for small screens
     width: "100%",
     p: 2,
   },
@@ -63,7 +64,7 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
     if (eventData) {
       setTitle(eventData.title || "");
       setDescription(eventData.description || "");
-      setDate(eventData.date || "");
+      setDate(eventData.date ? eventData.date.split("T")[0] : "");
       setTime(eventData.time || "");
       setDuration(eventData.duration || "");
       setSpeaker(eventData.speaker || "");
