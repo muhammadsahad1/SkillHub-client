@@ -66,7 +66,6 @@ const PostReports = () => {
     setIsDeleteModalOpen(false);
   };
 
-
   const columns = [
     { Header: "#", accessor: "index" },
     {

@@ -47,7 +47,12 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        { data.length <= 0 ? (
+          <div className="flex justify-center items-center"> 
+            <p> No reports </p>
+          </div>
+        ) : (
+          <tbody className="bg-white divide-y divide-gray-200">
           {currentData.map((item) => (
             <tr key={item._id}>
               {columns.map((column) => (
@@ -64,6 +69,8 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
             </tr>
           ))}
         </tbody>
+        )}
+      
       </table>
       <div className="flex justify-between mt-4">
         <button
