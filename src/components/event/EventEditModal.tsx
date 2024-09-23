@@ -17,6 +17,7 @@ import { eventValidation } from "../../utils/validation";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { createEvent } from "../../API/event"; // Add your updateEvent API function here
 import { skillLists } from "../../needObject/skills";
+import { IEvent } from "../../@types/events";
 
 const style = {
   position: "absolute" as "absolute",
@@ -42,7 +43,7 @@ interface EventEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   eventData?: any;
-  onUpdated: (pageNumber: number) => void; // Callback function to trigger refetch in parent component
+  onUpdated: (updatedEvent: IEvent) => void; // Callback function to trigger refetch in parent component
 }
 
 const EventEditModal: React.FC<EventEditModalProps> = ({
@@ -122,12 +123,28 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
       if (bannerFile) {
         formData.append("bannerFile", eventData.bannerImageUrl || bannerFile);
       }
+
+      const updatedEvent = {
+        ...eventData,
+        title,
+        description,
+        date,
+        time,
+        duration,
+        speaker,
+        category,
+        price,
+        currency,
+        bannerImageUrl: bannerPreview,
+      }
+
+      onUpdated(updatedEvent);
+      
       setLoading(true);
       try {
         const result = await createEvent(formData);
         if (result.success) {
           showToastSuccess(result.message);
-          onUpdated(1);
         } else {
           showToastError(result.message);
         }

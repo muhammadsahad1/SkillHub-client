@@ -13,10 +13,11 @@ import { IEvent } from "../../@types/events";
 interface EventsPostProps {
   event: IEvent;
   fetchEvent: (pageNumber: number) => Promise<void>;
+  onEventUpdated: (updatedEvent: IEvent) => void;
 }
 
 const EventPost = React.forwardRef<HTMLDivElement, EventsPostProps>(
-  ({ event, fetchEvent }, ref) => {
+  ({ event, fetchEvent, onEventUpdated }, ref) => {
     const navigate = useNavigate();
     const currentUser = useGetUser();
     const [isRegistered, setIsRegistered] = useState<boolean>(false);
@@ -64,7 +65,6 @@ const EventPost = React.forwardRef<HTMLDivElement, EventsPostProps>(
           console.error("Error handling event state:", error);
         }
       };
-
       updateEventStatus();
     }, [event.date, event.time, event.duration]);
 
@@ -143,13 +143,8 @@ const EventPost = React.forwardRef<HTMLDivElement, EventsPostProps>(
       }
     };
 
-
     const handleEditEventModal = () => {
       setEditEventModalOpen(true);
-    };
-
-    const handleCloseEditModal = () => {
-      setEditEventModalOpen(false);
     };
 
     const isCreatorAndProfessional =
@@ -159,6 +154,11 @@ const EventPost = React.forwardRef<HTMLDivElement, EventsPostProps>(
     const formattedDate = isToday(eventDate)
       ? "TODAY"
       : format(eventDate, "dd MMM").toUpperCase();
+
+      const handleCloseEditModal = () => {
+        setEditEventModalOpen(false);
+      };
+    
 
     return (
       <motion.div
@@ -267,7 +267,7 @@ const EventPost = React.forwardRef<HTMLDivElement, EventsPostProps>(
             isOpen={isEditEventModalOpen}
             onClose={handleCloseEditModal}
             eventData={event}
-            onUpdated={fetchEvent}
+            onUpdated={onEventUpdated}
           />
         )}
       </motion.div>

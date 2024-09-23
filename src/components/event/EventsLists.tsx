@@ -14,8 +14,7 @@ const EventsLists = () => {
 
   const fetchEvents = useCallback(async (pageNumber: number) => {
     try {
-      console.log("called ayi fetch");
-      
+      console.log("called ayi fetch ");
       setLoading(true);
       const result = await getEventsList(pageNumber);
       if (result.length > 0) {
@@ -64,6 +63,14 @@ const EventsLists = () => {
     };
   }, [hasMore, loading]);
 
+  const handleEventUpdated = (updatedEvent: IEvent) => {
+    setEvents((prevEvent) =>
+      prevEvent.map((evt) =>
+        evt._id === updatedEvent._id ? updatedEvent : evt
+      )
+    );
+  };
+
   return (
     <motion.div
       className="max-w-4xl mx-auto px-4 mt-32"
@@ -85,6 +92,7 @@ const EventsLists = () => {
               key={event._id}
               event={event}
               fetchEvent={fetchEvents}
+              onEventUpdated={handleEventUpdated}
               ref={index === events.length - 1 ? lastElementRef : null}
             />
           ))

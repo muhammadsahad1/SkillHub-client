@@ -1,16 +1,16 @@
-import EventsLists from "../../components/event/EventsLists";
-import NavBar from "../../components/common/navBar";
+  import EventsLists from "../../components/event/EventsLists";
+  import NavBar from "../../components/common/navBar";
 
 
-const EventsPage = () => {
-  return (
-    <div>
-      <NavBar />
+  const EventsPage = () => {
+    return (
       <div>
-        <EventsLists />
+        <NavBar />
+        <div>
+          <EventsLists />
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
-export default EventsPage;
+  export default EventsPage;
