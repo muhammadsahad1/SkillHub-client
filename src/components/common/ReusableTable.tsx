@@ -51,6 +51,11 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
                   <th
                     key={column.accessor}
                     className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider"
+                    style={
+                      column.accessor === "description"
+                        ? { width: "300px" } // Set width for description column
+                        : {}
+                    }
                   >
                     {column.Header}
                   </th>
@@ -67,22 +72,28 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
                   {columns.map((column) => (
                     <td
                       key={column.accessor}
-                      className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${
+                      className={`px-6 py-4 text-sm text-gray-500 ${
                         column.accessor === "description" ? "max-w-xs" : ""
                       }`}
                       style={
                         column.accessor === "description"
-                          ? { maxWidth: "200px", wordWrap: "break-word" }
+                          ? {
+                              maxWidth: "300px", // Max width for description column
+                              minWidth: "200px", // Min width to ensure no overlap
+                              whiteSpace: "normal", // Ensure text wraps to new lines
+                              overflow: "hidden",
+                              textOverflow: "ellipsis", // Cut off overflow text
+                            }
                           : {}
                       }
                     >
                       {column.accessor === "description" ? (
                         <>
-                          <p>
+                          <div className="description-wrapper">
                             {expandedRows[item._id]
-                              ? item.description // show full description when expanded
-                              : `${item.description.slice(0, 100)}...`} {/* Truncate after 100 characters */}
-                          </p>
+                              ? item.description // Show full description when expanded
+                              : `${item.description.slice(0, 100)}...`} {/* Truncated after 100 characters */}
+                          </div>
                           <button
                             onClick={() => toggleRowExpansion(item._id)}
                             className="text-blue-500 hover:underline"
@@ -102,6 +113,7 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
               ))}
             </tbody>
           </table>
+
           <div className="flex justify-between mt-4">
             <button
               disabled={currentPage === 1}
@@ -128,4 +140,3 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
 };
 
 export default ReusableTable;
-  
