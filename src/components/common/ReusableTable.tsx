@@ -60,7 +60,16 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
                   {columns.map((column) => (
                     <td
                       key={column.accessor}
-                      className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${
+                        column.accessor === "description"
+                          ? "max-w-xs truncate"
+                          : ""
+                      }`}
+                      style={
+                        column.accessor === "description"
+                          ? { maxWidth: "200px", wordWrap: "break-word" }
+                          : {}
+                      }
                     >
                       {item[column.accessor]}
                     </td>
