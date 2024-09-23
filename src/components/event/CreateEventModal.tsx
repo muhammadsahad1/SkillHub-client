@@ -16,7 +16,7 @@ import { UploadFile } from "@mui/icons-material";
 import { eventValidation } from "../../utils/validation";
 import { BarLoader } from "react-spinners";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
-import { skillLists } from '../../needObject/skills'
+import { skillLists } from "../../needObject/skills";
 
 const style = {
   position: "absolute" as "absolute",

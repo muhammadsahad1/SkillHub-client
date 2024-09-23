@@ -2,9 +2,14 @@ import { useEffect, useState } from "react";
 import { IEventRequets } from "../../../@types/eventRequests";
 import { changeEventStatus, getEvents } from "../../../API/admin";
 import ReusableTable from "../../common/ReusableTable";
+import { useSocket } from "../../../hook/useSocket";
+import useGetUser from "../../../hook/getUser";
+import { useNotifyUser } from "../../../hook/useNotifyUser";
 
 const EventsRequestsComponent = () => {
   const [requests, setRequests] = useState<IEventRequets[]>([]);
+  const { socket } = useSocket();
+  const admin = useGetUser();
 
   const fetchEventRequests = async () => {
     try {
@@ -15,10 +20,17 @@ const EventsRequestsComponent = () => {
     }
   };
 
-  const handleAction = async (requestId: string, status: string) => {
+  const handleAction = async (
+    userId: string,
+    requestId: string,
+    status: string
+  ) => {
     try {
       const action = status === "Accept" ? "Approved" : "Rejected";
-      await changeEventStatus(requestId, action);
+      const message =
+        status === "Accept"
+          ? "Your verification request has been approved."
+          : "Your verification request has been rejected.";
 
       setRequests((prevRequests) =>
         prevRequests.map((request) =>
@@ -27,6 +39,20 @@ const EventsRequestsComponent = () => {
             : request
         )
       );
+
+      await changeEventStatus(requestId, action);
+
+      const notificationType =
+        status === "Accept" ? "verifyRequestAccepted" : "verifyRequestRejected";
+
+      socket?.emit("VerifyRequest", {
+        senderId: admin.id,
+        receiverId: userId,
+        type: notificationType,
+        message,
+      });
+      //creating notification
+      await useNotifyUser(admin.id, userId, notificationType, message);
     } catch (error) {
       console.error(error);
     }
@@ -70,13 +96,13 @@ const EventsRequestsComponent = () => {
       ) : (
         <>
           <button
-            onClick={() => handleAction(item._id, "Accept")}
+            onClick={() => handleAction(item.createdBy, item._id, "Accept")}
             className="text-indigo-600 hover:text-indigo-900 mr-2"
           >
             Approve
           </button>
           <button
-            onClick={() => handleAction(item._id, "Reject")}
+            onClick={() => handleAction(item.createdBy, item._id, "Reject")}
             className="text-red-600 hover:text-red-900"
           >
             Reject
