@@ -1,4 +1,3 @@
-// src/components/admin/common/ReusableTable.tsx
 import React, { useState } from "react";
 
 interface Column {
@@ -20,6 +19,14 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
   itemsPerPage,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [expandedRows, setExpandedRows] = useState<{ [key: string]: boolean }>({});
+
+  const toggleRowExpansion = (rowId: string) => {
+    setExpandedRows((prevState) => ({
+      ...prevState,
+      [rowId]: !prevState[rowId],
+    }));
+  };
 
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -33,7 +40,7 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
     <div className="overflow-x-auto">
       {data.length <= 0 ? (
         <div className="flex justify-center items-center">
-          <p>No reports </p>
+          <p>No reports</p>
         </div>
       ) : (
         <>
@@ -61,9 +68,7 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
                     <td
                       key={column.accessor}
                       className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${
-                        column.accessor === "description"
-                          ? "max-w-xs truncate"
-                          : ""
+                        column.accessor === "description" ? "max-w-xs" : ""
                       }`}
                       style={
                         column.accessor === "description"
@@ -71,7 +76,23 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
                           : {}
                       }
                     >
-                      {item[column.accessor]}
+                      {column.accessor === "description" ? (
+                        <>
+                          <p>
+                            {expandedRows[item._id]
+                              ? item.description // show full description when expanded
+                              : `${item.description.slice(0, 100)}...`} {/* Truncate after 100 characters */}
+                          </p>
+                          <button
+                            onClick={() => toggleRowExpansion(item._id)}
+                            className="text-blue-500 hover:underline"
+                          >
+                            {expandedRows[item._id] ? "Show Less" : "View More"}
+                          </button>
+                        </>
+                      ) : (
+                        item[column.accessor]
+                      )}
                     </td>
                   ))}
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
@@ -107,3 +128,4 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
 };
 
 export default ReusableTable;
+  
