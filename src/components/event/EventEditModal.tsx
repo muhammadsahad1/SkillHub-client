@@ -7,11 +7,16 @@ import {
   Button,
   Grid,
   FormHelperText,
+  InputLabel,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { UploadFile } from "@mui/icons-material";
 import { eventValidation } from "../../utils/validation";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
 import { createEvent } from "../../API/event"; // Add your updateEvent API function here
+import { skillLists } from "../../needObject/skills";
 
 const style = {
   position: "absolute" as "absolute",
@@ -275,16 +280,23 @@ const EventEditModal: React.FC<EventEditModalProps> = ({
             )}
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              error={!!errors.category}
-              helperText={errors.category}
-              required
-            />
-          </Grid>
+              <FormControl fullWidth>
+                <InputLabel id="category-select-label">Category</InputLabel>
+                <Select
+                  labelId="category-select-label"
+                  id="category-select"
+                  value={category}
+                  label="Category"
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  {skillLists.map((skill) => (
+                    <MenuItem key={skill} value={skill}>
+                      {skill}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
         </Grid>
         <Grid container justifyContent="flex-end" spacing={2} sx={{ mt: 2 }}>
           <Grid item>
