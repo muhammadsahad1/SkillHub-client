@@ -40,6 +40,7 @@ const EventsRequestsComponent = () => {
     { Header: "#", accessor: "index" },
     { Header: "Event Name", accessor: "title" },
     { Header: "Organizer", accessor: "userName" },
+    { Header: "Description", accessor: "description" },
     { Header: "Date", accessor: "date" },
     { Header: "Time", accessor: "time" },
     { Header: "Duration", accessor: "duration" },
