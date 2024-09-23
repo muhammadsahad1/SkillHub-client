@@ -143,6 +143,7 @@ const EventPost = React.forwardRef<HTMLDivElement, EventsPostProps>(
       }
     };
 
+
     const handleEditEventModal = () => {
       setEditEventModalOpen(true);
     };

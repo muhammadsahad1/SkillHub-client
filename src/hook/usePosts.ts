@@ -64,6 +64,7 @@ const useGetMyPosts = () => {
     refetchOnWindowFocus: false,
   });
 };
+
 // Hook to delete a post
 const useDeletePost = () => {
   const queryClient = useQueryClient();

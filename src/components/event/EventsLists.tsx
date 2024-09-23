@@ -12,8 +12,10 @@ const EventsLists = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const lastElementRef = useRef<HTMLDivElement>(null);
 
-  const  fetchEvents = useCallback(async (pageNumber: number) => {
+  const fetchEvents = useCallback(async (pageNumber: number) => {
     try {
+      console.log("called ayi fetch");
+      
       setLoading(true);
       const result = await getEventsList(pageNumber);
       if (result.length > 0) {
