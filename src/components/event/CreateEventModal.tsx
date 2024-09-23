@@ -7,11 +7,16 @@ import {
   Button,
   Grid,
   FormHelperText,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import { UploadFile } from "@mui/icons-material";
 import { eventValidation } from "../../utils/validation";
-import { BarLoader } from "react-spinners"; // For the loader
+import { BarLoader } from "react-spinners";
 import { showToastError, showToastSuccess } from "../common/utilies/toast";
+import { skillLists } from '../../needObject/skills'
 
 const style = {
   position: "absolute" as "absolute",
@@ -39,7 +44,7 @@ const formContainerStyle = {
 interface CreateEventModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (eventData: FormData) => Promise<void>; // Make onSubmit return a Promise to handle async operations
+  onSubmit: (eventData: FormData) => Promise<void>;
 }
 
 const CreateEventModal: React.FC<CreateEventModalProps> = ({
@@ -87,7 +92,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
     );
 
     if (Object.keys(validationErrors).length === 0) {
-      setLoading(true); // Start loading
+      setLoading(true);
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
@@ -101,14 +106,14 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
       if (bannerFile) {
         formData.append("bannerFile", bannerFile);
       }
-      
+
       try {
         await onSubmit(formData);
         showToastSuccess("Event created successfully!");
       } catch (error) {
         showToastError("Failed to create event.");
       } finally {
-        setLoading(false); // End loading
+        setLoading(false);
         onClose();
       }
     } else {
@@ -260,12 +265,22 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
               )}
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              />
+              <FormControl fullWidth>
+                <InputLabel id="category-select-label">Category</InputLabel>
+                <Select
+                  labelId="category-select-label"
+                  id="category-select"
+                  value={category}
+                  label="Category"
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  {skillLists.map((skill) => (
+                    <MenuItem key={skill} value={skill}>
+                      {skill}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
         </Box>
