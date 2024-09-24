@@ -26,7 +26,7 @@ const OthersProfilePostsActivity = ({
   }
 
   return (
-    <div className="flex justify-center mb-20 items-center">  
+    <div className="flex justify-center mb-20 items-center">
       <OthersPostGrid posts={posts} />
     </div>
   );
