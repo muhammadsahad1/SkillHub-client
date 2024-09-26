@@ -69,7 +69,7 @@ const VerificationRequests: React.FC = () => {
   const renderActions = (request: any) => {
   
     if (request.status === "Approved") {
-      return null; // Don't render the buttons if the request is already approved
+      return "No action after approved"; // Don't render the buttons if the request is already approved
     }
 
     return (
