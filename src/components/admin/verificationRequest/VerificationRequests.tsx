@@ -90,7 +90,6 @@ const VerificationRequests: React.FC = () => {
     { Header: "Status", accessor: "status" },
     { Header: "Due Date", accessor: "createdAt" },
     { Header: "Proof Link", accessor: "proofLink" },
-    { Header: "Actions", accessor: "actions" },
   ];
 
   const formattedRequests = requests.map((request, index) => ({
@@ -107,7 +106,6 @@ const VerificationRequests: React.FC = () => {
         View Proof
       </a>
     ),
-    actions: renderActions(request), // Use renderActions here
   }));
 
   return (
@@ -115,7 +113,7 @@ const VerificationRequests: React.FC = () => {
       <h1 className="text-2xl font-bold mb-4">Verification Requests</h1>
       <ReusableTable
         data={formattedRequests}
-        columns={columns}
+        columns={columns} // Exclude actions column from here
         renderActions={renderActions} // Pass the render function for actions
         itemsPerPage={10}
       />
