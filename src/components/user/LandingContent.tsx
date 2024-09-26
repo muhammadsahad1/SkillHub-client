@@ -129,6 +129,5 @@ const LandingContent : React.FC = () => (
       </motion.section>
     </div>
   );
-}
 
 export default LandingContent
