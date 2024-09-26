@@ -65,16 +65,7 @@ const VerificationRequests: React.FC = () => {
     }
   };
 
-  const columns = [
-    { Header: "#", accessor: "index" },
-    { Header: "Name", accessor: "fullName" },
-    { Header: "Email", accessor: "email" },
-    { Header: "Status", accessor: "status" },
-    { Header: "Due Date", accessor: "createdAt" },
-    { Header: "Proof Link", accessor: "proofLink" },
-    { Header: "Actions", accessor: "actions" },
-  ];
-
+  // Define renderActions function here
   const renderActions = (request: any) => (
     <>
       <button
@@ -92,6 +83,16 @@ const VerificationRequests: React.FC = () => {
     </>
   );
 
+  const columns = [
+    { Header: "#", accessor: "index" },
+    { Header: "Name", accessor: "fullName" },
+    { Header: "Email", accessor: "email" },
+    { Header: "Status", accessor: "status" },
+    { Header: "Due Date", accessor: "createdAt" },
+    { Header: "Proof Link", accessor: "proofLink" },
+    { Header: "Actions", accessor: "actions" },
+  ];
+
   const formattedRequests = requests.map((request, index) => ({
     ...request,
     index: `#${index + 1}`,
@@ -106,7 +107,7 @@ const VerificationRequests: React.FC = () => {
         View Proof
       </a>
     ),
-    actions: renderActions(request), // Add actions column
+    actions: renderActions(request), // Use renderActions here
   }));
 
   return (
@@ -115,7 +116,7 @@ const VerificationRequests: React.FC = () => {
       <ReusableTable
         data={formattedRequests}
         columns={columns}
-        renderActions={renderActions}
+        renderActions={renderActions} // Pass the render function for actions
         itemsPerPage={10}
       />
     </div>

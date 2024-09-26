@@ -55,8 +55,7 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
                       column.accessor === "description"
                         ? { width: "300px" } // Set width for description column
                         : {}
-                    }
-                  >
+                    }>
                     {column.Header}
                   </th>
                 ))}
@@ -72,18 +71,17 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
                   {columns.map((column) => (
                     <td
                       key={column.accessor}
-                      className={`px-6 py-4 text-sm text-gray-500 ${
-                        column.accessor === "description" ? "max-w-xs" : ""
-                      }`}
+                      className={`px-6 py-4 text-sm text-gray-500 ${column.accessor === "description" ? "max-w-xs" : ""
+                        }`}
                       style={
                         column.accessor === "description"
                           ? {
-                              maxWidth: "300px", // Max width for description column
-                              minWidth: "200px", // Min width to ensure no overlap
-                              whiteSpace: "normal", // Ensure text wraps to new lines
-                              overflow: "hidden",
-                              textOverflow: "ellipsis", // Cut off overflow text
-                            }
+                            maxWidth: "300px", // Max width for description column
+                            minWidth: "200px", // Min width to ensure no overlap
+                            whiteSpace: "normal", // Ensure text wraps to new lines
+                            overflow: "hidden",
+                            textOverflow: "ellipsis", // Cut off overflow text
+                          }
                           : {}
                       }
                     >

@@ -3,13 +3,12 @@ import adminRoutes from "../services/endpoints/adminEndpoints";
 
 export const adminLogin = async (email: string, password: string) => {
   try {
-    
+
     const response = await Api.post(adminRoutes.login, {
       email: email,
       password: password,
     });
 
-    console.log(response.data);
     return response.data;
   } catch (error: any) {
     if (error.response) {
