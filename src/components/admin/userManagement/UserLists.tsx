@@ -77,9 +77,6 @@ const UserList: React.FC = () => {
         columns={columns}
         renderActions={(user: User) => (
           <>
-            <button className="text-indigo-600 hover:text-indigo-900 mr-2">
-              Edit
-            </button>
             <button
               className={user.blocked ? "text-green-500" : "text-red-500"}
               onClick={() => handleUserBlock(user?._id, user?.blocked)}

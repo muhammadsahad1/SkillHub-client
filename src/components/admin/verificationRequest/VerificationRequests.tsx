@@ -66,22 +66,30 @@ const VerificationRequests: React.FC = () => {
   };
 
   // Define renderActions function here
-  const renderActions = (request: any) => (
-    <>
-      <button
-        onClick={() => handleAction(request?.userId, request?._id, "accept")}
-        className="text-indigo-600 hover:text-indigo-900 mr-2"
-      >
-        Accept
-      </button>
-      <button
-        onClick={() => handleAction(request?.userId, request._id, "reject")}
-        className="text-red-600 hover:text-red-900"
-      >
-        Reject
-      </button>
-    </>
-  );
+  const renderActions = (request: any) => {
+  
+    if (request.status === "Approved") {
+      return null; // Don't render the buttons if the request is already approved
+    }
+
+    return (
+      <>
+        <button
+          onClick={() => handleAction(request?.userId, request?._id, "accept")}
+          className="text-indigo-600 hover:text-indigo-900 mr-2"
+        >
+          Accept
+        </button>
+        <button
+          onClick={() => handleAction(request?.userId, request._id, "reject")}
+          className="text-red-600 hover:text-red-900"
+        >
+          Reject
+        </button>
+      </>
+    );
+  };
+
 
   const columns = [
     { Header: "#", accessor: "index" },
@@ -113,8 +121,8 @@ const VerificationRequests: React.FC = () => {
       <h1 className="text-2xl font-bold mb-4">Verification Requests</h1>
       <ReusableTable
         data={formattedRequests}
-        columns={columns} // Exclude actions column from here
-        renderActions={renderActions} // Pass the render function for actions
+        columns={columns}
+        renderActions={renderActions}
         itemsPerPage={10}
       />
     </div>
