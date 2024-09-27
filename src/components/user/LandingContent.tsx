@@ -16,7 +16,6 @@ const slideUp = {
 
 const LandingContent : React.FC = () => (
     <div className="space-y-20 text-center bg-gray-100 text-zinc-900">
-      {/* Hero Section */}
       <motion.section
         className="flex flex-col items-center justify-center min-h-screen px-4 space-y-6"
         initial="hidden"
@@ -30,7 +29,7 @@ const LandingContent : React.FC = () => (
           A platform to enhance and share your skills with like-minded professionals. 
           Learn from experts, showcase your talents, and grow your network.
         </p>
-        <img src="/path/to/animated-image.gif" alt="Skill Sharing" className="w-full max-w-lg" />
+       
         <Link to="/auth/userSignup">
           <Button
             sx={{
@@ -57,7 +56,7 @@ const LandingContent : React.FC = () => (
           Participate in online events, share your knowledge, and join live video 
           call meetings to learn from experts in real-time.
         </p>
-        <img src="/path/to/events-image.png" alt="Events" className="w-full max-w-md" />
+      
       </motion.section>
   
       {/* Interaction Feature Section */}
@@ -72,7 +71,6 @@ const LandingContent : React.FC = () => (
           Chat and video call with users who share your skills. Collaborate on projects, 
           get feedback, and grow together.
         </p>
-        <img src="/path/to/chat-image.png" alt="Chat and Interaction" className="w-full max-w-md" />
       </motion.section>
   
       {/* Groups Feature Section */}
@@ -86,7 +84,7 @@ const LandingContent : React.FC = () => (
         <p className="text-lg sm:text-xl max-w-xl">
           Join groups based on your interests, discuss doubts, and collaborate with others to solve problems.
         </p>
-        <img src="/path/to/groups-image.png" alt="Groups and Discussions" className="w-full max-w-md" />
+        
       </motion.section>
   
       {/* Call to Action Section */}
@@ -100,7 +98,7 @@ const LandingContent : React.FC = () => (
         <p className="text-lg sm:text-xl max-w-xl">
           Share your expertise by posting content, uploading videos, and connecting with a community that values learning and collaboration.
         </p>
-        <div className="flex space-x-4">
+        <div className="flex space-x-4 mt-8">
           <Link to="/auth/userSignup">
             <Button
               sx={{
