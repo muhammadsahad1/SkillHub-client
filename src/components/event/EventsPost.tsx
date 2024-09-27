@@ -155,10 +155,10 @@ const EventPost = React.forwardRef<HTMLDivElement, EventsPostProps>(
       ? "TODAY"
       : format(eventDate, "dd MMM").toUpperCase();
 
-      const handleCloseEditModal = () => {
-        setEditEventModalOpen(false);
-      };
-    
+    const handleCloseEditModal = () => {
+      setEditEventModalOpen(false);
+    };
+
 
     return (
       <motion.div
@@ -185,7 +185,7 @@ const EventPost = React.forwardRef<HTMLDivElement, EventsPostProps>(
                 {event.eventStatus}
               </div>
             </div>
-            {isCreatorAndProfessional && event.eventStatus !== "Completed" && (
+            {isCreatorAndProfessional && event.eventStatus !== "Completed" ? (
               <div className="flex space-x-2">
                 <button
                   className="text-sm text-white bg-blue-600 hover:bg-blue-700 py-1 px-3 rounded transition duration-300"
@@ -202,17 +202,19 @@ const EventPost = React.forwardRef<HTMLDivElement, EventsPostProps>(
                   </button>
                 )}
               </div>
+            ) : (
+              isRegistered && event.eventStatus !== "Completed" && (
+                <div className="flex space-x-2">
+                  <button
+                    className="text-sm text-white bg-blue-600 hover:bg-blue-700 py-1 px-3 rounded transition duration-300"
+                    onClick={handleJoinMeeting}
+                  >
+                    Join Meeting
+                  </button>
+                </div>
+              )
             )}
-            {isRegistered && event.eventStatus !== "Completed" && (
-              <div className="flex space-x-2">
-                <button
-                  className="text-sm text-white bg-blue-600 hover:bg-blue-700 py-1 px-3 rounded transition duration-300"
-                  onClick={handleJoinMeeting}
-                >
-                  Join Meeting
-                </button>
-              </div>
-            )}
+
           </div>
           <h3 className="text-2xl font-semibold text-gray-900 mt-2">
             {event.title}
@@ -248,9 +250,9 @@ const EventPost = React.forwardRef<HTMLDivElement, EventsPostProps>(
               </motion.div>
             ) : event.eventStatus === "Completed" ? (
               <p className="font-bold">Completed</p>
-            ) : event.attendees.some(
-                (obj: eventAttendees) => obj.userId === currentUser.id
-              ) ? (
+            ) : event.createdBy === currentUser.id || event.attendees.some(
+              (obj: eventAttendees) => obj.userId === currentUser.id
+            ) ? (
               <p className="font-bold">Registered</p>
             ) : (
               <button
