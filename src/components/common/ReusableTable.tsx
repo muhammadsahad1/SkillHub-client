@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef } from "react";
+import { BarLoader } from "react-spinners";
 
 interface Column {
   Header: string;
@@ -51,7 +52,7 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
     <div className="overflow-x-auto">
       {data.length <= 0 ? (
         <div className="flex justify-center items-center">
-          <p>No reports</p>
+          <BarLoader/>
         </div>
       ) : (
         <>
