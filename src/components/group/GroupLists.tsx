@@ -34,6 +34,10 @@ const GroupLists: React.FC<props> = ({ isCreated }) => {
     navigate(`/auth/groupChat/${groupId}`);
   };
 
+  useEffect(() => {
+    fetchGroupsLists();
+  }, [isCreated]);
+
   const handleJoinGroup = async (groupId: string, event: React.MouseEvent) => {
     event.stopPropagation(); // Prevents triggering the parent div's onClick
     setLoadingGroupId(groupId); // Set loading state for the current group
@@ -52,9 +56,7 @@ const GroupLists: React.FC<props> = ({ isCreated }) => {
     }
   };
 
-  useEffect(() => {
-    fetchGroupsLists();
-  }, [isCreated]);
+
 
   return (
     <div className="flex flex-col items-center">
@@ -83,7 +85,7 @@ const GroupLists: React.FC<props> = ({ isCreated }) => {
                 </div>
                 <div className="flex justify-center">
                   {group.members.some(
-                    (member :any) => member?.userId  === currentUser.id
+                    (member: any) => member?.userId === currentUser.id
                   ) ? (
                     <button
                       className="bg-zinc-100 rounded-full w-32 text-black font-semibold py-1 px-2 hover:bg-zinc-200 transition-transform duration-300 hover:scale-105 ease-in-out flex items-center justify-center mt-4"

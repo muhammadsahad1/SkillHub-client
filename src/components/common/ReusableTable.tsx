@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef } from "react";
 
 interface Column {
   Header: string;
@@ -8,7 +8,7 @@ interface Column {
 interface ReusableTableProps {
   data: any[];
   columns: Column[];
-  renderActions: (item: any) => React.ReactNode;
+  renderActions: (item: any, onClick: () => void) => React.ReactNode;
   itemsPerPage: number;
 }
 
@@ -20,6 +20,7 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedRows, setExpandedRows] = useState<{ [key: string]: boolean }>({});
+  const actionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const toggleRowExpansion = (rowId: string) => {
     setExpandedRows((prevState) => ({
@@ -35,6 +36,16 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const debouncedAction = useCallback((action: () => void) => {
+    if (actionTimeoutRef.current) {
+      clearTimeout(actionTimeoutRef.current);
+    }
+    actionTimeoutRef.current = setTimeout(() => {
+      action();
+      actionTimeoutRef.current = null;
+    }, 300); // 300ms debounce time
+  }, []);
 
   return (
     <div className="overflow-x-auto">
@@ -53,7 +64,7 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
                     className="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider"
                     style={
                       column.accessor === "description"
-                        ? { width: "300px" } // Set width for description column
+                        ? { width: "300px" }
                         : {}
                     }>
                     {column.Header}
@@ -76,11 +87,11 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
                       style={
                         column.accessor === "description"
                           ? {
-                            maxWidth: "300px", // Max width for description column
-                            minWidth: "200px", // Min width to ensure no overlap
-                            whiteSpace: "normal", // Ensure text wraps to new lines
+                            maxWidth: "300px",
+                            minWidth: "200px",
+                            whiteSpace: "normal",
                             overflow: "hidden",
-                            textOverflow: "ellipsis", // Cut off overflow text
+                            textOverflow: "ellipsis",
                           }
                           : {}
                       }
@@ -89,8 +100,8 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
                         <>
                           <div className="description-wrapper">
                             {expandedRows[item._id]
-                              ? item.description // Show full description when expanded
-                              : `${item.description.slice(0, 100)}...`} {/* Truncated after 100 characters */}
+                              ? item.description
+                              : `${item.description.slice(0, 100)}...`}
                           </div>
                           <button
                             onClick={() => toggleRowExpansion(item._id)}
@@ -105,7 +116,7 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
                     </td>
                   ))}
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                    {renderActions(item)}
+                    {renderActions(item, () => debouncedAction(() => {}))}
                   </td>
                 </tr>
               ))}
