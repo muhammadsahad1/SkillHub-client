@@ -18,7 +18,7 @@ const location = useLocation()
 
 const userId = location?.state?.userId;
 
-
+  
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640);
     window.addEventListener("resize", handleResize);
