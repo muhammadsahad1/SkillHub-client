@@ -36,7 +36,7 @@ const userId = location?.state?.userId;
   };
 
   const handleBackClick = () => {
-    setSelectedUser(null); // Deselect user
+    setSelectedUser(null); 
   };
 
   return (

@@ -163,6 +163,9 @@ const ChatComponent = ({ onNewMessage, handleBackClick }: OnNewMessage) => {
         media: "",
         createAt: new Date().toISOString(),
       };
+
+      setChat((prevChat : any) => [...prevChat,newMessage])
+      
       setMessage("");
       socket.emit("sendData", { ...newMessage });
 
