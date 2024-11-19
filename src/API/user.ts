@@ -328,7 +328,7 @@ export const followApi = async ({
       toFollowingId,
       fromFollowerId,
     });
-    console.log("res =>", response)
+    console.log("res +=>", response)
     return response.data;
   } catch (error) {
 
