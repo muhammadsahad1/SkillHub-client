@@ -149,7 +149,7 @@ export const changePassword = async (
     });
     console.log("recieve response =>", response);
     return response.data;
-  } catch (error) {}
+  } catch (error) { }
 };
 
 // Create Profile
@@ -275,7 +275,7 @@ export const showNotification = async (isShowNotification: boolean) => {
     });
 
     return response.data;
-  } catch (error) {}
+  } catch (error) { }
 };
 
 // Fetching the skill related users
@@ -328,8 +328,11 @@ export const followApi = async ({
       toFollowingId,
       fromFollowerId,
     });
+    console.log("res =>", response)
     return response.data;
-  } catch (error) {}
+  } catch (error) {
+
+  }
 };
 
 // get my followings
