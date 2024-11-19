@@ -76,7 +76,7 @@ const OtherProfileView: React.FC<OtherProfileViewProps> = ({
         fromFollowerId: currentUser.id,
       });
   
-      if (result.success === "successfully update the following") {
+      if (result.success === "successfully updated the following") {
         setAmIFollowingOtherUser(true);
         showToastSuccess("Followed");
 
