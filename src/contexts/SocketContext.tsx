@@ -16,7 +16,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     console.log(import.meta.env.VITE_BASE_URL);
 
     // Initialize the socket with the backend URL
-    const newSocket = io(" http://localhost:3001", {
+    const newSocket = io("http://localhost:3001", {
       query: { userId: currentUser.id },
       withCredentials: true,
     });
