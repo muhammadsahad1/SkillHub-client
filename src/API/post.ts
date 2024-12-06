@@ -207,7 +207,7 @@ export const viewPost = async (postId: string) => {
         postId,
       },
     });
-    console.log("response =>",response)
+    console.log("response =>", response)
     return response.data;
-  } catch (error) {}
+  } catch (error) { }
 };

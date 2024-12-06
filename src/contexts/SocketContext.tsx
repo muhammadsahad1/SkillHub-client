@@ -13,10 +13,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const currentUser = useGetUser();
 
   useEffect(() => {
-    console.log("==>",import.meta.env.VITE_BASE_URL);
+    console.log("==>", import.meta.env.VITE_BASE_URL);
 
     // Initialize the socket with the backend URL
-    const newSocket = io("http://localhost:3001", {
+    // https://justingeorge.site
+    const newSocket = io("https://skillhubsocial.justingeorge.site", {
       query: { userId: currentUser.id },
       withCredentials: true,
     });
