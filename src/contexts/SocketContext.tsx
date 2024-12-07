@@ -17,7 +17,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
     // Initialize the socket with the backend URL
     // https://justingeorge.site
-    const newSocket = io("https://skillhubsocial.justingeorge.site", {
+    // const newSocket = io("https://skillhubsocial.justingeorge.site", {
+    //   query: { userId: currentUser.id },
+    //   withCredentials: true,
+    // });
+    const newSocket = io("http://localhost:3001", {
       query: { userId: currentUser.id },
       withCredentials: true,
     });
