@@ -21,6 +21,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     //   query: { userId: currentUser.id },
     //   withCredentials: true,
     // });
+    
     const newSocket = io("http://localhost:3001", {
       query: { userId: currentUser.id },
       withCredentials: true,
